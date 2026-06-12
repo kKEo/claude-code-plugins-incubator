@@ -1,0 +1,32 @@
+{
+  "$schema": "./schema.json",
+  "version": "1.0.0",
+  "updated": "2026-06-12",
+  "description": "Claude Code Plugins Marketplace - A community registry of plugins",
+  "plugins": [
+    {
+      "id": "frontend-scaffold",
+      "name": "Frontend Scaffold",
+      "description": "Scaffold production-grade Vue 3 frontend applications with shadcn/ui patterns, Pinia stores, and typed API client",
+      "author": "Krzysztof Maziarz",
+      "version": "0.1.0",
+      "repository": "https://github.com/kmaziarz/claude-plugin-frontend-scaffold",
+      "keywords": ["vue", "frontend", "scaffold", "shadcn", "dashboard", "admin"],
+      "category": "Frontend",
+      "license": "MIT",
+      "install": "git clone https://github.com/kmaziarz/claude-plugin-frontend-scaffold ~/.claude/plugins/frontend-scaffold"
+    }
+  ],
+  "categories": [
+    "Frontend",
+    "Backend",
+    "Productivity",
+    "Development",
+    "Data",
+    "Integration",
+    "Utilities",
+    "AI/ML",
+    "DevOps",
+    "Security"
+  ]
+}

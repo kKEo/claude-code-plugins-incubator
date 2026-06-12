@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/YOUR_USERNAME/claude-plugins/schema.json",
+  "title": "Claude Code Plugins Marketplace",
+  "description": "Schema for the Claude Code plugins marketplace registry",
+  "type": "object",
+  "required": ["version", "updated", "plugins", "categories"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Marketplace registry version (semver)"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date",
+      "description": "Last update date (YYYY-MM-DD)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Marketplace description"
+    },
+    "plugins": {
+      "type": "array",
+      "description": "List of available plugins",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "author",
+          "version",
+          "repository",
+          "keywords",
+          "category",
+          "license",
+          "install"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Unique plugin identifier (kebab-case)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name"
+          },
+          "description": {
+            "type": "string",
+            "description": "One-line summary of what the plugin does"
+          },
+          "author": {
+            "type": "string",
+            "description": "Author name or GitHub username"
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "description": "Plugin version (semver)"
+          },
+          "repository": {
+            "type": "string",
+            "format": "uri",
+            "description": "Git repository URL (HTTPS)"
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Search tags"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "Frontend",
+              "Backend",
+              "Productivity",
+              "Development",
+              "Data",
+              "Integration",
+              "Utilities",
+              "AI/ML",
+              "DevOps",
+              "Security"
+            ],
+            "description": "Plugin category"
+          },
+          "license": {
+            "type": "string",
+            "description": "SPDX license identifier"
+          },
+          "install": {
+            "type": "string",
+            "description": "Installation command (git clone)"
+          }
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available categories"
+    }
+  }
+}
