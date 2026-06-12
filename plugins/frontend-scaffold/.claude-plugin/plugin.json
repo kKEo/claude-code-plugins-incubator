@@ -1,0 +1,9 @@
+{
+  "name": "frontend-scaffold",
+  "version": "0.1.0",
+  "description": "Scaffold production-grade Vue 3 frontend applications with shadcn/ui patterns, Pinia stores, and API client",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": ["vue", "frontend", "scaffold", "shadcn", "dashboard", "admin"]
+}
