@@ -1,0 +1,9 @@
+{
+  "name": "feature-dev-documentalist",
+  "version": "0.1.0",
+  "description": "Automatically document feature development phases (spec, architecture, implementation, deployment, testing) from git diff analysis",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": ["documentation", "feature", "spec", "architecture", "deployment", "testing"]
+}

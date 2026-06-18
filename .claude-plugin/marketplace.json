@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "km-plugin-registry",
+  "description": "KM Plugin Registry - A community registry of plugins",
+  "owner": {
+    "name": "Krzysztof Maziarz"
+  },
+  "plugins": [
+    {
+      "name": "frontend-scaffold",
+      "description": "Scaffold production-grade Vue 3 frontend applications with shadcn/ui patterns, Pinia stores, and typed API client",
+      "source": "./plugins/frontend-scaffold",
+      "category": "Frontend"
+    },
+    {
+      "name": "feature-dev-documentalist",
+      "description": "Auto-document feature development phases from git diff — spec, architecture, implementation, deployment, and testing",
+      "source": "./plugins/feature-dev-documentalist",
+      "category": "Development"
+    }
+  ]
+}

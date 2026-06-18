@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Stop hook: remind the user to document their work before committing.
+# Runs after each Claude turn. Outputs a context injection nudge when
+# there are uncommitted changes and no feature docs folder for the branch yet.
+
+set -euo pipefail
+
+# Must be inside a git repo — exit silently if not
+git rev-parse --git-dir >/dev/null 2>&1 || exit 0
+
+# Get current branch — exit silently on detached HEAD
+branch=$(git branch --show-current 2>/dev/null)
+[[ -z "$branch" ]] && exit 0
+
+# Exit silently if branch looks like main/master/develop (not a feature branch)
+if [[ "$branch" =~ ^(main|master|develop|development|trunk|HEAD)$ ]]; then
+  exit 0
+fi
+
+# Check for uncommitted changes
+changes=$(git status --short 2>/dev/null || true)
+[[ -z "$changes" ]] && exit 0
+
+# Check if a feature docs folder already exists for this branch
+# (any folder whose name contains the branch name under docs/features/)
+feature_folder=$(find docs/features -maxdepth 1 -type d -name "*${branch}*" 2>/dev/null | head -1 || true)
+
+# Only nudge when there are changes AND no feature docs folder yet
+if [[ -z "$feature_folder" ]]; then
+  nudge="Tip: there are uncommitted changes on branch '${branch}' with no feature docs yet. Run /document-phase to capture this phase before committing."
+
+  escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+  }
+
+  nudge_escaped=$(escape_for_json "$nudge")
+
+  if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "additional_context": "%s"\n}\n' "$nudge_escaped" | cat
+  elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "Stop",\n    "additionalContext": "%s"\n  }\n}\n' "$nudge_escaped" | cat
+  else
+    printf '{\n  "additionalContext": "%s"\n}\n' "$nudge_escaped" | cat
+  fi
+fi
+
+exit 0
