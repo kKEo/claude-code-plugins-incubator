@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch deploy-documenter to generate the deployment documentation."
   </example>
-model: sonnet
+model: haiku
 color: yellow
 tools:
   - Read

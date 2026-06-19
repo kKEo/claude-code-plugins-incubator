@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch impl-documenter to summarize what was implemented."
   </example>
-model: sonnet
+model: haiku
 color: green
 tools:
   - Read

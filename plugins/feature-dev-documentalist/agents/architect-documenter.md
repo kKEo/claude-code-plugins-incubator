@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch architect-documenter to document the architectural decisions."
   </example>
-model: sonnet
+model: haiku
 color: magenta
 tools:
   - Read

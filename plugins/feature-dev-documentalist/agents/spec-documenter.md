@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch spec-documenter to capture the feature requirements."
   </example>
-model: sonnet
+model: haiku
 color: blue
 tools:
   - Read
