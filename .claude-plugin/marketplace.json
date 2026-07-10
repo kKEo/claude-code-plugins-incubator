@@ -1,9 +1,10 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "km-plugin-registry",
-  "description": "KM Plugin Registry - A community registry of plugins",
   "owner": {
     "name": "Krzysztof Maziarz"
+  },
+  "metadata": {
+    "description": "KM Plugin Registry - A community registry of plugins"
   },
   "plugins": [
     {
@@ -14,9 +15,19 @@
     },
     {
       "name": "feature-dev-documentalist",
-      "description": "Auto-document feature development phases from git diff — spec, architecture, implementation, deployment, and testing",
+      "description": "Auto-document feature development phases from git diff - spec, architecture, implementation, deployment, and testing",
       "source": "./plugins/feature-dev-documentalist",
       "category": "Development"
+    },
+    {
+      "name": "x-twitter-scraper",
+      "description": "Research X data and automate confirmation-gated actions through Xquik REST and MCP",
+      "source": {
+        "source": "github",
+        "repo": "Xquik-dev/x-twitter-scraper",
+        "ref": "v2.4.16"
+      },
+      "category": "Data"
     }
   ]
 }
