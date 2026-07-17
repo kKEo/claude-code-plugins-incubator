@@ -37,7 +37,7 @@ You will be given:
 
 Read the changed files listed in `CHANGED_FILES`. Focus on:
 - Helm charts, Kubernetes manifests, Dockerfiles, docker-compose files
-- CI/CD pipeline configs (`.github/workflows/`, `ci/`, `.circleci/`, etc.)
+- CI/CD pipeline configs (`.github/workflows/`, `Jenkinsfile`, `.circleci/`, `ci/`, etc.)
 - Environment variable files (`.env.example`, `.env.template`, `config/`)
 - Migration scripts (database migrations, data transforms)
 - Feature flag configs

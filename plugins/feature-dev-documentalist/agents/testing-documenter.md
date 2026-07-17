@@ -37,7 +37,7 @@ You will be given:
 
 Read the changed test files listed in `CHANGED_FILES`. Also check:
 - Test runner config files: `jest.config.*`, `vitest.config.*`, `pytest.ini`, `go.mod`, `Makefile`
-- CI pipeline files for test steps: `.github/workflows/`, `ci/`
+- CI pipeline files for test steps: `.github/workflows/`, `Jenkinsfile`, `ci/`
 - Docker compose or test fixture files
 - Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` for acceptance criteria to cross-reference)
 - Run: `git diff HEAD -- '*test*' '*spec*' 'e2e/'` for the full diff

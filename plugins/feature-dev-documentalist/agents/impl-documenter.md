@@ -36,7 +36,7 @@ You will be given:
 ### 1. Gather Context
 
 Read the changed files listed in `CHANGED_FILES`. Also check:
-- Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` and `architecture.md`)
+- Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` and `design.md`)
 - Git log for the branch: `git log --oneline origin/HEAD..HEAD`
 - Full git diff: `git diff HEAD` (or `git diff --staged` if HEAD fails)
 - Search for TODO/FIXME/HACK/DEBT comments in changed files

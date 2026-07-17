@@ -4,12 +4,12 @@ Automatically documents feature development phases by analyzing git diffs. Invok
 
 ## What It Does
 
-Generates phase documentation in `docs/features/YYYY-MM-DD-<branch>/`:
+Generates phase documentation in `docs/features/YYYY-MM-DD-<branch-name>/`:
 
 | Phase | File | Covers |
 |---|---|---|
 | Spec | `spec.md` | Problem statement, user stories, acceptance criteria, out of scope |
-| Architecture | `architecture.md` | Design decisions, component design, data flow, alternatives rejected |
+| Design | `design.md` | Design decisions, component design, data flow, alternatives rejected |
 | Implementation | `implementation.md` | What was built, key files, patterns used, API changes, tech debt |
 | Deployment | `deployment.md` | Env vars, infra changes, feature flags, migrations, rollback plan |
 | Integration Testing | `testing.md` | Test strategy, how to run tests, integration setup, coverage gaps |
@@ -31,7 +31,7 @@ The skill reads `git status` and `git diff` to detect which phase you're in, the
 You can also force a specific phase:
 
 ```
-/document-phase architecture
+/document-phase design
 /document-phase deployment
 ```
 
@@ -48,7 +48,7 @@ The plugin registers a Stop hook that reminds you to document after each Claude 
 |---|---|---|
 | `document-phase` | Skill | Detects phase and dispatches the right agent |
 | `spec-documenter` | Agent | Writes `spec.md` |
-| `architect-documenter` | Agent | Writes `architecture.md` |
+| `architect-documenter` | Agent | Writes `design.md` |
 | `impl-documenter` | Agent | Writes `implementation.md` |
 | `deploy-documenter` | Agent | Writes `deployment.md` |
 | `testing-documenter` | Agent | Writes `testing.md` |
@@ -61,7 +61,7 @@ docs/
 └── features/
     └── 2026-06-18-my-feature-branch/
         ├── spec.md
-        ├── architecture.md
+        ├── design.md
         ├── implementation.md
         ├── deployment.md
         └── testing.md
@@ -76,9 +76,9 @@ The skill classifies the phase from changed file paths:
 | File patterns | Detected phase |
 |---|---|
 | `*test*`, `*spec*`, `e2e/`, `*.test.*` | Integration Testing |
-| `helm/`, `k8s/`, `*docker*`, `Dockerfile*`, `*.env*`, `ci/`, `infra/` | Deployment |
+| `helm/`, `k8s/`, `*docker*`, `Dockerfile*`, `*.env*`, `.github/workflows/`, `Jenkinsfile`, `ci/`, `infra/` | Deployment |
 | `src/`, `lib/`, `app/`, `pkg/`, `internal/` (source, no tests) | Implementation |
-| Design docs, ADRs, `*.drawio`, `*.puml` | Architecture |
+| Design docs, ADRs, `*.drawio`, `*.puml` | Design |
 | No code / requirements files only | Spec |
 
 If changes span multiple categories, the skill asks you which phase to document.

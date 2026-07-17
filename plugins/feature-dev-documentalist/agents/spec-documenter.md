@@ -1,7 +1,7 @@
 ---
 name: spec-documenter
 description: |
-  Documents the spec phase of a feature development cycle. Reads changed files and existing docs to generate spec.md covering problem statement, user stories, acceptance criteria, out-of-scope items, and stakeholders. Dispatched by the document-phase skill when the spec phase is detected.
+  Documents the spec phase of a feature development cycle. Reads changed files and existing docs to generate spec.md covering problem statement, user stories, acceptance criteria, and out-of-scope items. Dispatched by the document-phase skill when the spec phase is detected.
 
   <example>
   Context: User is at the start of a feature, capturing requirements
@@ -48,7 +48,6 @@ From the files you read, infer:
 - **User Stories**: Who uses this feature and what do they want to accomplish? Infer roles from API endpoints, UI screens, or data models.
 - **Acceptance Criteria**: What concrete, testable conditions signal the feature is done? Look for validation logic, status checks, error handling, and edge cases in the code.
 - **Out of Scope**: What related capabilities are NOT being added? Look for TODO/FIXME comments, missing validation, or deliberately simple implementations.
-- **Stakeholders**: Who is involved? Infer from git author, code comments, or naming conventions.
 
 When information cannot be inferred confidently, write a clear placeholder in brackets: `[to be confirmed]`.
 
@@ -82,13 +81,6 @@ Create `FEATURE_FOLDER/spec.md` with this structure:
 - <thing explicitly NOT included>
 - <thing explicitly NOT included>
 - ...
-
-## Stakeholders
-
-| Role | Name / Team |
-|---|---|
-| Author | <inferred from git> |
-| <other role> | [to be confirmed] |
 ```
 
 Do not invent facts. Where you cannot infer something, write `[to be confirmed]` rather than fabricating a plausible guess.
