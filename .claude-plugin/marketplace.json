@@ -21,11 +21,11 @@
     },
     {
       "name": "x-twitter-scraper",
-      "description": "Research X data and automate confirmation-gated actions through Xquik REST and MCP",
+      "description": "Research X data and automate confirmation-gated actions through Xquik REST and MCP. Not affiliated with X Corp.",
       "source": {
         "source": "github",
         "repo": "Xquik-dev/x-twitter-scraper",
-        "ref": "v2.4.16"
+        "ref": "v2.5.3"
       },
       "category": "Data"
     }

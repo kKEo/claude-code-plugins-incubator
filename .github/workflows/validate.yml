@@ -6,7 +6,7 @@ on:
       - '.claude-plugin/marketplace.json'
   push:
     branches:
-      - main
+      - master
     paths:
       - '.claude-plugin/marketplace.json'
 
@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq

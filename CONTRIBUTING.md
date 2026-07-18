@@ -44,43 +44,36 @@ my-plugin/
 └── LICENSE
 ```
 
-### 2. Add to marketplace.json
+### 2. Add to `.claude-plugin/marketplace.json`
 
-Fork this repository and add an entry to `marketplace.json`:
+Fork this repository and add a native Claude Code marketplace entry:
 
 ```json
 {
-  "id": "my-plugin",
-  "name": "My Plugin Name",
+  "name": "my-plugin",
   "description": "Brief description of what it does",
-  "author": "Your Name",
-  "version": "1.0.0",
-  "repository": "https://github.com/username/my-plugin",
-  "keywords": ["tag1", "tag2", "tag3"],
-  "category": "Development",
-  "license": "MIT",
-  "install": "git clone https://github.com/username/my-plugin ~/.claude/plugins/my-plugin"
+  "source": {
+    "source": "github",
+    "repo": "username/my-plugin",
+    "ref": "v1.0.0"
+  },
+  "category": "Development"
 }
 ```
 
 **Field descriptions:**
 
-- `id` — Unique identifier (kebab-case, used as install directory name)
-- `name` — Display name
+- `name` — Unique plugin name from `.claude-plugin/plugin.json`
 - `description` — One-line summary
-- `author` — Your name or GitHub username
-- `version` — Semantic version matching your plugin.json
-- `repository` — HTTPS git clone URL
-- `keywords` — Search tags (array of strings)
+- `source` — Local path or version-pinned external GitHub source
 - `category` — One of: Frontend, Backend, Productivity, Development, Data, Integration, Utilities, AI/ML, DevOps, Security
-- `license` — SPDX license identifier
-- `install` — The exact git clone command users should run
 
 ### 3. Open a Pull Request
 
 1. Commit your changes:
    ```bash
-   git add marketplace.json
+   claude plugin validate .
+   git add .claude-plugin/marketplace.json
    git commit -m "Add my-plugin to marketplace"
    ```
 
@@ -94,9 +87,9 @@ Fork this repository and add an entry to `marketplace.json`:
 ### 4. Review Process
 
 Maintainers will check:
-- Valid JSON in marketplace.json
+- A valid native Claude marketplace manifest
 - Plugin repository is accessible
-- Required files exist (.claude-plugin/plugin.json, README, LICENSE)
+- Required files exist (`.claude-plugin/plugin.json`, README, LICENSE)
 - No malicious code
 - Description is clear
 
@@ -113,7 +106,7 @@ Once approved, your PR will be merged and your plugin will appear in the marketp
 
 ### Naming Conventions
 
-- **Plugin ID** — kebab-case, descriptive (e.g., `frontend-scaffold`, `git-helper`)
+- **Plugin name** — kebab-case, descriptive (e.g., `frontend-scaffold`, `git-helper`)
 - **Commands** — Prefix with plugin name if generic (e.g., `/scaffold-frontend` not just `/scaffold`)
 - **Skills** — Specific trigger descriptions to avoid conflicts
 
@@ -125,8 +118,7 @@ Once approved, your PR will be merged and your plugin will appear in the marketp
 
 ## Need Help?
 
-- **Questions** — Open a [Discussion](https://github.com/YOUR_USERNAME/claude-plugins/discussions)
-- **Issues** — Open an [Issue](https://github.com/YOUR_USERNAME/claude-plugins/issues)
+- **Questions and issues** — Open an [Issue](https://github.com/kKEo/claude-code-plugins-incubator/issues)
 - **Example** — See [plugins/frontend-scaffold](plugins/frontend-scaffold/) for a reference implementation
 
 Thank you for contributing to the Claude Code ecosystem!

@@ -4,29 +4,32 @@ A community-curated registry of Claude Code plugins. Browse, discover, and insta
 
 ## What is this?
 
-This repository maintains `marketplace.json` — a structured registry of Claude Code plugins. Each plugin is hosted in its own repository and can be installed by cloning to `~/.claude/plugins/`.
+This repository maintains `.claude-plugin/marketplace.json`, the native Claude
+Code marketplace manifest. Plugins may live in this repository or in a
+version-pinned external GitHub repository.
 
 ## Browse Plugins
 
-See `marketplace.json` for the complete list, or browse via:
+See `.claude-plugin/marketplace.json` for the complete list, or browse via:
 
 ```bash
 # View all plugins
-cat marketplace.json | jq '.plugins[]'
+cat .claude-plugin/marketplace.json | jq '.plugins[]'
 
 # Search by keyword
-cat marketplace.json | jq '.plugins[] | select(.keywords[] | contains("frontend"))'
+cat .claude-plugin/marketplace.json | jq '.plugins[] | select(.name | contains("frontend"))'
 
 # List by category
-cat marketplace.json | jq '.plugins[] | select(.category == "Frontend")'
+cat .claude-plugin/marketplace.json | jq '.plugins[] | select(.category == "Frontend")'
 ```
 
 ## Install a Plugin
 
-Each plugin entry includes an `install` command. For example:
+Add this marketplace, then install a plugin by name:
 
 ```bash
-git clone https://github.com/kmaziarz/claude-plugin-frontend-scaffold ~/.claude/plugins/frontend-scaffold
+claude plugin marketplace add kKEo/claude-code-plugins-incubator
+claude plugin install frontend-scaffold@km-plugin-registry
 ```
 
 Then restart Claude Code.
@@ -39,24 +42,23 @@ Then restart Claude Code.
    - `LICENSE` file
    - Your plugin components (commands, skills, agents, hooks)
 
-2. **Fork this repository** and add an entry to `marketplace.json`:
+2. **Fork this repository** and add an entry to
+   `.claude-plugin/marketplace.json`:
 
 ```json
 {
-  "id": "my-plugin",
-  "name": "My Plugin",
+  "name": "my-plugin",
   "description": "What it does",
-  "author": "Your Name",
-  "version": "1.0.0",
-  "repository": "https://github.com/username/my-plugin",
-  "keywords": ["tag1", "tag2"],
-  "category": "Development",
-  "license": "MIT",
-  "install": "git clone https://github.com/username/my-plugin ~/.claude/plugins/my-plugin"
+  "source": {
+    "source": "github",
+    "repo": "username/my-plugin",
+    "ref": "v1.0.0"
+  },
+  "category": "Development"
 }
 ```
 
-3. **Open a pull request**
+3. Run `claude plugin validate .`, then open a pull request.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 

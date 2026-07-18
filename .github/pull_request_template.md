@@ -1,6 +1,5 @@
 ## Plugin Submission
 
-**Plugin ID:** 
 **Plugin Name:** 
 **Repository:** 
 
@@ -12,8 +11,9 @@
 - [ ] Plugin has README.md with usage examples
 - [ ] Plugin has LICENSE file
 - [ ] Plugin is tested and working
-- [ ] Added valid entry to `marketplace.json`
-- [ ] Entry includes all required fields (id, name, description, author, version, repository, category, license, install)
+- [ ] Added a valid entry to `.claude-plugin/marketplace.json`
+- [ ] Entry includes `name`, `description`, `source`, and `category`
+- [ ] `claude plugin validate .` passes
 
 ### Additional Notes
 <!-- Anything else reviewers should know? -->
