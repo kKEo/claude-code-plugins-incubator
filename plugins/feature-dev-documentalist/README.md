@@ -14,6 +14,15 @@ Generates phase documentation in `docs/features/YYYY-MM-DD-<branch-name>/`:
 | Deployment | `deployment.md` | Env vars, infra changes, feature flags, migrations, rollback plan |
 | Integration Testing | `testing.md` | Test strategy, how to run tests, integration setup, coverage gaps |
 
+
+What already happens here: The agents share state through the feature folder on disk. Each agent's prompt tells it to read "Any existing phase docs in FEATURE_FOLDER" before writing. So:
+    - impl-documenter reads spec.md and design.md
+    - deploy-documenter reads spec.md and implementation.md
+    - testing-documenter reads spec.md for acceptance criteria to cross-reference
+
+This is the practical sharing mechanism: earlier phase docs become inputs to later ones. It's asynchronous (whatever's been written so far) rather than live coordination.
+
+
 ## Usage
 
 Invoke the skill at any point during feature development:
@@ -91,6 +100,3 @@ Add to your Claude Code plugin registry and reload:
 /reload-plugins
 ```
 
-## License
-
-MIT
