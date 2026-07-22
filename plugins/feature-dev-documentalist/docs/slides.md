@@ -191,7 +191,7 @@ layout: default
 flowchart TD
     A[User: 'document this phase'] --> B[document-phase skill]
     B --> C{Resolve feature folder<br/>from branch name}
-    C --> D[Run git status + git diff HEAD]
+    C --> D[Run git status + diff vs merge-base]
     D --> E{Classify phase<br/>by file paths}
     E -->|single match| F[Pick phase]
     E -->|spans categories| G[Ask user to choose]
@@ -230,9 +230,9 @@ docs/, *.drawio, *.puml, *adr*      → Design
 
 </div>
 
-<div v-click class="p-3 bg-red-400/10 border-l-4 border-red-400 rounded text-sm">
+<div v-click class="p-3 bg-amber-400/10 border-l-4 border-amber-400 rounded text-sm">
 
-**Fragile:** one test file dropped into a big feature branch flips the whole thing to "Testing." More on this soon.
+**Still fragile:** one test file in a big branch flips the whole thing to "Testing." Multi-label detection is 🔜 planned (mid-term).
 
 </div>
 
@@ -273,12 +273,13 @@ layout: default
 A tiny bash script runs after **every** Claude turn. Pure logic, no LLM.
 
 ```bash
-# check-undocumented (simplified)
+# check-undocumented (simplified, after the fix)
 branch=$(git branch --show-current)
 [[ "$branch" =~ ^(main|master|develop)$ ]] && exit 0   # skip base branches
 [[ -z "$(git status --short)" ]] && exit 0              # skip if clean
-folder=$(find docs/features -name "*${branch}*")
-[[ -z "$folder" ]] && echo '{"...": "Tip: run /document-phase"}'
+phase=$(classify_from_changed_files)                    # e.g. "implementation"
+file="${phase}.md"                                      # the expected doc
+[[ -f "docs/features/*${branch}*/$file" ]] || nudge "$phase"
 ```
 
 <div class="grid grid-cols-2 gap-6 pt-2">
@@ -289,9 +290,9 @@ folder=$(find docs/features -name "*${branch}*")
 
 </div>
 
-<div v-click class="p-3 bg-red-400/10 border-l-4 border-red-400 rounded text-sm">
+<div v-click class="p-3 bg-green-400/10 border-l-4 border-green-400 rounded text-sm">
 
-**Blind spot:** it only checks if the *folder exists* — once `spec.md` exists it **never nudges again**, even with 4 phases undocumented.
+**✅ Fixed blind spot:** it now classifies the current phase and nudges for the **specific missing doc** — so it keeps reminding even after the folder exists.
 
 </div>
 
@@ -400,15 +401,54 @@ layout: section
 
 # Part 4 — Weak points & SOTA gaps
 
-The honest part 🔍
+The honest part 🔍 — and what we've since fixed
 
 ---
 layout: default
 ---
 
-# 🔴 Critique #1 — The changeset scope is wrong
+# Status legend
 
-The skill detects phase from **`git diff HEAD`** (uncommitted changes only).
+Since this review, a feature branch shipped the four **near-term** fixes. Watch for these badges:
+
+<div class="grid grid-cols-3 gap-4 pt-6">
+
+<div class="p-4 border-l-4 border-green-400 bg-green-400/10 rounded">
+
+### ✅ FIXED
+Landed on the improvement branch. The critique no longer applies.
+
+</div>
+
+<div class="p-4 border-l-4 border-amber-400 bg-amber-400/10 rounded">
+
+### 🔜 PLANNED
+Agreed and scheduled (mid / long term). Not done yet.
+
+</div>
+
+<div class="p-4 border-l-4 border-red-400 bg-red-400/10 rounded">
+
+### 🔴 OPEN
+Still an unaddressed weakness.
+
+</div>
+
+</div>
+
+<div v-click class="mt-8 p-3 bg-teal-400/10 border-l-4 border-teal-400 rounded text-sm">
+
+See the companion deck — <code>changeset.md</code> — for a beginner-friendly walk-through of exactly what changed and why.
+
+</div>
+
+---
+layout: default
+---
+
+# ✅ Critique #1 — Changeset scope <span class="text-green-400">— FIXED</span>
+
+The skill *used to* detect phase from **`git diff HEAD`** (uncommitted changes only).
 
 ```bash
 git status --short
@@ -424,10 +464,10 @@ git diff --staged          # ← fallback ONLY if HEAD has no parent
 
 </v-clicks>
 
-<div v-click class="mt-4 p-3 bg-red-400/10 border-l-4 border-red-400 rounded text-sm">
+<div v-click class="mt-4 p-3 bg-green-400/10 border-l-4 border-green-400 rounded text-sm">
 
-**SOTA fix:** diff against the branch base —
-<code>git diff $(git merge-base main HEAD)..HEAD</code> — to capture the *whole feature*, committed or not.
+**✅ Fixed:** the skill and agents now resolve the branch base and diff against
+<code>git merge-base</code> — <code>git diff --name-only "$base"</code> — capturing the *whole feature*, committed or not. Verified: a committed file that `git diff HEAD` missed now shows up.
 
 </div>
 
@@ -435,9 +475,9 @@ git diff --staged          # ← fallback ONLY if HEAD has no parent
 layout: default
 ---
 
-# 🔴 Critique #2 — Diffs can't reveal the highest-value content
+# ✅ Critique #2 — Diffs can't reveal the "why" <span class="text-green-400">— FIXED (mitigated)</span>
 
-The plugin asks agents to infer **problem statements, user stories, and rejected alternatives** from code.
+The plugin asked agents to infer **problem statements, user stories, and rejected alternatives** from code alone.
 
 <div class="grid grid-cols-2 gap-6 pt-4">
 
@@ -457,9 +497,9 @@ An LLM asked to "infer rejected alternatives" from code will **confabulate plaus
 
 </div>
 
-<div v-click class="mt-6 text-sm">
+<div v-click class="mt-6 p-3 bg-green-400/10 border-l-4 border-green-400 rounded text-sm">
 
-**SOTA fix:** ingest real intent sources — **PR descriptions, linked issues, commit bodies, ADRs** — and *interactively ask the developer* for the "why" instead of inferring it.
+**✅ Fixed:** spec & design agents now read **full commit-message bodies** and in-repo **ADR/design files**, with an explicit rule to *prefer stated intent over inference*. <span class="opacity-70">(Local-git sources for now; PR/issue ingestion remains 🔜 planned.)</span>
 
 </div>
 
@@ -467,9 +507,9 @@ An LLM asked to "infer rejected alternatives" from code will **confabulate plaus
 layout: default
 ---
 
-# 🔴 Critique #3 — Model choice for reasoning-heavy work
+# ✅ Critique #3 — Model choice for reasoning work <span class="text-green-400">— FIXED</span>
 
-All five agents are pinned to **`model: haiku`**.
+All five agents *were* pinned to **`model: haiku`**.
 
 <v-clicks>
 
@@ -479,9 +519,9 @@ All five agents are pinned to **`model: haiku`**.
 
 </v-clicks>
 
-<div v-click class="mt-6 p-3 bg-red-400/10 border-l-4 border-red-400 rounded text-sm">
+<div v-click class="mt-6 p-3 bg-green-400/10 border-l-4 border-green-400 rounded text-sm">
 
-**SOTA fix:** *tier the models.* Keep haiku for `impl`/`testing` extraction; promote `spec`/`design` to a stronger model. Better yet, make it **configurable per agent** so users choose the cost/quality trade-off.
+**✅ Fixed:** `spec` & `design` now run on **Sonnet**; `impl`/`deploy`/`testing` stay on **haiku** for cheap extraction. Each agent's model is set in its frontmatter and documented in the README, so it's **configurable per agent**.
 
 </div>
 
@@ -489,7 +529,7 @@ All five agents are pinned to **`model: haiku`**.
 layout: default
 ---
 
-# 🔴 Critique #4 — Write-once docs drift immediately
+# 🔜 Critique #4 — Write-once docs drift <span class="text-amber-400">— PLANNED (not yet fixed)</span>
 
 <v-clicks>
 
@@ -507,9 +547,9 @@ layout: default
 
 </div>
 
-<div class="p-3 bg-teal-400/10 border-l-4 border-teal-400 rounded">
+<div class="p-3 bg-amber-400/10 border-l-4 border-amber-400 rounded">
 
-**SOTA direction:** treat docs as **living artifacts** — merge updates, preserve human edits, flag sections invalidated by new commits.
+**🔜 Planned (mid-term):** treat docs as **living artifacts** — merge updates, preserve human edits, flag sections invalidated by new commits. Not shipped in this feature.
 
 </div>
 
@@ -532,10 +572,10 @@ First-match-wins on globs. Real features are multi-phase → constant "ask the u
 
 </div>
 
-<div class="p-3 border rounded">
+<div class="p-3 border rounded border-green-400/50 bg-green-400/5">
 
-**Hook coverage is folder-level**
-Nudges until a folder exists, then goes silent — no *per-phase* coverage tracking.
+**✅ Hook coverage is folder-level** *(fixed)*
+Now classifies the phase and tracks *per-phase* docs, nudging for the specific missing one.
 
 </div>
 
@@ -577,16 +617,16 @@ layout: default
 
 # Scorecard
 
-| Dimension | Verdict |
-|---|---|
-| Architecture clarity | 🟢 Strong — clean, single-responsibility |
-| Ease of adoption | 🟢 Strong — natural-language triggers, low ceremony |
-| Changeset correctness | 🔴 Weak — `git diff HEAD` misses committed work |
-| Content fidelity | 🟡 Mixed — great for *what*, speculative for *why* |
-| Model fit | 🟡 Mixed — haiku under-powered for spec/design |
-| Doc longevity | 🔴 Weak — snapshots that drift, overwrite loses edits |
-| Guardrails / honesty | 🟢 Strong — `[to be confirmed]` discipline |
-| Cross-platform | 🟢 Strong — polyglot hook wrapper |
+| Dimension | Before | After the fix |
+|---|---|---|
+| Architecture clarity | 🟢 Strong | 🟢 Strong — clean, single-responsibility |
+| Ease of adoption | 🟢 Strong | 🟢 Strong — natural-language triggers |
+| Changeset correctness | 🔴 Weak | 🟢 **Fixed** — diffs vs merge-base |
+| Content fidelity | 🟡 Mixed | 🟢 **Improved** — reads commit bodies + ADRs |
+| Model fit | 🟡 Mixed | 🟢 **Fixed** — Sonnet for spec/design |
+| Doc longevity | 🔴 Weak | 🔜 **Planned** — living docs (mid-term) |
+| Guardrails / honesty | 🟢 Strong | 🟢 Strong — `[to be confirmed]` discipline |
+| Cross-platform | 🟢 Strong | 🟢 Strong — polyglot hook wrapper |
 
 ---
 layout: section
@@ -600,23 +640,29 @@ Concrete, prioritized improvements
 layout: default
 ---
 
-# Roadmap — near term (highest ROI)
+# Roadmap — near term (highest ROI) <span class="text-green-400 text-2xl">— DONE ✅</span>
 
 <v-clicks>
 
-1. **Fix changeset scope** 🔴
-   Switch detection & agents to `git merge-base main HEAD` range. Capture the whole feature.
+1. **Fix changeset scope** ✅
+   Detection & agents now diff against `git merge-base`. Captures the whole feature.
 
-2. **Ingest real intent sources** 🔴
-   Read PR body, linked issues, commit messages, ADRs. Interactively ask for the "why."
+2. **Ingest real intent sources** ✅
+   Spec/design agents read commit bodies + in-repo ADRs. *(PR/issue ingestion still to come.)*
 
-3. **Tier the models** 🟡
-   Stronger model for `spec`/`design`; keep haiku for extraction. Make it configurable.
+3. **Tier the models** ✅
+   Sonnet for `spec`/`design`; haiku for extraction. Configurable per agent, documented in README.
 
-4. **Per-phase hook coverage** 🟡
-   Nudge on *missing phases*, not just a missing folder.
+4. **Per-phase hook coverage** ✅
+   Hook classifies the phase and nudges on the *specific missing doc*.
 
 </v-clicks>
+
+<div v-click class="mt-6 p-3 bg-green-400/10 border-l-4 border-green-400 rounded text-sm">
+
+All four shipped on the improvement branch. Details in the companion <code>changeset.md</code> deck. 🎉
+
+</div>
 
 ---
 layout: default
@@ -680,11 +726,11 @@ layout: statement
 
 - A **well-architected, genuinely useful** plugin with clean separation and honest guardrails. ✅
 
-- Its biggest limits are **structural**: a diff can't tell you *why*, and `git diff HEAD` doesn't even see committed work. 🔴
+- The **four highest-ROI weaknesses are now fixed**: correct changeset scope, real-intent ingestion, tiered models, and per-phase nudging. 🎉
 
-- The fixes are clear and mostly **incremental** — scope the diff correctly, feed it real intent, tier the models, keep docs alive.
+- What remains is **planned, not forgotten** — living docs, drift detection, multi-label detection, and cross-feature aggregation. 🔜
 
-- **Adopt it today** for consistent scaffolding — but **edit the output**, and watch this space as it matures.
+- **Adopt it today** for consistent scaffolding — still **edit the output**, but it now starts from a much stronger draft.
 
 </v-clicks>
 

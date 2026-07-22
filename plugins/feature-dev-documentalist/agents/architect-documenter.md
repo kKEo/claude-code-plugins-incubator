@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch architect-documenter to document the architectural decisions."
   </example>
-model: haiku
+model: sonnet
 color: magenta
 tools:
   - Read
@@ -37,9 +37,22 @@ You will be given:
 
 Read the changed files listed in `CHANGED_FILES`. Also check:
 - Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` for requirements context)
+- **Full commit-message bodies** for the branch — they frequently record the rationale
+  and alternatives that were weighed:
+  ```bash
+  base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+  for c in "$base_branch" main master develop; do
+    [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+  done
+  git log "$base_branch"..HEAD --format='%h %s%n%b'
+  ```
 - Directory structure of the project: `find . -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | head -40`
-- ADR files, design docs, README sections describing architecture
+- ADR files, design docs (`*adr*`, `*design*`, `*.puml`, `*.drawio`), README sections describing architecture
 - Interface definitions, abstract classes, and public API boundaries in changed files
+
+**Prefer stated intent over inference.** When commit bodies, ADRs, or design docs record
+a decision or a rejected alternative, use them rather than inventing plausible ones. Fall
+back to `[to be confirmed]` only when neither the diff nor these sources answer it.
 
 ### 2. Infer Architecture Content
 

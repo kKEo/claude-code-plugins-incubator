@@ -26,17 +26,31 @@ Compute the feature folder path:
 
 If the user passed a phase name as an argument (e.g. "architecture"), use it directly and skip detection.
 
-Otherwise, run:
+Otherwise, determine the **full feature changeset** — everything on this branch since it
+diverged from its base, committed *and* uncommitted. Do NOT rely on `git diff HEAD`
+alone; on a branch where you commit as you go it would miss all committed work.
+
+Resolve the base branch and merge-base, then diff against it:
 
 ```bash
-git status --short
-git diff HEAD
+# Resolve the base branch (first that resolves): origin's default, then common names
+base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+for c in "$base_branch" main master develop; do
+  [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+done
+
+# Merge-base = point where this branch diverged from the base
+base=$(git merge-base "$base_branch" HEAD 2>/dev/null)
+
+git status --short                    # includes untracked files
+git diff --name-only "$base"          # committed + uncommitted changes since divergence
 ```
 
-If HEAD fails (first commit with no parent), fall back to:
+If the merge-base cannot be resolved (e.g. first commit with no parent, or the branch
+*is* the base), fall back to:
 
 ```bash
-git diff --staged
+git diff --name-only HEAD   # or: git diff --name-only --staged   (if HEAD has no parent)
 ```
 
 Classify the phase by examining changed file paths using these rules (apply in order — first match wins):

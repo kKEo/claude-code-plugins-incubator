@@ -37,8 +37,17 @@ You will be given:
 
 Read the changed files listed in `CHANGED_FILES`. Also check:
 - Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` and `design.md`)
-- Git log for the branch: `git log --oneline origin/HEAD..HEAD`
-- Full git diff: `git diff HEAD` (or `git diff --staged` if HEAD fails)
+- Resolve the branch base first, then read the full branch changeset (committed +
+  uncommitted), not just uncommitted work:
+  ```bash
+  base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+  for c in "$base_branch" main master develop; do
+    [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+  done
+  base=$(git merge-base "$base_branch" HEAD 2>/dev/null)
+  git log "$base_branch"..HEAD --format='%h %s%n%b'   # commit bodies for rationale
+  git diff "$base"                                    # full diff (fall back to HEAD/--staged if $base is empty)
+  ```
 - Search for TODO/FIXME/HACK/DEBT comments in changed files
 
 ### 2. Infer Implementation Content

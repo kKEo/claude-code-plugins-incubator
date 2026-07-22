@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Stop hook: remind the user to document their work before committing.
-# Runs after each Claude turn. Outputs a context injection nudge when
-# there are uncommitted changes and no feature docs folder for the branch yet.
+# Runs after each Claude turn. Detects which phase the current changeset belongs
+# to and nudges when that phase's specific doc is missing — so it keeps reminding
+# even after a folder exists but some phases are still undocumented.
 
 set -euo pipefail
 
@@ -17,37 +18,74 @@ if [[ "$branch" =~ ^(main|master|develop|development|trunk|HEAD)$ ]]; then
   exit 0
 fi
 
-# Check for uncommitted changes
+# Check for uncommitted changes; exit silently on a clean tree
 changes=$(git status --short 2>/dev/null || true)
 [[ -z "$changes" ]] && exit 0
 
-# Check if a feature docs folder already exists for this branch
-# (any folder whose name contains the branch name under docs/features/)
+# Resolve the base branch and merge-base so we see the full branch changeset
+# (committed + uncommitted), mirroring the document-phase skill.
+base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##' || true)
+for c in "$base_branch" main master develop; do
+  if [[ -n "$c" ]] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1; then
+    base_branch="$c"
+    break
+  fi
+done
+base=$(git merge-base "$base_branch" HEAD 2>/dev/null || true)
+
+# Collect changed file paths (committed since divergence + working tree). Strip the
+# 2-char status prefix from `git status --short` lines. Fall back to HEAD if no base.
+if [[ -n "$base" ]]; then
+  changed=$( { git diff --name-only "$base" 2>/dev/null; git status --short 2>/dev/null | sed 's/^...//'; } | sort -u )
+else
+  changed=$( { git diff --name-only HEAD 2>/dev/null; git status --short 2>/dev/null | sed 's/^...//'; } | sort -u )
+fi
+[[ -z "$changed" ]] && exit 0
+
+# Classify the phase from changed paths (first matching rule wins — same order as
+# the document-phase skill's table).
+match() { printf '%s\n' "$changed" | grep -Eq "$1"; }
+
+if match '(test|spec|(^|/)e2e/|_test\.|\.test\.|\.spec\.)'; then
+  phase="integration testing"; file="testing.md"
+elif match '((^|/)helm/|(^|/)k8s/|docker|Dockerfile|\.env|(^|/)config/|\.github/workflows/|Jenkinsfile|(^|/)ci/|(^|/)infra/)'; then
+  phase="deployment"; file="deployment.md"
+elif match '(^|/)(src|lib|app|pkg|internal)/'; then
+  phase="implementation"; file="implementation.md"
+elif match '(\.drawio|\.puml|adr|design|(^|/)docs/)'; then
+  phase="design"; file="design.md"
+else
+  phase="spec"; file="spec.md"
+fi
+
+# Locate an existing feature docs folder for this branch (if any).
 feature_folder=$(find docs/features -maxdepth 1 -type d -name "*${branch}*" 2>/dev/null | head -1 || true)
 
-# Only nudge when there are changes AND no feature docs folder yet
-if [[ -z "$feature_folder" ]]; then
-  nudge="Tip: there are uncommitted changes on branch '${branch}' with no feature docs yet. Run /document-phase to capture this phase before committing."
+# Silent when the detected phase's doc already exists; otherwise nudge for that phase.
+if [[ -n "$feature_folder" && -f "$feature_folder/$file" ]]; then
+  exit 0
+fi
 
-  escape_for_json() {
-    local s="$1"
-    s="${s//\\/\\\\}"
-    s="${s//\"/\\\"}"
-    s="${s//$'\n'/\\n}"
-    s="${s//$'\r'/\\r}"
-    s="${s//$'\t'/\\t}"
-    printf '%s' "$s"
-  }
+nudge="Tip: there are ${phase} changes on branch '${branch}' but no ${file} yet. Run /document-phase to capture the ${phase} phase before committing."
 
-  nudge_escaped=$(escape_for_json "$nudge")
+escape_for_json() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\r'/\\r}"
+  s="${s//$'\t'/\\t}"
+  printf '%s' "$s"
+}
 
-  if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-    printf '{\n  "additional_context": "%s"\n}\n' "$nudge_escaped" | cat
-  elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
-    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "Stop",\n    "additionalContext": "%s"\n  }\n}\n' "$nudge_escaped" | cat
-  else
-    printf '{\n  "additionalContext": "%s"\n}\n' "$nudge_escaped" | cat
-  fi
+nudge_escaped=$(escape_for_json "$nudge")
+
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{\n  "additional_context": "%s"\n}\n' "$nudge_escaped" | cat
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "Stop",\n    "additionalContext": "%s"\n  }\n}\n' "$nudge_escaped" | cat
+else
+  printf '{\n  "additionalContext": "%s"\n}\n' "$nudge_escaped" | cat
 fi
 
 exit 0

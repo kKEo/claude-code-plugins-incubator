@@ -43,9 +43,16 @@ Read the changed files listed in `CHANGED_FILES`. Focus on:
 - Feature flag configs
 - Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` and `implementation.md`)
 
-Also run:
+Resolve the branch base first so you see the full branch changeset (committed +
+uncommitted), then diff the infra/config files against it:
 ```bash
-git diff HEAD -- '*.env*' '*.yaml' '*.yml' 'Dockerfile*' 'docker-compose*'
+base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+for c in "$base_branch" main master develop; do
+  [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+done
+base=$(git merge-base "$base_branch" HEAD 2>/dev/null)
+git diff "$base" -- '*.env*' '*.yaml' '*.yml' 'Dockerfile*' 'docker-compose*'
+# If $base is empty (no merge-base), fall back to: git diff HEAD -- ...
 ```
 
 ### 2. Infer Deployment Content

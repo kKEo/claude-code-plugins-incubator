@@ -40,7 +40,16 @@ Read the changed test files listed in `CHANGED_FILES`. Also check:
 - CI pipeline files for test steps: `.github/workflows/`, `Jenkinsfile`, `ci/`
 - Docker compose or test fixture files
 - Any existing phase docs in `FEATURE_FOLDER` (especially `spec.md` for acceptance criteria to cross-reference)
-- Run: `git diff HEAD -- '*test*' '*spec*' 'e2e/'` for the full diff
+- Resolve the branch base first so you see the full branch changeset (committed +
+  uncommitted), then diff the test files against it:
+  ```bash
+  base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+  for c in "$base_branch" main master develop; do
+    [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+  done
+  base=$(git merge-base "$base_branch" HEAD 2>/dev/null)
+  git diff "$base" -- '*test*' '*spec*' 'e2e/'   # fall back to HEAD if $base is empty
+  ```
 
 ### 2. Infer Testing Content
 

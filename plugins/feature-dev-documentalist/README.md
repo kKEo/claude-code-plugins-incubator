@@ -63,6 +63,24 @@ The plugin registers a Stop hook that reminds you to document after each Claude 
 | `testing-documenter` | Agent | Writes `testing.md` |
 | `check-undocumented` | Hook (Stop) | Nudges you to document before committing |
 
+## Model Configuration
+
+Each agent picks its own model via the `model:` field in its frontmatter
+(`agents/<name>.md`). The reasoning-heavy phases run on a stronger model; the
+extraction-heavy phases run on the fast, cheap one:
+
+| Agent | Default model | Why |
+|---|---|---|
+| `spec-documenter` | `sonnet` | Inferring problem/intent needs judgment |
+| `architect-documenter` | `sonnet` | Design rationale + rejected alternatives need judgment |
+| `impl-documenter` | `haiku` | Mostly mechanical extraction from the diff |
+| `deploy-documenter` | `haiku` | Mostly mechanical extraction from config |
+| `testing-documenter` | `haiku` | Mostly mechanical extraction from tests |
+
+To change a model, edit the `model:` value in that agent's frontmatter (e.g. bump
+`impl-documenter` to `sonnet` for richer summaries, or drop `spec-documenter` to `haiku`
+to cut cost).
+
 ## Output Structure
 
 ```

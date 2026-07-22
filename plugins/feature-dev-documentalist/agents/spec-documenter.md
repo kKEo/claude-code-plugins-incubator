@@ -14,7 +14,7 @@ description: |
   user: "document this phase"
   assistant: "I'll dispatch spec-documenter to capture the feature requirements."
   </example>
-model: haiku
+model: sonnet
 color: blue
 tools:
   - Read
@@ -37,8 +37,22 @@ You will be given:
 
 Read the changed files listed in `CHANGED_FILES`. Also check:
 - Any existing phase docs in `FEATURE_FOLDER` (for cross-phase context)
-- Git log for the branch: `git log --oneline origin/HEAD..HEAD` (for commit messages as clues)
+- **Full commit-message bodies** for the branch — these often state the problem,
+  rationale, and ticket references directly:
+  ```bash
+  base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+  for c in "$base_branch" main master develop; do
+    [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
+  done
+  git log "$base_branch"..HEAD --format='%h %s%n%b'
+  ```
+- Any in-repo requirement / ADR / design files (`*adr*`, `*design*`, `docs/`, `*.puml`,
+  `*.drawio`) that state intent
 - README or top-level docs if they describe the system
+
+**Prefer stated intent over inference.** When commit bodies, ADRs, or design docs answer
+"why," quote/paraphrase them rather than guessing from code. Fall back to `[to be
+confirmed]` only when neither the diff nor these sources answer it.
 
 ### 2. Infer the Spec Content
 
