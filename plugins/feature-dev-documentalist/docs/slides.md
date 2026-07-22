@@ -409,7 +409,7 @@ layout: default
 
 # Status legend
 
-Since this review, a feature branch shipped the four **near-term** fixes. Watch for these badges:
+Since this review, a feature branch shipped the four **near-term** fixes — plus living-doc **update mode**. Watch for these badges:
 
 <div class="grid grid-cols-3 gap-4 pt-6">
 
@@ -529,27 +529,26 @@ All five agents *were* pinned to **`model: haiku`**.
 layout: default
 ---
 
-# 🔜 Critique #4 — Write-once docs drift <span class="text-amber-400">— PLANNED (not yet fixed)</span>
+# ✅ Critique #4 — Write-once docs drift <span class="text-green-400">— FIXED</span>
 
 <v-clicks>
 
-- Docs are generated as a **snapshot**, then never reconciled with later code changes.
-- Re-running **overwrites the whole file** (only an overwrite prompt) — any human edits you made are **lost**.
-- No incremental / diff-aware update mode. No drift detection.
+- Docs *used to be* generated as a **snapshot** — re-running **overwrote the whole file**, so any human edits were **lost**.
+- There was no update mode: regeneration meant starting from a blank template every time.
 
 </v-clicks>
 
 <div v-click class="mt-6 grid grid-cols-2 gap-4 text-sm">
 
-<div class="p-3 bg-red-400/10 border-l-4 border-red-400 rounded">
+<div class="p-3 bg-green-400/10 border-l-4 border-green-400 rounded">
 
-**Consequence:** within a sprint the docs are stale, and the tool can't tell you they're stale.
+**✅ Fixed:** agents now run in **update mode** — they read the existing doc and make targeted `Edit`s, **preserving human-authored content** and refreshing only what changed.
 
 </div>
 
 <div class="p-3 bg-amber-400/10 border-l-4 border-amber-400 rounded">
 
-**🔜 Planned (mid-term):** treat docs as **living artifacts** — merge updates, preserve human edits, flag sections invalidated by new commits. Not shipped in this feature.
+**🔜 Still planned:** automatic **drift detection** — a hook that flags docs whose source files changed since generation. Merging is done; proactive staleness alerts are next.
 
 </div>
 
@@ -624,7 +623,7 @@ layout: default
 | Changeset correctness | 🔴 Weak | 🟢 **Fixed** — diffs vs merge-base |
 | Content fidelity | 🟡 Mixed | 🟢 **Improved** — reads commit bodies + ADRs |
 | Model fit | 🟡 Mixed | 🟢 **Fixed** — Sonnet for spec/design |
-| Doc longevity | 🔴 Weak | 🔜 **Planned** — living docs (mid-term) |
+| Doc longevity | 🔴 Weak | 🟢 **Fixed** — update mode preserves edits |
 | Guardrails / honesty | 🟢 Strong | 🟢 Strong — `[to be confirmed]` discipline |
 | Cross-platform | 🟢 Strong | 🟢 Strong — polyglot hook wrapper |
 
@@ -672,10 +671,10 @@ layout: default
 
 <v-clicks>
 
-5. **Living-doc update mode**
+5. **Living-doc update mode** ✅ *(done)*
    Incremental, edit-preserving regeneration. Merge, don't clobber.
 
-6. **Drift detection**
+6. **Drift detection** 🔜
    Hook flags docs whose source files changed since generation.
 
 7. **Self-verification agent**
@@ -728,7 +727,9 @@ layout: statement
 
 - The **four highest-ROI weaknesses are now fixed**: correct changeset scope, real-intent ingestion, tiered models, and per-phase nudging. 🎉
 
-- What remains is **planned, not forgotten** — living docs, drift detection, multi-label detection, and cross-feature aggregation. 🔜
+- Living-doc **update mode** now lands on top of those four — regeneration preserves your edits. ✅
+
+- What remains is **planned, not forgotten** — drift detection, multi-label detection, and cross-feature aggregation. 🔜
 
 - **Adopt it today** for consistent scaffolding — still **edit the output**, but it now starts from a much stronger draft.
 

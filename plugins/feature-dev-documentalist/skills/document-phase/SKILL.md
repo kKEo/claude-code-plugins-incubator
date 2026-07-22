@@ -70,10 +70,15 @@ Classify the phase by examining changed file paths using these rules (apply in o
 ### Step 3: Check for Existing Phase Doc
 
 Map the phase to its output file using the table in Step 4. Check if
-`<feature-folder>/<file>` already exists. If it does, ask the user:
-> "A `<file>` already exists in `<feature-folder>/`. Overwrite it?"
+`<feature-folder>/<file>` already exists.
 
-Proceed only if confirmed.
+- If it does **not** exist, the agent creates it from the template.
+- If it **does** exist, the agent runs in **update mode**: it reads the current file and
+  merges in new findings while **preserving human edits**, rather than overwriting it. No
+  overwrite confirmation is needed — existing content is retained and refreshed in place.
+
+If the user explicitly wants a clean regeneration from scratch, tell them to delete the
+file first, then re-run.
 
 ### Step 4: Dispatch the Phase Agent
 

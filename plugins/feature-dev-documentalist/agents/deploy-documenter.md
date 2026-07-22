@@ -20,6 +20,7 @@ tools:
   - Read
   - Bash
   - Write
+  - Edit
   - Grep
   - Glob
 ---
@@ -118,3 +119,23 @@ Create `FEATURE_FOLDER/deployment.md` with this structure:
 ```
 
 Omit sections that have nothing to report (e.g., omit "Feature Flags" if there are none). Where you cannot infer something confidently, write `[to be confirmed]`.
+
+### 4. If `deployment.md` already exists — update, don't overwrite
+
+First check whether `FEATURE_FOLDER/deployment.md` already exists (use Glob/Read). If it
+does, treat this as an **update**, not a fresh regeneration:
+
+1. **Read the existing file first.**
+2. **Preserve human-authored content** — any prose, added checklist items, env-var rows,
+   or hand-written rollback steps. Never delete a manually-added step or reword text that
+   is still accurate. Operational steps a human added are often safety-critical.
+3. **Refresh facts that have changed** to match the current infra/config and commits (new
+   or renamed env vars, changed resource limits, updated migration order).
+4. **Add newly discovered items** to the appropriate section.
+5. **Resolve stale placeholders** — if the config now answers a `[to be confirmed]`,
+   replace it with the real content.
+6. In the header line, keep the original `Generated:` date and append or update
+   `· Updated: YYYY-MM-DD` with today's date.
+
+Prefer targeted `Edit`s to the specific lines or sections that changed, so human wording
+is kept verbatim. Only use a full `Write` when creating the file for the first time.

@@ -13,7 +13,7 @@ mdc: true
 
 # What Changed & Why
 
-The four fixes we just shipped to **feature-dev-documentalist**
+The five fixes we just shipped to **feature-dev-documentalist**
 
 <div class="pt-8 opacity-80 text-sm">
 Beginner-friendly · problem → change → outcome, for every fix
@@ -37,8 +37,8 @@ layout: statement
 
 <div class="text-xl leading-relaxed pt-4 text-left max-w-3xl mx-auto">
 
-A review of the plugin (see <code>slides.md</code>) found **four high-value weaknesses**.
-This branch fixes all four.
+A review of the plugin (see <code>slides.md</code>) found several high-value weaknesses.
+This branch fixes **five** of them.
 
 <div class="pt-4 opacity-80 text-base">
 No jargon assumed — each fix is explained from "what is the problem, in plain English"
@@ -51,35 +51,42 @@ through to "here's the proof it works."
 layout: default
 ---
 
-# The four changes at a glance
+# The five changes at a glance
 
-<div class="grid grid-cols-2 gap-4 pt-4">
+<div class="grid grid-cols-2 gap-3 pt-4 text-sm">
 
-<div v-click class="p-4 border-l-4 border-teal-400 rounded bg-teal-400/5">
+<div v-click class="p-3 border-l-4 border-teal-400 rounded bg-teal-400/5">
 
 ### 1 · See the whole feature 🔍
 Stop looking only at *uncommitted* changes. Look at everything on the branch.
 
 </div>
 
-<div v-click class="p-4 border-l-4 border-teal-400 rounded bg-teal-400/5">
+<div v-click class="p-3 border-l-4 border-teal-400 rounded bg-teal-400/5">
 
 ### 2 · Learn the real "why" 📖
 Read commit messages and design notes instead of guessing intent from code.
 
 </div>
 
-<div v-click class="p-4 border-l-4 border-teal-400 rounded bg-teal-400/5">
+<div v-click class="p-3 border-l-4 border-teal-400 rounded bg-teal-400/5">
 
 ### 3 · Right model for the job 🧠
 Use a smarter model where judgment is needed; keep the fast one for simple extraction.
 
 </div>
 
-<div v-click class="p-4 border-l-4 border-teal-400 rounded bg-teal-400/5">
+<div v-click class="p-3 border-l-4 border-teal-400 rounded bg-teal-400/5">
 
 ### 4 · Keep nudging usefully 🔔
 Remind about the *specific* missing document, not just "you have no docs folder."
+
+</div>
+
+<div v-click class="p-3 border-l-4 border-teal-400 rounded bg-teal-400/5 col-span-2">
+
+### 5 · Keep your edits ✍️
+When re-run, **update** the existing doc in place instead of overwriting your changes.
 
 </div>
 
@@ -441,6 +448,99 @@ File touched: <code>hooks/check-undocumented</code>. Ran under <code>bash -n</co
 </div>
 
 ---
+layout: section
+---
+
+# Change 5 — Keep your edits
+
+Update the document in place, don't clobber it
+
+---
+layout: default
+---
+
+# Change 5 · The problem, in plain English
+
+The tool drafts a doc for you. Naturally, you then **edit it** — fix a detail, add a note,
+sharpen the wording. That's the whole point: the AI drafts, a human polishes.
+
+<v-clicks>
+
+- But re-running the tool **overwrote the entire file** with a fresh draft.
+- Every human edit you'd made was **silently erased.** 😱
+- So you learned not to re-run it — which defeats the purpose of a doc that keeps up with the code.
+
+</v-clicks>
+
+<div v-click class="mt-4 p-3 bg-amber-400/10 border-l-4 border-amber-400 rounded text-sm">
+
+A document you can only generate <em>once</em> isn't a living document — it's a fancy one-time template.
+
+</div>
+
+---
+layout: two-cols
+layoutClass: gap-6
+---
+
+# Change 5 · What we changed
+
+The agents now run in **update mode** when the file already exists:
+
+<v-clicks>
+
+- **Read the existing doc first.**
+- **Keep** human-written content verbatim.
+- **Refresh** only the facts that changed.
+- **Add** newly discovered items.
+- **Resolve** old `[to be confirmed]` placeholders the code now answers.
+- Stamp the header with `· Updated: <date>`.
+
+</v-clicks>
+
+::right::
+
+# How it's done safely
+
+<v-clicks>
+
+- Agents gained the **`Edit`** tool, so they make **targeted edits** to changed lines — human wording elsewhere is untouched.
+- A full overwrite (`Write`) is now used **only when creating the file the first time**.
+- The skill no longer asks *"overwrite?"* — it just updates. Want a clean slate? Delete the file and re-run.
+
+</v-clicks>
+
+---
+layout: default
+---
+
+# Change 5 · The outcome
+
+<div class="grid grid-cols-2 gap-6 pt-6">
+
+<div v-click class="p-4 border-l-4 border-red-400 bg-red-400/10 rounded">
+
+### Before
+You edit `spec.md`, re-run the tool, and your notes are **gone** — replaced by a fresh template.
+
+</div>
+
+<div v-click class="p-4 border-l-4 border-green-400 bg-green-400/10 rounded">
+
+### After
+Re-running **keeps your notes**, updates the file list to match new code, and marks the header `Updated: <today>`. ✅
+
+</div>
+
+</div>
+
+<div v-click class="mt-6 text-sm opacity-80">
+
+Files touched: all five <code>agents/*.md</code> (added <code>Edit</code> tool + an "update, don't overwrite" section) and <code>skills/document-phase/SKILL.md</code> (Step 3).
+
+</div>
+
+---
 layout: default
 ---
 
@@ -488,12 +588,12 @@ layout: default
 
 | File | Change |
 |---|---|
-| `skills/document-phase/SKILL.md` | Detect via merge-base instead of `git diff HEAD` |
-| `agents/spec-documenter.md` | Read commit bodies + ADRs; model → sonnet |
-| `agents/architect-documenter.md` | Read commit bodies + design docs; model → sonnet |
-| `agents/impl-documenter.md` | Diff vs merge-base; full commit log |
-| `agents/deploy-documenter.md` | Diff infra files vs merge-base |
-| `agents/testing-documenter.md` | Diff test files vs merge-base |
+| `skills/document-phase/SKILL.md` | Detect via merge-base; Step 3 now updates in place |
+| `agents/spec-documenter.md` | Commit bodies + ADRs; model → sonnet; `Edit` + update mode |
+| `agents/architect-documenter.md` | Commit bodies + design docs; model → sonnet; `Edit` + update mode |
+| `agents/impl-documenter.md` | Diff vs merge-base; full commit log; `Edit` + update mode |
+| `agents/deploy-documenter.md` | Diff infra files vs merge-base; `Edit` + update mode |
+| `agents/testing-documenter.md` | Diff test files vs merge-base; `Edit` + update mode |
 | `hooks/check-undocumented` | Per-phase classification & nudge |
 | `README.md` | New "Model Configuration" section |
 
@@ -511,8 +611,8 @@ These are agreed and scheduled — just **not** in this branch:
 
 <div class="p-3 border-l-4 border-amber-400 bg-amber-400/10 rounded">
 
-**🔜 Living docs & drift detection**
-Update docs in place, preserve human edits, flag stale sections. *(Mid-term.)*
+**🔜 Drift detection**
+Update-in-place is *done* ✅ — still to come: a hook that **flags** docs whose source changed since generation. *(Mid-term.)*
 
 </div>
 
@@ -558,6 +658,8 @@ layout: statement
 - It **thinks harder** where thinking matters, and stays cheap where it doesn't.
 
 - It keeps **reminding you** about each missing document, not just the first.
+
+- And it **keeps your edits** when re-run — updating in place instead of overwriting.
 
 </v-clicks>
 

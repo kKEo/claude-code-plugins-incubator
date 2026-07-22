@@ -20,6 +20,7 @@ tools:
   - Read
   - Bash
   - Write
+  - Edit
   - Grep
   - Glob
 ---
@@ -115,3 +116,24 @@ Create `FEATURE_FOLDER/design.md` with this structure:
 ```
 
 Where you cannot infer something confidently, write `[to be confirmed]` rather than fabricating a plausible guess.
+
+### 4. If `design.md` already exists — update, don't overwrite
+
+First check whether `FEATURE_FOLDER/design.md` already exists (use Glob/Read). If it does,
+treat this as an **update**, not a fresh regeneration:
+
+1. **Read the existing file first.**
+2. **Preserve human-authored content** — any prose, added decisions, rationale rows,
+   diagrams, or notes a person wrote. Never delete a hand-added decision or reword text
+   that is still accurate.
+3. **Refresh facts that have changed** to match the current code and commits (e.g. a
+   renamed component, a dependency that was swapped, a resolved open question).
+4. **Add newly discovered items** (new components, decisions, dependencies) to the
+   appropriate section.
+5. **Resolve stale placeholders** — if the commits or design docs now answer a
+   `[to be confirmed]`, replace it with the real content.
+6. In the header line, keep the original `Generated:` date and append or update
+   `· Updated: YYYY-MM-DD` with today's date.
+
+Prefer targeted `Edit`s to the specific lines or sections that changed, so human wording
+is kept verbatim. Only use a full `Write` when creating the file for the first time.

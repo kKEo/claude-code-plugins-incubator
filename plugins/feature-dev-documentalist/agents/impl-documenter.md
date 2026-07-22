@@ -20,6 +20,7 @@ tools:
   - Read
   - Bash
   - Write
+  - Edit
   - Grep
   - Glob
 ---
@@ -111,3 +112,23 @@ Create `FEATURE_FOLDER/implementation.md` with this structure:
 ```
 
 If there are no API changes, technical debt, or breaking changes, omit those sections rather than leaving them empty. Where you cannot infer something confidently, write `[to be confirmed]`.
+
+### 4. If `implementation.md` already exists — update, don't overwrite
+
+First check whether `FEATURE_FOLDER/implementation.md` already exists (use Glob/Read). If
+it does, treat this as an **update**, not a fresh regeneration:
+
+1. **Read the existing file first.**
+2. **Preserve human-authored content** — any prose, added rows, or notes a person wrote.
+   Never delete a hand-added entry or reword text that is still accurate.
+3. **Refresh facts that have changed** to match the current code and commits (files that
+   were renamed/added since the last run, new or modified API entries, tech debt that was
+   paid down — strike it or mark it resolved rather than deleting the history silently).
+4. **Add newly discovered items** to the appropriate section.
+5. **Resolve stale placeholders** — if the code now answers a `[to be confirmed]`,
+   replace it with the real content.
+6. In the header line, keep the original `Generated:` date and append or update
+   `· Updated: YYYY-MM-DD` with today's date.
+
+Prefer targeted `Edit`s to the specific lines or sections that changed, so human wording
+is kept verbatim. Only use a full `Write` when creating the file for the first time.
