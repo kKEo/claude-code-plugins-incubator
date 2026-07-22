@@ -3,12 +3,12 @@ name: Validate Marketplace
 on:
   pull_request:
     paths:
-      - 'marketplace.json'
+      - '.claude-plugin/marketplace.json'
   push:
     branches:
-      - main
+      - master
     paths:
-      - 'marketplace.json'
+      - '.claude-plugin/marketplace.json'
 
 jobs:
   validate:
@@ -16,22 +16,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Validate marketplace.json
         run: |
-          jq empty marketplace.json
+          jq empty .claude-plugin/marketplace.json
           echo "✅ marketplace.json is valid JSON"
 
       - name: Check required fields
         run: |
           # Check that each plugin has required fields
           jq -r '.plugins[] |
-            if .id and .name and .description and .author and .version and .repository and .category and .license and .install then
-              "✅ \(.id) has all required fields"
+            if .name and .description and .source and .category then
+              "✅ \(.name) has all required fields"
             else
-              "❌ \(.id // "unknown") is missing required fields" | halt_error
-            end' marketplace.json
+              "❌ \(.name // "unknown") is missing required fields" | halt_error
+            end' .claude-plugin/marketplace.json

@@ -28,12 +28,8 @@ plugin-name/
 To install a plugin:
 
 ```bash
-# Clone this repository
-git clone https://github.com/YOUR_USERNAME/claude-plugins
-cd claude-plugins
-
-# Link the plugin
-ln -s "$(pwd)/plugins/PLUGIN_NAME" ~/.claude/plugins/PLUGIN_NAME
+claude plugin marketplace add kKEo/claude-code-plugins-incubator
+claude plugin install PLUGIN_NAME@km-plugin-registry
 ```
 
 ## Contributing
