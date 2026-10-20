@@ -29,6 +29,12 @@
       "description": "Write implementation-ready feature specs — explored from the codebase, interviewed once, and audited so an orchestrator agent can build the whole thing with no further input",
       "source": "./plugins/implementation-spec",
       "category": "Development"
+    },
+    {
+      "name": "memors-hooks",
+      "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only",
+      "source": "./plugins/memors-hooks",
+      "category": "Development"
     }
   ]
 }

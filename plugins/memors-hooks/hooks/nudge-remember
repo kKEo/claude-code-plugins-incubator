@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Stop hook: "record facts so the next session does not re-derive them".
+# If, since the last write-back or nudge, the session fetched from the web or hit
+# empty memors searches without calling remember/ingest, nudge once. Never blocks.
+
+set -uo pipefail
+source "$(dirname "$0")/lib.sh"
+
+[[ "$(hook_field '.stop_hook_active')" == true ]] && exit 0
+log=$(state_file) || exit 0
+[[ -f "$log" ]] || exit 0
+
+# Only events after the last 'recorded' or 'nudged' marker count.
+recent=$(awk '$1 == "recorded" || $1 == "nudged" { buf = ""; next } { buf = buf $0 "\n" } END { printf "%s", buf }' "$log")
+[[ -z "$recent" ]] && exit 0
+
+fetches=$(grep -c '^fetch' <<<"$recent" || true)
+empties=$(grep -c '^empty' <<<"$recent" || true)
+(( fetches + empties == 0 )) && exit 0
+
+printf 'nudged\n' >>"$log"
+
+parts=()
+(( fetches )) && parts+=("${fetches} web fetch/search call(s)")
+(( empties )) && parts+=("${empties} memors search(es) that found nothing")
+summary=$(IFS=';'; printf '%s' "${parts[*]}" | sed 's/;/ and /')
+
+sources=$(awk -F'\t' '$1 == "fetch" { print "- " $2 } $1 == "empty" { print "- memors miss: " $2 }' <<<"$recent" | sort -u | head -5)
+
+emit_context Stop "memors: this session made ${summary} but recorded nothing in the knowledge base. If an answer was found, ingest the source (with source.uri) or remember the fact (with evidence_uri) so the next session can find it. Skip this if nothing durable was learned.
+${sources}"
+exit 0

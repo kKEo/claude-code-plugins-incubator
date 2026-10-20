@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# PostToolUse(WebFetch) hook: "don't re-derive". If the URL just fetched was
+# already ingested, tell the model where the stored copy is — read it next time,
+# or ingest the fetch as a new revision if the page changed. Never blocks.
+# (PreToolUse cannot inject context, so this runs after the fetch.)
+
+set -uo pipefail
+source "$(dirname "$0")/lib.sh"
+
+url=$(hook_field '.tool_input.url')
+[[ -z "$url" ]] && exit 0
+
+# Keyword search on the URL, then keep only exact source matches (ignoring a
+# trailing slash and the scheme) — the search itself is only a candidate filter.
+hits=$(kb search "$url" --mode keyword --no-model --format json --limit 20 --max-tokens 2000 \
+  | jq -r --arg u "$url" '
+      def norm: sub("^https?://"; "") | sub("/+$"; "");
+      [.results[]? | select((.provenance.source_uri // "" | norm) == ($u | norm))]
+      | unique_by(.document_uri) | .[:3][]
+      | "- \(.title) · \(.document_uri) · trust \(.provenance.trust) · fetched \(.provenance.fetched_at[:10])"' 2>/dev/null)
+[[ -z "$hits" ]] && exit 0
+
+emit_context PostToolUse "This URL was already in the memors knowledge base. Prefer the stored copy (memors read tool) for this source from now on; if the page has changed, ingest it again so it becomes a new revision.
+${DATA_HEADER}
+${hits}"
+exit 0

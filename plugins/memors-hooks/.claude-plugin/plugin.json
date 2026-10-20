@@ -1,0 +1,9 @@
+{
+  "name": "memors-hooks",
+  "version": "0.1.0",
+  "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": ["memors", "memory", "knowledge-base", "mcp", "hooks", "trust"]
+}

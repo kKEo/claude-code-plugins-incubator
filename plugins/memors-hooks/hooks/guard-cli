@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# PreToolUse(Bash) hook: keep the human-only memors operations human-only.
+# The MCP tools write at trust 'agent', can only forget what tools wrote, and
+# promote via a dialog the human answers. The CLI is the human's channel: its
+# writes default to trust 'user' and it has none of those limits, so an agent
+# shelling out to it would bypass the trust model. Deny those calls; reads
+# (search, read, status, ls, ...) stay allowed.
+
+set -uo pipefail
+
+input=$(cat 2>/dev/null || true)
+command -v jq >/dev/null 2>&1 || exit 0
+cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // empty' 2>/dev/null)
+[[ -z "$cmd" ]] && exit 0
+
+# Match the subcommand right after the binary, so `memors-mcp search "forget"`
+# stays allowed. seg = rest of one pipeline segment.
+bin="memors-mcp[\"']?[[:space:]]+"
+seg='[^|;&]*'
+reason=""
+if grep -Eq "${bin}trust[[:space:]]+(promote|demote)" <<<"$cmd"; then
+  reason="Changing trust is the human's decision. Use the memors promote tool (the human answers its dialog) or tell the human the command to run."
+elif grep -Eq "${bin}(ingest|remember)([[:space:]]|$)" <<<"$cmd"; then
+  reason="CLI writes are stored at trust 'user' (human-said). Use the memors ingest/remember tools, which record agent writes at trust 'agent'."
+elif grep -Eq "${bin}forget([[:space:]]|$)" <<<"$cmd"; then
+  reason="The CLI can retire (and --redact) records a human wrote. Use the memors forget tool, which only retires tool-written records, or ask the human."
+elif grep -Eq "sqlite3${seg}(\.memors-mcp|MEMORS_HOME)" <<<"$cmd"; then
+  reason="Editing the memors database directly bypasses provenance and trust. Use the memors tools."
+fi
+
+[[ -z "$reason" ]] && exit 0
+
+jq -n --arg r "memors-hooks: $reason" '{
+  hookSpecificOutput: {
+    hookEventName: "PreToolUse",
+    permissionDecision: "deny",
+    permissionDecisionReason: $r
+  }
+}'
+exit 0

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# UserPromptSubmit hook (opt-in: MEMORS_HOOK_RECALL=1): "search, then read".
+# Runs a keyword-only search on the prompt and injects up to three addresses —
+# titles and memo:// URIs only, never passage text — so the model knows what to
+# read. Off by default: it adds latency and keyword hits on a whole prompt are noisy.
+
+set -uo pipefail
+[[ "${MEMORS_HOOK_RECALL:-0}" == 1 ]] || exit 0
+source "$(dirname "$0")/lib.sh"
+
+prompt=$(hook_field '.prompt')
+# Skip slash commands and short prompts ("continue", "yes", ...).
+[[ "$prompt" == /* || ${#prompt} -lt 20 ]] && exit 0
+
+hits=$(kb search "${prompt:0:500}" --no-model --format json --limit 3 --max-tokens 1500 \
+  | jq -r '.results[]?
+      | "- \(.title)\(if (.section_path // "") != "" then " › \(.section_path)" else "" end) · \(.uri) · trust \(.provenance.trust)"' 2>/dev/null)
+[[ -z "$hits" ]] && exit 0
+
+emit_context UserPromptSubmit "Possibly relevant memors records (keyword match, unverified relevance — read before relying on them):
+${DATA_HEADER}
+${hits}"
+exit 0

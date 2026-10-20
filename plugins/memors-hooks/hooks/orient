@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# SessionStart hook: the "orient once" step of the memors loop, done for the model.
+# Injects the knowledge-base index (export --index), whether search is degraded,
+# and how many lint findings are open. Also fires after /compact (source=compact)
+# so the index survives context compaction. Read-only: never migrates or writes.
+
+set -uo pipefail
+source "$(dirname "$0")/lib.sh"
+
+status=$("$MEMORS" status 2>&1)
+
+if [[ "$status" == *"No knowledge base named"* ]]; then
+  emit_context SessionStart "memors knowledge base '${MEMORS_KB}' is empty. When you find something worth keeping (a fact with its source, a fetched doc), record it with the memors remember/ingest tools so later sessions can search it."
+  exit 0
+fi
+
+if [[ "$status" == *"needs migration"* ]]; then
+  emit_context SessionStart "memors knowledge base '${MEMORS_KB}' is on an older schema and cannot be read until it is migrated. Tell the human to run: MEMORS_KB=${MEMORS_KB} memors-mcp migrate"
+  exit 0
+fi
+
+[[ "$status" == Knowledge\ base:* ]] || exit 0
+
+index=$(kb export --index --max-bytes "${MEMORS_HOOK_INDEX_BYTES:-8192}")
+[[ -z "$index" ]] && exit 0
+
+notes=()
+if grep -q '^Embedding model: none' <<<"$status"; then
+  notes+=("search is keyword-only (no embedding vectors yet)")
+fi
+pending=$(grep -Eo 'Jobs: [0-9]+ queued' <<<"$status" | grep -Eo '[0-9]+' || true)
+if [[ -n "$pending" && "$pending" != 0 ]]; then
+  notes+=("${pending} indexing jobs queued")
+fi
+findings=$(kb lint --json | jq 'length' 2>/dev/null || true)
+if [[ -n "$findings" && "$findings" != 0 ]]; then
+  notes+=("${findings} lint findings open — call compact when time allows and submit with dry_run first")
+fi
+
+msg="memors knowledge base '${MEMORS_KB}' is available. Search it before re-deriving or re-fetching; record what you learn with remember (with evidence_uri) or ingest."
+if (( ${#notes[@]} )); then
+  msg+=$'\n'"Status: $(IFS=';'; printf '%s' "${notes[*]}" | sed 's/;/; /g')."
+fi
+msg+=$'\n\n'"${DATA_HEADER}"$'\n'"${index}"
+
+emit_context SessionStart "$msg"
+exit 0

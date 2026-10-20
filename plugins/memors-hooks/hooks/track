@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# PostToolUse hook: log what the session consulted and recorded, for nudge-remember.
+#   fetch <url>     WebFetch / WebSearch — knowledge came from outside the KB
+#   empty <query>   memors search abstained — the KB had nothing on this
+#   recorded        memors remember / ingest — something was written back
+# Never prints anything.
+
+set -uo pipefail
+source "$(dirname "$0")/lib.sh"
+
+log=$(state_file) || exit 0
+tool=$(hook_field '.tool_name')
+
+case "$tool" in
+  WebFetch)
+    printf 'fetch\t%s\n' "$(hook_field '.tool_input.url')" >>"$log" ;;
+  WebSearch)
+    printf 'fetch\tsearch: %s\n' "$(hook_field '.tool_input.query')" >>"$log" ;;
+  mcp__*memors*__remember | mcp__*memors*__ingest)
+    printf 'recorded\n' >>"$log" ;;
+  mcp__*memors*__search)
+    # The MCP tool_response shape is not standardised: find the search JSON
+    # anywhere in it, as an object or as a JSON string inside a text block.
+    empty=$(printf '%s' "$HOOK_INPUT" | jq -r '
+        [.tool_response | .. | (objects, (strings | fromjson? | objects))
+         | select((.results? | type) == "array")]
+        | any(.results | length == 0)' 2>/dev/null)
+    if [[ "$empty" == true ]]; then
+      printf 'empty\t%s\n' "$(hook_field '.tool_input.query')" >>"$log"
+    fi ;;
+esac
+exit 0

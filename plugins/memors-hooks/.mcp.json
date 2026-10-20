@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "memors": {
+      "command": "${MEMORS_BIN:-memors-mcp}",
+      "env": {
+        "MEMORS_KB": "${MEMORS_KB:-default}"
+      }
+    }
+  }
+}
