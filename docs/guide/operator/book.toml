@@ -1,0 +1,14 @@
+[book]
+title = "Claude Code plugins incubator: plugin author guide"
+description = "How the marketplace and its plugins work inside, how to develop, publish, configure and operate them."
+authors = ["Krzysztof Maziarz"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/operator"
+create-missing = false
+
+[output.html]
+site-url = "/claude-code-plugins-incubator/operator/"
+git-repository-url = "https://github.com/kKEo/claude-code-plugins-incubator"

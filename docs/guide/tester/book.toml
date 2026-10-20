@@ -1,0 +1,14 @@
+[book]
+title = "Claude Code plugins incubator: tester guide"
+description = "How every change to a plugin is checked, and how to run, read, extend and explore the checks."
+authors = ["Krzysztof Maziarz"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/tester"
+create-missing = false
+
+[output.html]
+site-url = "/claude-code-plugins-incubator/tester/"
+git-repository-url = "https://github.com/kKEo/claude-code-plugins-incubator"
