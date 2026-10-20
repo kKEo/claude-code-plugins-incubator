@@ -1,0 +1,9 @@
+{
+  "name": "gitbook-docs-validator",
+  "version": "0.1.0",
+  "description": "Validate GitBook/mdBook documentation trees against the three-book template (landing page, user guide, operator guide, tester guide) and report structural failures and deviations",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": ["documentation", "gitbook", "mdbook", "validation", "lint", "docs"]
+}

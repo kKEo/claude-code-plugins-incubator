@@ -1,0 +1,72 @@
+{
+  "$comment": "Role definitions for the three-book GitBook documentation template. A project may override any part by placing a file with the same shape at <docs-root>/.docs-template.json; keys given there replace the defaults role by role.",
+  "landing_page": "index.html",
+  "roles": {
+    "user": {
+      "purpose": "Entry-level getting-started book. Plain language, no jargon, for people who use the product day to day.",
+      "aliases": ["user", "users", "getting-started", "start", "guide", "intro", "beginner", "everyone"],
+      "flat_allowed": true,
+      "required_pages": [
+        {"id": "quick-start",  "any_of": ["quick start", "quickstart", "getting started", "get started"], "severity": "error",
+         "why": "An entry-level book without a short, timed walk-through sends newcomers straight into reference material."},
+        {"id": "everyday-use", "any_of": ["everyday", "day to day", "daily use", "using", "how to"], "severity": "warn",
+         "why": "The task-oriented middle of the book: what to say or do for each common job."},
+        {"id": "trust-privacy", "any_of": ["trust", "privacy", "safety", "security"], "severity": "warn",
+         "why": "Readers need one page that says what they can rely on and what never leaves their machine."},
+        {"id": "faq",          "any_of": ["faq", "questions", "troubleshooting", "problems"], "severity": "error",
+         "why": "The page people land on when something breaks; without it they open issues or give up."},
+        {"id": "glossary",     "any_of": ["glossary", "words", "terms", "vocabulary"], "severity": "error",
+         "why": "Every book defines its own words so a reader never has to leave the book to understand it."},
+        {"id": "use-cases",    "any_of": ["use case", "examples", "ideas", "scenarios"], "severity": "warn",
+         "why": "Concrete stories help a reader decide whether the product fits them."}
+      ]
+    },
+    "operator": {
+      "purpose": "Low-level, detailed development and deployment guide: how the system works inside, how to install, configure, tune, monitor and operate it.",
+      "aliases": ["operator", "operators", "ops", "admin", "development", "developer", "dev", "internals", "deploy", "deployment", "reference", "technical"],
+      "flat_allowed": false,
+      "required_pages": [
+        {"id": "how-it-works", "any_of": ["how it works", "overview", "architecture", "internals", "data model", "concepts"], "severity": "error",
+         "why": "The mental model every later chapter assumes; without it configuration pages are lists of knobs."},
+        {"id": "install",      "any_of": ["install", "deploy", "setup", "set up"], "severity": "error",
+         "why": "The deployment half of this book's purpose."},
+        {"id": "configuration", "any_of": ["configuration", "config", "environment variable", "settings", "reference"], "severity": "error",
+         "why": "A complete, look-up-able reference is what distinguishes this book from the user guide."},
+        {"id": "commands",     "any_of": ["commands", "cli", "flags", "command line"], "severity": "warn",
+         "why": "Every command and flag the binary accepts, so nothing is only discoverable from --help."},
+        {"id": "monitoring",   "any_of": ["monitoring", "observability", "metrics", "logs", "alerts"], "severity": "error",
+         "why": "An operator cannot run what they cannot observe."},
+        {"id": "operations",   "any_of": ["operations", "backup", "troubleshooting", "runbook", "upgrade", "day two", "day-two"], "severity": "error",
+         "why": "Day-two work: backup, restore, repair, capacity, troubleshooting, release."},
+        {"id": "glossary",     "any_of": ["glossary", "words", "terms"], "severity": "warn",
+         "why": "Technical books accumulate project-specific terms; a glossary keeps them findable."}
+      ]
+    },
+    "tester": {
+      "purpose": "Quality-assurance guide: how every change is checked, how to run, read, explore and add tests.",
+      "aliases": ["tester", "testers", "testing", "tests", "qa", "quality", "quality-assurance", "verification"],
+      "flat_allowed": false,
+      "required_pages": [
+        {"id": "running",      "any_of": ["running the tests", "run the tests", "running tests", "getting started", "how to run"], "severity": "error",
+         "why": "The first thing a tester does is run everything once; the book must make that one page."},
+        {"id": "map",          "any_of": ["what is tested where", "test map", "coverage", "where", "layout"], "severity": "warn",
+         "why": "A map from product area to test files, so a reviewer can find the tests for a change."},
+        {"id": "gates",        "any_of": ["gates", "continuous integration", "ci", "pipeline", "checks"], "severity": "error",
+         "why": "What blocks a merge, and why, is the contract between the team and the code."},
+        {"id": "adding-tests", "any_of": ["adding tests", "add a test", "contributing", "writing tests", "new tests"], "severity": "error",
+         "why": "Which kind of test to write for which kind of change, plus the pull-request checklist."},
+        {"id": "exploratory",  "any_of": ["exploratory", "by hand", "manual", "probing", "sandbox"], "severity": "warn",
+         "why": "Tests miss things; the book should say how to look for them by hand."},
+        {"id": "glossary",     "any_of": ["glossary", "words", "terms", "appendix"], "severity": "warn",
+         "why": "Testing vocabulary (golden, baseline, gate, invariant) differs from the product's; define it."}
+      ]
+    }
+  },
+  "page_rules": {
+    "max_summary_depth": 3,
+    "min_alt_text_chars": 12,
+    "draft_marker": "> Draft.",
+    "generated_marker": "Generated by",
+    "readme_table_min_links": 3
+  }
+}

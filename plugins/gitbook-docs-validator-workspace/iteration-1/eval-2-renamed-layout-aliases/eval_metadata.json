@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "renamed-layout-aliases",
+  "prompt": "We scaffolded a handbook for a new service at /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook (repo root /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/ledgerd). Does it match our three-book documentation template (getting started / internals / QA)? Anything missing? Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report maps getting-started -> user/getting-started role, internals -> operator/development-deployment, qa -> tester/QA",
+    "Report concludes the handbook matches the template structurally (PASS or PASS with deviations), not FAIL",
+    "Report notes the QA book has no exploratory/manual testing page",
+    "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
+    "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
+    "Report has the Verdict / failures / deviations / suggestions structure"
+  ]
+}

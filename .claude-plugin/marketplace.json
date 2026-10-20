@@ -17,6 +17,12 @@
       "description": "Auto-document feature development phases from git diff — spec, architecture, implementation, deployment, and testing",
       "source": "./plugins/feature-dev-documentalist",
       "category": "Development"
+    },
+    {
+      "name": "gitbook-docs-validator",
+      "description": "Validate GitBook/mdBook docs against the three-book template (landing page, user, operator, tester guides) and report missing pages, broken links and deviations",
+      "source": "./plugins/gitbook-docs-validator",
+      "category": "Development"
     }
   ]
 }

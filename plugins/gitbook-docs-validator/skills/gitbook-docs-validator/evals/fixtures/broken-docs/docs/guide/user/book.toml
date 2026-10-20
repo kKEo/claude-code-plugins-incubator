@@ -1,0 +1,19 @@
+# Read by mdBook in CI (make docs); GitBook ignores this file.
+[book]
+title = "memors-mcp user guide"
+description = "A memory your AI assistant can show its work from: what it is, why it helps, and how to use it."
+authors = ["memors-mcp contributors"]
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/user"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/kKEo/memors"
+edit-url-template = "https://github.com/kKEo/memors/edit/master/docs/guide/user/{path}"
+site-url = "/memors/user/"
+
+[output.html.search]
+enable = true

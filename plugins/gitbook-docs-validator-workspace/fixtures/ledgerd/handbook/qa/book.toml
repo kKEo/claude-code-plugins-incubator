@@ -1,0 +1,7 @@
+[book]
+title = "ledgerd qa"
+src = "."
+
+[build]
+build-dir = "../../site/qa"
+create-missing = false

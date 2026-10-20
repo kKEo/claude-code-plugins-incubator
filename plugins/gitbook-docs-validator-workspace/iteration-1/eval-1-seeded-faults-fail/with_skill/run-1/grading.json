@@ -1,0 +1,64 @@
+{
+  "expectations": [
+    {
+      "text": "Report says the docs FAIL / are not ready to publish",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the missing tester card/link in index.html",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the missing tester/.gitbook.yaml",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names user/orphan-page.md as not listed in SUMMARY.md (unpublished)",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the empty alt text on the image in user/README.md",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the ../../architecture.md link leaving the docs root (or broken) in operator/README.md",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the user book missing a glossary page",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report names the second H1 in tester/start/running.md",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report cites file paths (and ideally line numbers) for each failure",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "total_tool_calls": 10,
+    "output_chars": 7067
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Report has an explicit verdict line (PASS/FAIL) near the top",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report identifies all three books and their roles (user, operator, tester)",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report mentions that the root README.md says 'both guides' or omits the tester guide",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report does not list any broken relative link (there are none) as an error",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report separates must-fix failures from judgement-call deviations or suggestions",
+      "passed": false,
+      "evidence": "Headings: Verdict / What was checked / Per-part findings / Cross-cutting / Summary of action items. Findings are grouped by book, not split into must-fix vs judgement calls."
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 1,
+    "total": 6,
+    "pass_rate": 0.833
+  },
+  "execution_metrics": {
+    "total_tool_calls": 11,
+    "output_chars": 9931
+  }
+}

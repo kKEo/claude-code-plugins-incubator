@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Report has an explicit verdict line (PASS/FAIL) near the top",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report identifies all three books and their roles (user, operator, tester)",
+      "passed": true,
+      "evidence": "Report line 31: 'Required pages per role are all present: user (quick start, FAQ/troubleshooting, glossary\u2026' and 'Books found: user=user/, operator=operator/, tester=tester/'"
+    },
+    {
+      "text": "Report mentions that the root README.md says 'both guides' or omits the tester guide",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report does not list any broken relative link (there are none) as an error",
+      "passed": true,
+      "evidence": "Report line 30: 'every relative link and anchor resolves inside the docs root'; no broken-link items listed"
+    },
+    {
+      "text": "Report separates must-fix failures from judgement-call deviations or suggestions",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "total_tool_calls": 11,
+    "output_chars": 9685
+  }
+}

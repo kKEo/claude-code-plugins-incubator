@@ -1,0 +1,401 @@
+{
+  "metadata": {
+    "skill_name": "gitbook-docs-validator",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-10-19T19:01:38Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 180.9,
+        "tokens": 73810,
+        "tool_calls": 11,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report has an explicit verdict line (PASS/FAIL) near the top",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report identifies all three books and their roles (user, operator, tester)",
+          "passed": true,
+          "evidence": "Report line 31: 'Required pages per role are all present: user (quick start, FAQ/troubleshooting, glossary\u2026' and 'Books found: user=user/, operator=operator/, tester=tester/'"
+        },
+        {
+          "text": "Report mentions that the root README.md says 'both guides' or omits the tester guide",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not list any broken relative link (there are none) as an error",
+          "passed": true,
+          "evidence": "Report line 30: 'every relative link and anchor resolves inside the docs root'; no broken-link items listed"
+        },
+        {
+          "text": "Report separates must-fix failures from judgement-call deviations or suggestions",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 111.6,
+        "tokens": 71978,
+        "tool_calls": 10,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report says the docs FAIL / are not ready to publish",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the missing tester card/link in index.html",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the missing tester/.gitbook.yaml",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names user/orphan-page.md as not listed in SUMMARY.md (unpublished)",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the empty alt text on the image in user/README.md",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the ../../architecture.md link leaving the docs root (or broken) in operator/README.md",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the user book missing a glossary page",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the second H1 in tester/start/running.md",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report cites file paths (and ideally line numbers) for each failure",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 136.5,
+        "tokens": 53303,
+        "tool_calls": 7,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report maps getting-started -> user/getting-started role, internals -> operator/development-deployment, qa -> tester/QA",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report concludes the handbook matches the template structurally (PASS or PASS with deviations), not FAIL",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report notes the QA book has no exploratory/manual testing page",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report has the Verdict / failures / deviations / suggestions structure",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.833,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 277.5,
+        "tokens": 80832,
+        "tool_calls": 11,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report has an explicit verdict line (PASS/FAIL) near the top",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report identifies all three books and their roles (user, operator, tester)",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report mentions that the root README.md says 'both guides' or omits the tester guide",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not list any broken relative link (there are none) as an error",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report separates must-fix failures from judgement-call deviations or suggestions",
+          "passed": false,
+          "evidence": "Headings: Verdict / What was checked / Per-part findings / Cross-cutting / Summary of action items. Findings are grouped by book, not split into must-fix vs judgement calls."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 131.8,
+        "tokens": 57847,
+        "tool_calls": 8,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report says the docs FAIL / are not ready to publish",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the missing tester card/link in index.html",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the missing tester/.gitbook.yaml",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names user/orphan-page.md as not listed in SUMMARY.md (unpublished)",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the empty alt text on the image in user/README.md",
+          "passed": false,
+          "evidence": "grep for 'alt' / 'glossary' in report.md returns nothing; the subagent's own summary also omits both faults"
+        },
+        {
+          "text": "Report names the ../../architecture.md link leaving the docs root (or broken) in operator/README.md",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report names the user book missing a glossary page",
+          "passed": false,
+          "evidence": "grep for 'alt' / 'glossary' in report.md returns nothing; the subagent's own summary also omits both faults"
+        },
+        {
+          "text": "Report names the second H1 in tester/start/running.md",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report cites file paths (and ideally line numbers) for each failure",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.667,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 102.1,
+        "tokens": 42587,
+        "tool_calls": 5,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Report maps getting-started -> user/getting-started role, internals -> operator/development-deployment, qa -> tester/QA",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report concludes the handbook matches the template structurally (PASS or PASS with deviations), not FAIL",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report notes the QA book has no exploratory/manual testing page",
+          "passed": false,
+          "evidence": "no mention of exploratory/manual/by-hand testing anywhere in report.md"
+        },
+        {
+          "text": "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
+          "passed": true,
+          "evidence": "auto keyword check on report.md (matched)"
+        },
+        {
+          "text": "Report has the Verdict / failures / deviations / suggestions structure",
+          "passed": false,
+          "evidence": "Headings: Verdict / Findings (by severity) / Checklist summary / Recommended next steps; no must-fix vs deviations split"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 143.0,
+        "stddev": 35.1043,
+        "min": 111.6,
+        "max": 180.9
+      },
+      "tokens": {
+        "mean": 66363.6667,
+        "stddev": 11347.8992,
+        "min": 53303,
+        "max": 73810
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7667,
+        "stddev": 0.0879,
+        "min": 0.667,
+        "max": 0.833
+      },
+      "time_seconds": {
+        "mean": 170.4667,
+        "stddev": 93.8756,
+        "min": 102.1,
+        "max": 277.5
+      },
+      "tokens": {
+        "mean": 60422.0,
+        "stddev": 19252.0901,
+        "min": 42587,
+        "max": 80832
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.23",
+      "time_seconds": "-27.5",
+      "tokens": "+5942"
+    }
+  },
+  "notes": [
+    "Discriminating assertions: the baseline missed the empty alt text and the missing user glossary on the seeded fixture, and the missing exploratory-testing page on the renamed layout; the script catches all three deterministically.",
+    "Non-discriminating: verdict present, three books identified, 'both guides' in root README, file paths cited: both configurations pass these every time. They guard against regressions but do not measure skill value.",
+    "Report-structure assertions (must-fix vs deviations vs suggestions) fail for the baseline by construction: it cannot know the fixed format. Treat as a consistency check, not a quality signal.",
+    "Baseline runs were slower (171s vs 143s mean) with high variance (one run 277s): without the script each agent re-derives link/orphan/SUMMARY checks by hand, mostly with ad-hoc shell loops, and two of three baseline agents ran a full mdBook build on a scratch copy.",
+    "Token usage is similar (~62k vs ~60k mean). The skill spends its tokens on the qualitative pass (lead paragraphs, version drift, tone) rather than on structural discovery.",
+    "Single run per configuration: variance figures are across evals, not across repeated runs of one eval.",
+    "Baseline reports surfaced two ideas worth folding into the skill: cross-book ../book/ links break when each book is a separate GitBook space; and the template itself should be written down in the repo (docs/README.md)."
+  ]
+}

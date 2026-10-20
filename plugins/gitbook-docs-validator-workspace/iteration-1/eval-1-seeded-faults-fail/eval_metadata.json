@@ -1,0 +1,17 @@
+{
+  "eval_id": 1,
+  "eval_name": "seeded-faults-fail",
+  "prompt": "Before I publish them, review the docs under /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide. They should follow our standard layout: one landing page plus a user guide, an operator guide and a tester guide. List everything that is wrong. Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report says the docs FAIL / are not ready to publish",
+    "Report names the missing tester card/link in index.html",
+    "Report names the missing tester/.gitbook.yaml",
+    "Report names user/orphan-page.md as not listed in SUMMARY.md (unpublished)",
+    "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+    "Report names the empty alt text on the image in user/README.md",
+    "Report names the ../../architecture.md link leaving the docs root (or broken) in operator/README.md",
+    "Report names the user book missing a glossary page",
+    "Report names the second H1 in tester/start/running.md",
+    "Report cites file paths (and ideally line numbers) for each failure"
+  ]
+}
