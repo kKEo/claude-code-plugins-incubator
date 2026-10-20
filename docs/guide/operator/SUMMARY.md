@@ -1,6 +1,6 @@
 # Summary
 
-[Introduction](README.md)
+[Plugin author guide](README.md)
 
 - [Part I: How it works](intro/README.md)
   - [Marketplace overview](intro/overview.md)

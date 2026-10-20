@@ -1,6 +1,6 @@
 # Summary
 
-[Introduction](README.md)
+[Tester guide](README.md)
 
 - [Part I: Getting started](start/README.md)
   - [Running the tests](start/running.md)

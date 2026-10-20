@@ -1,64 +1,61 @@
 # Claude Code Plugins Marketplace
 
-A community-curated registry of Claude Code plugins. Browse, discover, and install plugins to extend Claude's capabilities.
+A small registry of Claude Code plugins (`km-plugin-registry`). Add the marketplace once, then install any plugin with a slash command.
 
 ## What is this?
 
-This repository maintains `marketplace.json` — a structured registry of Claude Code plugins. Each plugin is hosted in its own repository and can be installed by cloning to `~/.claude/plugins/`.
+This repository is a Claude Code plugin marketplace. The manifest `.claude-plugin/marketplace.json` lists the plugins; each plugin lives under `plugins/<name>/` with its own manifest, skills, agents and hooks.
+
+## Documentation
+
+The full documentation is under `docs/guide/` as one landing page and three books:
+
+- [User guide](docs/guide/user/README.md): install a plugin and use it; quick start, everyday prompts, FAQ.
+- [Plugin author guide](docs/guide/operator/README.md): how plugins are wired, local development, publishing, releases, configuration reference, troubleshooting.
+- [Tester guide](docs/guide/tester/README.md): how a change is checked before merge; running the checks, gates, adding tests, exploratory sessions.
+
+The landing page is `docs/guide/index.html`; `docs/README.md` indexes everything. `make docs-check` validates the docs; `make docs` also builds them with mdBook.
+
+## Install a plugin
+
+```
+/plugin marketplace add kKEo/claude-code-plugins-incubator
+/plugin install gitbook-docs-validator@km-plugin-registry
+/reload-plugins
+```
+
+Replace the plugin name with `frontend-scaffold` or `feature-dev-documentalist` as needed.
 
 ## Browse Plugins
 
-See `marketplace.json` for the complete list, or browse via:
+See [plugins/README.md](plugins/README.md) for the list by category, or:
 
 ```bash
-# View all plugins
-cat marketplace.json | jq '.plugins[]'
-
-# Search by keyword
-cat marketplace.json | jq '.plugins[] | select(.keywords[] | contains("frontend"))'
-
-# List by category
-cat marketplace.json | jq '.plugins[] | select(.category == "Frontend")'
+jq '.plugins[] | {name, category, description}' .claude-plugin/marketplace.json
 ```
-
-## Install a Plugin
-
-Each plugin entry includes an `install` command. For example:
-
-```bash
-git clone https://github.com/kmaziarz/claude-plugin-frontend-scaffold ~/.claude/plugins/frontend-scaffold
-```
-
-Then restart Claude Code.
 
 ## Submit Your Plugin
 
-1. **Create your plugin** in its own repository with:
+1. **Create your plugin** under `plugins/<name>/` with:
    - `.claude-plugin/plugin.json` (manifest)
    - `README.md` (documentation)
    - `LICENSE` file
-   - Your plugin components (commands, skills, agents, hooks)
+   - Your plugin components (skills, agents, hooks)
 
-2. **Fork this repository** and add an entry to `marketplace.json`:
+2. **Add an entry** to `.claude-plugin/marketplace.json`:
 
 ```json
 {
-  "id": "my-plugin",
-  "name": "My Plugin",
+  "name": "my-plugin",
   "description": "What it does",
-  "author": "Your Name",
-  "version": "1.0.0",
-  "repository": "https://github.com/username/my-plugin",
-  "keywords": ["tag1", "tag2"],
-  "category": "Development",
-  "license": "MIT",
-  "install": "git clone https://github.com/username/my-plugin ~/.claude/plugins/my-plugin"
+  "source": "./plugins/my-plugin",
+  "category": "Development"
 }
 ```
 
-3. **Open a pull request**
+3. **Open a pull request** and walk the [pull-request checklist](docs/guide/tester/gates/pr-checklist.md).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
+The step-by-step version is [Publishing a plugin](docs/guide/operator/install/publish.md); [CONTRIBUTING.md](CONTRIBUTING.md) has the general rules.
 
 ## Resources
 

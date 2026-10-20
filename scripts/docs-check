@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Documentation gate: validate docs/guide against the three-book template, then
+# reconcile the operator and user books with the code so references cannot drift.
+# Exit 1 on any failure. Run from anywhere; paths are resolved from this script.
+set -uo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+VALIDATOR=plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py
+DOCS=docs/guide
+fail=0
+
+echo "== validate_docs.py $DOCS --repo-root ."
+python3 "$VALIDATOR" "$DOCS" --repo-root . --quiet || fail=1
+
+# expect <needle> <file> <label>: fail unless the file mentions the needle.
+expect() {
+  local needle="$1" file="$2" label="$3"
+  if ! grep -qF -- "$needle" "$file"; then
+    echo "missing: $label '$needle' in $file"
+    fail=1
+  fi
+}
+
+echo "== reconciliation"
+
+# Every plugin directory with a manifest is described in the user book.
+for m in plugins/*/.claude-plugin/plugin.json; do
+  name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["name"])' "$m")
+  expect "$name" "$DOCS/user/plugins.md" "plugin"
+done
+
+# Every argparse flag of the validator is in the commands reference.
+grep -o 'add_argument("--[a-z-]*"' "$VALIDATOR" | sed 's/add_argument("//; s/"$//' | sort -u | while read -r flag; do
+  grep -qF -- "\`$flag" "$DOCS/operator/config/commands.md" || { echo "missing: flag '$flag' in $DOCS/operator/config/commands.md"; exit 9; }
+done || fail=1
+
+# Every hook event registered by any plugin is in the hooks reference.
+for h in plugins/*/hooks/hooks.json; do
+  python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1]))["hooks"].keys()))' "$h" | while read -r ev; do
+    grep -qF -- "$ev" "$DOCS/operator/config/hooks.md" || { echo "missing: hook event '$ev' in $DOCS/operator/config/hooks.md"; exit 9; }
+  done || fail=1
+done
+
+# Every skill and agent name is in the matching frontmatter reference.
+for s in plugins/*/skills/*/SKILL.md; do
+  name=$(sed -n 's/^name:[[:space:]]*//p' "$s" | head -1)
+  [ -n "$name" ] && expect "$name" "$DOCS/operator/config/skill-frontmatter.md" "skill"
+done
+for a in plugins/*/agents/*.md; do
+  name=$(sed -n 's/^name:[[:space:]]*//p' "$a" | head -1)
+  [ -n "$name" ] && expect "$name" "$DOCS/operator/config/agent-frontmatter.md" "agent"
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo "docs-check: FAIL"
+  exit 1
+fi
+echo "docs-check: OK"
