@@ -1,0 +1,9 @@
+{
+  "name": "implementation-spec",
+  "version": "0.1.0",
+  "description": "Write an implementation-ready spec for an unbuilt feature — codebase exploration, one batch of questions, numbered requirements, concrete contracts, ordered steps, tests, and a security halt protocol",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": ["spec", "planning", "requirements", "orchestrator", "tests", "handoff"]
+}

@@ -23,6 +23,12 @@
       "description": "Validate GitBook/mdBook docs against the three-book template (landing page, user, operator, tester guides) and report missing pages, broken links and deviations",
       "source": "./plugins/gitbook-docs-validator",
       "category": "Development"
+    },
+    {
+      "name": "implementation-spec",
+      "description": "Write implementation-ready feature specs — explored from the codebase, interviewed once, and audited so an orchestrator agent can build the whole thing with no further input",
+      "source": "./plugins/implementation-spec",
+      "category": "Development"
     }
   ]
 }

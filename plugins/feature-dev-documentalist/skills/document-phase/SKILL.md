@@ -1,6 +1,6 @@
 ---
 name: document-phase
-description: "Use when you want to document a feature development phase before committing. Detects the current phase (spec, design, implementation, deployment, or integration testing) from git diff analysis and generates the appropriate markdown document in docs/features/<date>-<branch-name>/. Triggers when the user says: document this phase, capture what I built, document before committing, write the feature doc, run the documentalist, document the spec, document the design, document the architecture, document the implementation, document the deployment, or document the tests."
+description: "Use when you want to document a feature development phase before committing. Detects the current phase (spec, design, implementation, deployment, or integration testing) from git diff analysis and generates the appropriate markdown document in docs/features/<date>-<branch-name>/. This skill documents work that already exists in the git diff; to write a forward-looking spec for a feature that has not been built yet, use the write-implementation-spec skill instead. Triggers when the user says: document this phase, capture what I built, document before committing, write the feature doc, run the documentalist, document the spec, document the design, document the architecture, document the implementation, document the deployment, or document the tests."
 argument-hint: "[optional: phase name to force a specific phase, e.g. 'design']"
 allowed-tools: ["Bash", "Read", "Agent"]
 ---

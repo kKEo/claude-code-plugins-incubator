@@ -1,6 +1,6 @@
 {
   "name": "feature-dev-documentalist",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "Document feature development phases (specification, design, implementation, deployment, testing) based on current branch changeset analysis",
   "author": {
     "name": "Krzysztof Maziarz"
