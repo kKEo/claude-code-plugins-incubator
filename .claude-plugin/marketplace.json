@@ -35,6 +35,12 @@
       "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only",
       "source": "./plugins/memors-hooks",
       "category": "Development"
+    },
+    {
+      "name": "plan-progress",
+      "description": "A pane beside the chat showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes)",
+      "source": "./plugins/plan-progress",
+      "category": "Development"
     }
   ]
 }

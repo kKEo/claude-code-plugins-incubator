@@ -32,6 +32,10 @@ This page documents `hooks/hooks.json`, the one shipped hook, its script wrapper
 | `async` | `true` runs without blocking the turn; output arrives when ready | `true` |
 | `timeout` | Seconds before the hook is killed; default 60 | not set |
 
+## Hooks modules (mods)
+
+`plan-progress` ships a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, it names one TypeScript module exporting `register(on)`, which subscribes to engine events (`session.start`, `command.run`, `tool.call`, `prompt.attachment`, `ui.render`) and draws a pane. Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. It is validated with `claude plugin validate plugins/plan-progress` and tested with `claude plugin test plugins/plan-progress`; `claude --plugin-dir plugins/plan-progress` runs it with hot reload while developing.
+
 ## The script wrapper
 
 `run-hook.cmd` is a polyglot file. On Windows `cmd.exe` runs the batch half, which looks for Git for Windows bash in `C:\Program Files\Git\bin\bash.exe`, then `C:\Program Files (x86)\…`, then `bash` on `PATH`, and exits 0 silently if none is found. On Unix the shell skips the batch half (the first line is a no-op heredoc) and runs `exec bash "<dir>/<script>" "$@"`.

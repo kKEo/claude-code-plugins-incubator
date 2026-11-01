@@ -1,0 +1,8 @@
+{
+  "name": "plan-progress",
+  "version": "0.1.0",
+  "description": "A pane showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes)",
+  "author": { "name": "Krzysztof Maziarz" },
+  "keywords": ["plan", "progress", "tasks", "pane", "mod"],
+  "types": "./types/index.d.ts"
+}

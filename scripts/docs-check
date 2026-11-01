@@ -38,7 +38,7 @@ done || fail=1
 
 # Every hook event registered by any plugin is in the hooks reference.
 for h in plugins/*/hooks/hooks.json; do
-  python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1]))["hooks"].keys()))' "$h" | while read -r ev; do
+  python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1])).get("hooks", {}).keys()))' "$h" | while read -r ev; do
     grep -qF -- "$ev" "$DOCS/operator/config/hooks.md" || { echo "missing: hook event '$ev' in $DOCS/operator/config/hooks.md"; exit 9; }
   done || fail=1
 done

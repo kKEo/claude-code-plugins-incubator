@@ -24,7 +24,7 @@ The landing page is `docs/guide/index.html`; `docs/README.md` indexes everything
 /reload-plugins
 ```
 
-Replace the plugin name with `frontend-scaffold` or `feature-dev-documentalist` as needed.
+Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist` or `plan-progress` as needed.
 
 ## Browse Plugins
 

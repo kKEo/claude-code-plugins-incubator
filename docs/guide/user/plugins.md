@@ -18,6 +18,12 @@ It also reminds you. When you are on a feature branch with unsaved changes and n
 
 Checks a documentation folder against a fixed layout: one landing page plus three books, one each for users, for people who run or develop the system, and for testers. It reports missing books, missing required pages, pages nobody can reach, broken links and images without descriptions, and then writes a short report with a verdict. This very documentation was written to pass it.
 
+## plan-progress
+
+Keeps the current plan and its progress in a pane beside the chat. When Claude plans in plan mode, the pane picks up the plan file and shows it as a document (the **Plan** view) and as phases and steps with a glyph per step (the **Progress** view): done, in progress or pending. The steps are ticked from the tasks and todos Claude creates while it works, and a progress bar with a count sits above them; a short summary such as `plan 3/5 ✓ · Running tests` also appears under the prompt.
+
+The pane opens by itself in a fullscreen terminal wide enough to dock it. `/plan-progress` opens it at any time, `/plan-progress plan` or `/plan-progress progress` switches the view, and `/plan-progress <path>` loads a plan file by hand. Unlike the other plugins this one is a *mod*: a small TypeScript module that draws into the Claude Code interface instead of adding skills or agents.
+
 ## Not a plugin
 
 The repository also contains a folder named `gitbook-docs-validator-workspace`. It holds test runs and sample documentation used while developing the validator. It cannot be installed and you can ignore it.
