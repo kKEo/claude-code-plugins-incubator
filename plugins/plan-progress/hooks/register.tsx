@@ -62,6 +62,10 @@ async function refreshStatus($: Engine): Promise<void> {
     $.ui.status(undefined)
     return
   }
+  if (!isStatusLineOn) {
+    $.ui.status(undefined)
+    return
+  }
   const head = p?.isPlanMode ? 'planning' : 'plan'
   const count = progress.total > 0 ? ` ${progress.done}/${progress.total} ✓` : ''
   const now = progress.current ? ` · ${progress.current}` : ''
@@ -70,27 +74,44 @@ async function refreshStatus($: Engine): Promise<void> {
 
 const glyph: Record<PlanStatus, string> = { pending: '·', in_progress: '▶', completed: '✓' }
 
-export const register: Register = on => {
+/** From the manifest's userConfig; the module reloads with new values on a change. */
+let isStatusLineOn = true
+
+async function isOpen($: Engine): Promise<boolean> {
+  return (await $.ui.panes()).some(pane => pane.id === PANE)
+}
+
+export const register: Register = (on, options) => {
+  const autoOpen = options.autoOpen !== false
+  isStatusLineOn = options.statusLine !== false
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: COMMAND,
-      description: 'Show the plan and its progress in a pane',
-      argumentHint: '[plan|progress|<path to plan.md>]',
+      description: 'Toggle the pane showing the plan and its progress',
+      argumentHint: '[on|off|plan|progress|<path to plan.md>]',
     })
-    if (e.surface !== null && e.isInteractive) void $.ui.open({ id: PANE, title: TITLE })
+    if (autoOpen && e.surface !== null && e.isInteractive) void $.ui.open({ id: PANE, title: TITLE })
     await refreshStatus($)
     return next(e)
   })
 
   on('command.run', { command: COMMAND }, async ($, e) => {
-    const arg = e.args.trim()
+    const arg = e.args.trim().toLowerCase()
+    if (arg === 'off' || arg === 'close' || arg === 'hide') {
+      if (await isOpen($)) await $.ui.close({ id: PANE })
+      return { text: 'Plan progress pane closed.' }
+    }
+    if (arg === '' && (await isOpen($))) {
+      await $.ui.close({ id: PANE })
+      return { text: 'Plan progress pane closed. Run /' + COMMAND + ' again to reopen it.' }
+    }
     if (arg === 'plan' || arg === 'progress') {
       await update($, view, () => arg)
       await $.ui.open({ id: PANE, title: TITLE })
       return { text: `Plan progress pane: ${arg} view.` }
     }
-    if (arg !== '') {
-      await loadPlan($, arg)
+    if (arg !== '' && arg !== 'on' && arg !== 'open' && arg !== 'show' && arg !== 'toggle') {
+      await loadPlan($, e.args.trim())
       await update($, view, () => 'plan')
       await $.ui.open({ id: PANE, title: TITLE })
       return { text: `Plan loaded from ${arg}.` }

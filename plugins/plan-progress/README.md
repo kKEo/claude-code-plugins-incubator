@@ -14,11 +14,25 @@ The pane opens by itself in a fullscreen terminal wide enough to dock it, and fo
 ## Command
 
 ```
-/plan-progress            open the pane (loads the newest ~/.claude/plans/*.md when none is known)
-/plan-progress plan       switch to the plan view
-/plan-progress progress   switch to the progress view
+/plan-progress            toggle the pane: open it (loading the newest ~/.claude/plans/*.md when none is known) or close it
+/plan-progress on|off     open or close it explicitly
+/plan-progress plan       open it on the plan view
+/plan-progress progress   open it on the progress view
 /plan-progress <path>     load a specific plan file
 ```
+
+The pane's own close mark (or ctrl+x x while it holds the keyboard) closes it too.
+
+## Settings
+
+Two switches, shown in `/config` under the plugin and stored in `pluginConfigs["plan-progress"].options`:
+
+| Field | Default | Meaning |
+|---|---|---|
+| `autoOpen` | `true` | Open the pane by itself when a session starts. Off, the pane only opens with `/plan-progress`. |
+| `statusLine` | `true` | Show the `plan 3/5 ✓ · …` summary under the prompt. |
+
+A change in `/config` reloads the mod with the new values.
 
 In the pane, `g` and `p` switch the views while it holds the keyboard (ctrl+x tab).
 

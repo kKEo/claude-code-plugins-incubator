@@ -1,4 +1,4 @@
-import { expect, test } from 'claude-code/testing'
+import { expect, mock, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
 const PANE = {
@@ -24,9 +24,14 @@ const PLAN = `## Phase 1: Build
 function engine(on: On) {
   let created = 0
   on('command.register', () => ({ value: { command: 'plan-progress' } }))
-  on('ui.open', () => ({ value: { isPlaced: true } }))
+  let open = false
+  on('ui.open', () => { open = true; return { value: { isPlaced: true } } })
+  on('ui.close', () => { open = false; return { value: undefined } })
+  on('ui.panes', () => ({ value: open ? [{ id: 'plan-progress', title: 'Plan progress', isShown: true, isFocused: false, isPlaced: true }] : [] }))
   on('ui.status', () => ({ value: undefined }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
+  mock.env(on, { HOME: '/home/me' })
+  on('fs.list', () => ({ value: [] }))
   on('fs.read', () => ({ value: PLAN }))
   on('fs.stat', () => ({ value: { kind: 'file', size: PLAN.length, mtimeMs: 1, isLink: false } }))
   on('tool.call', { tool: 'ExitPlanMode' }, () => ({ result: { plan: PLAN, isAgent: false, filePath: '/home/me/.claude/plans/x.md' } }))
@@ -71,4 +76,25 @@ test('the slash command opens the pane and switches the view', async ($, on) => 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(await ui.find({ type: 'Text', text: /No plan yet/ })).toBeDefined()
   await ui.unmount()
+})
+
+const RUN = { command: 'plan-progress', origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } } as const
+
+test('the slash command without arguments toggles the pane', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  expect((await $.command.run({ ...RUN, args: '' })).text).toMatch(/closed/)
+  expect((await $.command.run({ ...RUN, args: '' })).text).toMatch(/opened/)
+  expect((await $.command.run({ ...RUN, args: 'off' })).text).toMatch(/closed/)
+  expect((await $.command.run({ ...RUN, args: 'on' })).text).toMatch(/opened/)
+})
+
+test('autoOpen false leaves the pane closed at session start', { options: { autoOpen: false, statusLine: false } }, async ($, on) => {
+  let opened = 0
+  on('command.register', () => ({ value: { command: 'plan-progress' } }))
+  on('ui.open', () => { opened++; return { value: { isPlaced: true } } })
+  on('ui.status', () => ({ value: undefined }))
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  expect(opened).toBe(0)
 })

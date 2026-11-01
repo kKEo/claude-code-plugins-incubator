@@ -22,7 +22,7 @@ Checks a documentation folder against a fixed layout: one landing page plus thre
 
 Keeps the current plan and its progress in a pane beside the chat. When Claude plans in plan mode, the pane picks up the plan file and shows it as a document (the **Plan** view) and as phases and steps with a glyph per step (the **Progress** view): done, in progress or pending. The steps are ticked from the tasks and todos Claude creates while it works, and a progress bar with a count sits above them; a short summary such as `plan 3/5 ✓ · Running tests` also appears under the prompt.
 
-The pane opens by itself in a fullscreen terminal wide enough to dock it. `/plan-progress` opens it at any time, `/plan-progress plan` or `/plan-progress progress` switches the view, and `/plan-progress <path>` loads a plan file by hand. Unlike the other plugins this one is a *mod*: a small TypeScript module that draws into the Claude Code interface instead of adding skills or agents.
+The pane opens by itself in a fullscreen terminal wide enough to dock it; `/plan-progress` toggles it open or closed at any time (`on` and `off` do so explicitly), `/plan-progress plan` or `/plan-progress progress` switches the view, and `/plan-progress <path>` loads a plan file by hand. Two switches in `/config`, "Open pane at start" and "Plan status line", turn the automatic opening and the summary under the prompt off. Unlike the other plugins this one is a *mod*: a small TypeScript module that draws into the Claude Code interface instead of adding skills or agents.
 
 ## Not a plugin
 
