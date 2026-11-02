@@ -7,6 +7,9 @@ project deviates for a good reason, say so in the report instead of insisting.
 Contents: 1 Shape · 2 Landing page · 3 Book anatomy · 4 SUMMARY.md · 5 Book README ·
 6 Pages · 7 Role requirements · 8 Repository integration · 9 Known false positives
 
+The script enforces §1–§4 and §8 mechanically. The qualitative pass needs only §5 (README),
+§6 (pages and tone) and §7 (role requirements); §9 is for findings that look wrong.
+
 ## 1. Shape
 
 ```

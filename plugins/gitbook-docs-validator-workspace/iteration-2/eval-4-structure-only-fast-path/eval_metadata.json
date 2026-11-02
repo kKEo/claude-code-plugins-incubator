@@ -1,0 +1,13 @@
+{
+  "eval_id": 4,
+  "eval_name": "structure-only-fast-path",
+  "prompt": "Quick lint before I push: are there any orphan pages, broken links or missing SUMMARY entries in plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide? Just the structural problems, please. Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report says the docs FAIL",
+    "Report names user/orphan-page.md as not listed in SUMMARY.md",
+    "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+    "Report names the broken ../../architecture.md link in operator/README.md",
+    "Report contains no qualitative tone/audience judgements (structure-only request)",
+    "Report is under 50 lines"
+  ]
+}

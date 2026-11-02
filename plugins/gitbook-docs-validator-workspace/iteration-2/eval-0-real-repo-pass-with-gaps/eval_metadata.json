@@ -1,0 +1,13 @@
+{
+  "eval_id": 0,
+  "eval_name": "real-repo-pass-with-gaps",
+  "prompt": "Check whether the documentation in /Users/krma/Work/memory-find/docs/guide follows our GitBook three-book template (landing page, user guide, operator guide, tester guide) and tell me what is missing or off. Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report has an explicit verdict line (PASS/FAIL) near the top",
+    "Report identifies all three books and their roles (user, operator, tester)",
+    "Report mentions that the root README.md says 'both guides' or omits the tester guide",
+    "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
+    "Report does not list any broken relative link (there are none) as an error",
+    "Report separates must-fix failures from judgement-call deviations or suggestions"
+  ]
+}

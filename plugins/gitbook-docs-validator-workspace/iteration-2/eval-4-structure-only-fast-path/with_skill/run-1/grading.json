@@ -1,0 +1,48 @@
+{
+  "expectations": [
+    {
+      "text": "Report says the docs FAIL",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report names user/orphan-page.md as not listed in SUMMARY.md",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report names the broken ../../architecture.md link in operator/README.md",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report contains no qualitative tone/audience judgements (structure-only request)",
+      "passed": true,
+      "evidence": "Manual: the only match is report.md:25 'Qualitative pass (tone per reader, \u2026) skipped: structure-only request' \u2014 it states the pass was skipped and makes no tone judgement."
+    },
+    {
+      "text": "Report is under 50 lines",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 0,
+    "total": 6,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "total_tool_calls": 4,
+    "errors_encountered": 0,
+    "output_chars": 1971
+  },
+  "timing": {
+    "total_duration_seconds": 23.8
+  }
+}

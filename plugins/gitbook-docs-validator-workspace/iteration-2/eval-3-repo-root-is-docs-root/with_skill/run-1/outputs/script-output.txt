@@ -1,0 +1,36 @@
+# Documentation template check: handbook
+
+**Verdict:** PASS with deviations — <one sentence on why>.
+Books found: user=getting-started/, operator=internals/, tester=qa/
+Script: 0 error(s), 5 warning(s), 5 note(s).
+
+## Structural failures (must fix)
+- None.
+
+## Template deviations (judge)
+- `getting-started/SUMMARY.md` — 6 of 7 published pages have fewer than 15 words and no '> Draft.' marker, so they look finished in the sidebar: everyday.md, faq.md, glossary.md, privacy.md, quick-start.md, … (+1 more)
+- `internals/SUMMARY.md` — 14 of 15 published pages have fewer than 15 words and no '> Draft.' marker, so they look finished in the sidebar: appendix/README.md, appendix/glossary.md, concepts/README.md, concepts/data-model.md, deploy/README.md, … (+9 more)
+- `qa/SUMMARY.md` — 7 of 8 published pages have fewer than 15 words and no '> Draft.' marker, so they look finished in the sidebar: appendix/README.md, contributing/README.md, gates/README.md, gates/ci.md, start/README.md, … (+2 more)
+- `qa/SUMMARY.md` — tester book has no page for 'exploratory' (looked for: exploratory, by hand, manual…). Tests miss things; the book should say how to look for them by hand.
+- `scripts` — no scripts/docs-check script that reconciles the operator reference with the code
+<!-- add deviations from the qualitative pass; say whether each is reasonable -->
+
+## Suggestions
+- `internals/README.md:1` — H1 'ledgerd internals and deployment' differs from SUMMARY title 'Introduction'
+- `/Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/README.md` — docs index /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/README.md does not mention the landing page
+<!-- add improvements beyond the template -->
+
+## Not checked
+- no root README.md
+- no Makefile; skipped the docs target check
+- no .github/workflows; skipped the docs workflow check
+- Built output: the books were not built with mdBook/GitBook; this is a static check.
+
+---- worklist for the qualitative pass (not part of the report) ----
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/index.html
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/getting-started/README.md
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/internals/README.md
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/qa/README.md
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/getting-started/quick-start.md
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/internals/reference/environment.md
+read: /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook/qa/start/running.md

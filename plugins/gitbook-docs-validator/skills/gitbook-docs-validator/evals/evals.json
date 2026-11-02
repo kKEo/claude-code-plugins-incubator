@@ -1,4 +1,5 @@
 {
+  "$comment": "Paths are relative to the repository root; run evals with the repo root as working directory. Eval 0 needs the external memory-find checkout (see 'requires').",
   "skill_name": "gitbook-docs-validator",
   "evals": [
     {
@@ -14,12 +15,15 @@
         "Report does not flag '# comment' lines inside bash code blocks as extra H1 headings",
         "Report does not list any broken relative link (there are none) as an error",
         "Report separates must-fix failures from judgement-call deviations or suggestions"
+      ],
+      "requires": [
+        "/Users/krma/Work/memory-find (external repo, not vendored)"
       ]
     },
     {
       "id": 1,
       "name": "seeded-faults-fail",
-      "prompt": "Before I publish them, review the docs under /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide. They should follow our standard layout: one landing page plus a user guide, an operator guide and a tester guide. List everything that is wrong. Write the report to the output directory as report.md.",
+      "prompt": "Before I publish them, review the docs under plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide. They should follow our standard layout: one landing page plus a user guide, an operator guide and a tester guide. List everything that is wrong. Write the report to the output directory as report.md.",
       "expected_output": "FAIL verdict naming: tester card missing from index.html, tester/.gitbook.yaml missing, user/orphan-page.md not in SUMMARY, operator SUMMARY -> install/windows.md missing, empty alt text in user/README.md, ../../architecture.md link leaving the root, user book without glossary, second H1 in tester/start/running.md.",
       "files": [],
       "assertions": [
@@ -38,7 +42,7 @@
     {
       "id": 2,
       "name": "renamed-layout-aliases",
-      "prompt": "We scaffolded a handbook for a new service at /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook (repo root /Users/krma/.claude/skills/gitbook-docs-validator-workspace/fixtures/ledgerd). Does it match our three-book documentation template (getting started / internals / QA)? Anything missing? Write the report to the output directory as report.md.",
+      "prompt": "We scaffolded a handbook for a new service at plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook (repo root plugins/gitbook-docs-validator-workspace/fixtures/ledgerd). Does it match our three-book documentation template (getting started / internals / QA)? Anything missing? Write the report to the output directory as report.md.",
       "expected_output": "PASS with deviations: maps getting-started=user, internals=operator, qa=tester; notes missing exploratory-testing page, missing docs-check/docs-serve Make targets, no docs workflow.",
       "files": [],
       "assertions": [
@@ -48,6 +52,35 @@
         "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
         "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
         "Report has the Verdict / failures / deviations / suggestions structure"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "repo-root-is-docs-root",
+      "prompt": "The ledgerd handbook at plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook lives in its own repository, so treat the handbook folder itself as the repo root. Does it follow our three-book documentation template? Write the report to the output directory as report.md.",
+      "expected_output": "The validator runs to completion (regression: it used to crash with ValueError when the docs root's parent README lies outside --repo-root) and reports PASS with deviations.",
+      "files": [],
+      "assertions": [
+        "The validator script completes without a Python traceback (no ValueError from check_repo)",
+        "Report concludes PASS or PASS with deviations, not FAIL",
+        "Report notes the QA book has no exploratory/manual testing page",
+        "Report flags the stub pages that are not marked '> Draft.'",
+        "Report has the Verdict / failures / deviations / suggestions structure"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "structure-only-fast-path",
+      "prompt": "Quick lint before I push: are there any orphan pages, broken links or missing SUMMARY entries in plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide? Just the structural problems, please. Write the report to the output directory as report.md.",
+      "expected_output": "A short report listing the 8 structural errors, produced from the script output without a qualitative read-through of pages.",
+      "files": [],
+      "assertions": [
+        "Report says the docs FAIL",
+        "Report names user/orphan-page.md as not listed in SUMMARY.md",
+        "Report names operator SUMMARY entry install/windows.md pointing to a missing file",
+        "Report names the broken ../../architecture.md link in operator/README.md",
+        "Report contains no qualitative tone/audience judgements (structure-only request)",
+        "Report is under 50 lines"
       ]
     }
   ]

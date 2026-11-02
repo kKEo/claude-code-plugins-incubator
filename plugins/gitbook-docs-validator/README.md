@@ -34,19 +34,20 @@ which pages are orphaned or unpublished?
 The skill will:
 
 1. Locate the docs root (the directory holding `index.html` and the book folders, usually `docs/guide/`).
-2. Run `scripts/validate_docs.py` for the mechanical checks: landing page links, the three roles present once each, `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book, orphan pages, missing files, heading structure, images and alt text, relative links and anchors, required pages per role, and (with `--repo-root`) the root README, Makefile targets and docs CI workflow.
-3. Read a sample of pages and judge what the script cannot: audience fit, lead paragraphs, reading-map tables, drift against the code.
-4. Write a report with a verdict, structural failures, template deviations, suggestions and what was not checked.
+2. Run `scripts/validate_docs.py` once for the mechanical checks: landing page links, the three roles present once each, `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book, orphan pages, missing files, heading structure, images and alt text, relative links and anchors, stub pages without a `> Draft.` marker, reading-map rows that point to unpublished pages, a timed quick start, required pages per role, and (with `--repo-root`) the root README, Makefile targets and docs CI workflow. It prints a ready report skeleton and a short worklist of files for step 3.
+3. Read only the worklist (landing page, the three book READMEs, one page per role) and judge what the script cannot: audience fit, lead paragraphs, reading-map tables, drift against the code. For structure-only requests this step is skipped.
+4. Finish the skeleton into a report with a verdict, structural failures, template deviations, suggestions and what was not checked.
 
 It stops at the report unless you ask for fixes.
 
 ### Running the script directly
 
 ```bash
-python3 skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . [--json]
+python3 skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . \
+    [--format text|md|json] [--worklist] [--quiet]
 ```
 
-Exit status 1 means at least one ERROR. Python 3, standard library only.
+`--format md` prints the report skeleton, `--worklist` lists the files for the qualitative pass, and `--quiet` hides INFO notes. Exit status 1 means at least one ERROR. Python 3.8+, standard library only.
 
 ### Custom folder names
 

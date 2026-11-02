@@ -1,0 +1,43 @@
+{
+  "expectations": [
+    {
+      "text": "The validator script completes without a Python traceback (no ValueError from check_repo)",
+      "passed": true,
+      "evidence": "script-output.txt has no Traceback and contains the report skeleton"
+    },
+    {
+      "text": "Report concludes PASS or PASS with deviations, not FAIL",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report notes the QA book has no exploratory/manual testing page",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report flags the stub pages that are not marked '> Draft.'",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    },
+    {
+      "text": "Report has the Verdict / failures / deviations / suggestions structure",
+      "passed": true,
+      "evidence": "auto pattern check on report.md (matched)"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 0,
+    "total": 5,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "total_tool_calls": 12,
+    "errors_encountered": 0,
+    "output_chars": 4199
+  },
+  "timing": {
+    "total_duration_seconds": 103.1
+  }
+}

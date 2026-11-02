@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "Report maps getting-started -> user/getting-started role, internals -> operator/development-deployment, qa -> tester/QA",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report concludes the handbook matches the template structurally (PASS or PASS with deviations), not FAIL",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report notes the QA book has no exploratory/manual testing page",
+      "passed": false,
+      "evidence": "no mention of exploratory/manual/by-hand testing anywhere in report.md"
+    },
+    {
+      "text": "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
+      "passed": true,
+      "evidence": "auto keyword check on report.md (matched)"
+    },
+    {
+      "text": "Report has the Verdict / failures / deviations / suggestions structure",
+      "passed": false,
+      "evidence": "Headings: Verdict / Findings (by severity) / Checklist summary / Recommended next steps; no must-fix vs deviations split"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 2,
+    "total": 6,
+    "pass_rate": 0.667
+  },
+  "execution_metrics": {
+    "total_tool_calls": 5,
+    "output_chars": 7401
+  }
+}

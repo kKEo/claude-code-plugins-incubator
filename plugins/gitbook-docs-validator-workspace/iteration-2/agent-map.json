@@ -1,0 +1,13 @@
+{
+  "a907bfd928c533c65": "eval-0-real-repo-pass-with-gaps/with_skill/run-1",
+  "abe83a90384980e15": "eval-0-real-repo-pass-with-gaps/with_skill/run-2",
+  "a28bc2247670b8b3b": "eval-0-real-repo-pass-with-gaps/with_skill/run-3",
+  "a2c114218d25c5077": "eval-1-seeded-faults-fail/with_skill/run-1",
+  "a7b564a0914ed2ba8": "eval-1-seeded-faults-fail/with_skill/run-2",
+  "a56a299d0cd4ec9e6": "eval-1-seeded-faults-fail/with_skill/run-3",
+  "ae825acd53ed93d44": "eval-2-renamed-layout-aliases/with_skill/run-1",
+  "ab7ac8f695743aec6": "eval-2-renamed-layout-aliases/with_skill/run-2",
+  "af4f7f7a5587957cf": "eval-2-renamed-layout-aliases/with_skill/run-3",
+  "a6b577684756417f3": "eval-3-repo-root-is-docs-root/with_skill/run-1",
+  "a19543115e4933a57": "eval-4-structure-only-fast-path/with_skill/run-1"
+}
