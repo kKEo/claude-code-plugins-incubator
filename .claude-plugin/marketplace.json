@@ -38,7 +38,7 @@
     },
     {
       "name": "plan-progress",
-      "description": "A pane beside the chat showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes)",
+      "description": "A pane beside the chat showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes, steps the model marks)",
       "source": "./plugins/plan-progress",
       "category": "Development"
     },

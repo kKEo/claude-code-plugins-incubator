@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { bar, parsePlan, progressOf, similarity } from './progress'
+import { bar, outline, parsePlan, progressOf, resolveSteps, similarity, stepKey } from './progress'
 
 const PLAN = `# Mod plan-progress
 
@@ -25,11 +25,11 @@ Some prose that is not a step.
 
 test('parsePlan splits headings into phases and bullets into steps', async () => {
   const phases = parsePlan(PLAN)
-  expect(phases.map(p => p.title)).toEqual(['Context', 'Phase 1: Skeleton', 'Phase 2: Collect the plan'])
-  expect(phases[0]?.steps).toEqual([])
-  expect(phases[1]?.steps.map(s => s.text)).toEqual(['Write the manifest and hooks.json', 'Write the state contract'])
-  expect(phases[2]?.steps.map(s => s.status)).toEqual(['completed', 'pending'])
-  expect(phases[2]?.steps.every(s => s.isFromPlan)).toBe(true)
+  expect(phases.map(p => p.title)).toEqual(['Phase 1: Skeleton', 'Phase 2: Collect the plan'])
+  expect(phases[0]?.steps.map(s => s.text)).toEqual(['Write the manifest and hooks.json', 'Write the state contract'])
+  expect(phases[0]?.steps.map(s => s.id)).toEqual(['1.1', '1.2'])
+  expect(phases[1]?.steps.map(s => s.status)).toEqual(['completed', 'pending'])
+  expect(phases[1]?.steps.every(s => s.isFromPlan)).toBe(true)
 })
 
 test('progressOf counts plan checkboxes when there are no tasks or todos', async () => {
@@ -56,8 +56,8 @@ test('progressOf marks plan steps from matching tasks and lists the rest', async
   expect(p.total).toBe(3)
   expect(p.percent).toBe(33)
   expect(p.current).toBe('Re-reading the plan')
-  expect(p.phases[1]?.steps[1]?.status).toBe('completed')
-  expect(p.phases[2]?.steps[1]?.status).toBe('in_progress')
+  expect(p.phases[0]?.steps[1]?.status).toBe('completed')
+  expect(p.phases[1]?.steps[1]?.status).toBe('in_progress')
   expect(p.unmatched.map(s => s.text)).toEqual(['Publish to the registry'])
 })
 
@@ -90,4 +90,65 @@ test('similarity ignores stop words and prefers an unclaimed step', async () => 
     { id: '2', subject: 'Write the hooks module', status: 'in_progress', blockedBy: [] },
   ], [])
   expect(p.phases[0]?.steps.map(s => s.status)).toEqual(['in_progress', 'completed'])
+})
+
+// The shape plan mode writes: an H1 title, a Context section of bullets, phases
+// with plain bullets (no checkboxes) and sub-bullets, a Verification section.
+const PHASED = `# session-cost mod
+
+## Context
+
+- **Cost per request:** two columns
+- **Location:** plugins/session-cost/
+
+## Phase 1: Scaffold
+
+- plugin.json with userConfig:
+  - autoOpen (bool)
+- hooks/hooks.json
+
+### Files
+
+- types/index.d.ts
+
+## Phase 2: Logic
+
+- hooks/pricing.ts
+- hooks/format.ts
+
+## Verification
+
+- run the tests
+`
+
+test('a phased plan counts only its phases, sub-headings folded in', async () => {
+  const phases = parsePlan(PHASED)
+  expect(phases.map(p => p.title)).toEqual(['Phase 1: Scaffold', 'Phase 2: Logic'])
+  expect(phases[0]?.steps.map(s => s.text)).toEqual(['plugin.json with userConfig:', 'hooks/hooks.json', 'types/index.d.ts'])
+})
+
+test('a plan without checkboxes, tasks or todos counts its steps, marked by mark_step', async () => {
+  const none = progressOf(PHASED, [], [])
+  expect(none.source).toBe('plan')
+  expect(none.total).toBe(5)
+  expect(none.done).toBe(0)
+
+  const phases = parsePlan(PHASED)
+  const phase1 = resolveSteps(phases, ['1'])
+  expect(phase1.keys).toHaveLength(3)
+  const one = resolveSteps(phases, ['2.1', 'Phase 2', 'nope'])
+  expect(one.unknown).toEqual(['nope'])
+  const marks = Object.fromEntries([...phase1.keys.map(k => [k, 'completed']), [stepKey('hooks/format.ts'), 'in_progress']])
+  const p = progressOf(PHASED, [], [], marks)
+  expect(p.done).toBe(3)
+  expect(p.percent).toBe(60)
+  expect(p.current).toBe('hooks/format.ts')
+  expect(outline(p.phases)).toContain('  [x] 1.1 plugin.json with userConfig:')
+  expect(outline(p.phases)).toContain('  [>] 2.2 hooks/format.ts')
+})
+
+test('a plan without phase headings skips its note sections', async () => {
+  const phases = parsePlan('# T\n\n## Context\n\n- a fact\n\n## Implementation\n\n- do it\n\n## Open questions\n\n- why\n')
+  expect(phases.map(p => p.title)).toEqual(['Implementation'])
+  expect(phases[0]?.steps.map(s => s.text)).toEqual(['do it'])
 })

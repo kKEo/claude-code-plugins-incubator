@@ -1,22 +1,33 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { PlanSource, PlanStatus, PlanTask, PlanTodo, PlanView } from '../types'
-import { bar, progressOf } from './progress'
+import type { PlanMarks, PlanSource, PlanStatus, PlanTask, PlanTodo, PlanView } from '../types'
+import { bar, outline, parsePlan, progressOf, resolveSteps } from './progress'
 
 const PANE = 'plan-progress'
 const TITLE = 'Plan progress'
 const COMMAND = 'plan-progress'
+const TOOL = 'mark_step'
+const TOOL_ID = `mcp__plan-progress__${TOOL}`
+
+const TOOL_DESCRIPTION = [
+  'Records progress on the current plan (the one approved with ExitPlanMode), shown to the user in the Plan progress pane.',
+  'While carrying out an approved plan, call it when you start a phase or step (status "in_progress") and again when it is done ("completed").',
+  'steps takes ids from the outline this tool returns: "2" is the whole of phase 2, "2.3" its third step; a step\'s text also works.',
+  'Call it with an empty steps list to get the outline. Skip it when no plan is active.',
+].join(' ')
 
 const EMPTY_PLAN: PlanSource = { path: null, text: '', mtimeMs: 0, isPlanMode: false }
 const plan = atom({ plugin: 'plan-progress', key: 'plan' } as const, EMPTY_PLAN)
 const tasks = atom({ plugin: 'plan-progress', key: 'tasks' } as const, [] as PlanTask[])
 const todos = atom({ plugin: 'plan-progress', key: 'todos' } as const, [] as PlanTodo[])
 const view = atom({ plugin: 'plan-progress', key: 'view' } as const, 'progress' as PlanView)
+const marks = atom({ plugin: 'plan-progress', key: 'marks' } as const, {} as PlanMarks)
 
 type Engine = EngineInterface
 
-/** Reads the plan file into state; a missing file leaves the path and clears the text. */
+/** Reads the plan file into state; a missing file leaves the path and clears the text.
+ * A different plan starts with no marks. */
 async function loadPlan($: Engine, path: string, isPlanMode?: boolean): Promise<void> {
   let text = ''
   let mtimeMs = 0
@@ -26,13 +37,27 @@ async function loadPlan($: Engine, path: string, isPlanMode?: boolean): Promise<
   } catch {
     text = ''
   }
-  await update($, plan, old => ({
+  const old = await read($, plan)
+  if (old?.path !== path) await update($, marks, () => ({}))
+  await update($, plan, prev => ({
     path,
     text,
     mtimeMs,
-    isPlanMode: isPlanMode ?? old?.isPlanMode ?? false,
+    isPlanMode: isPlanMode ?? prev?.isPlanMode ?? false,
   }))
   await refreshStatus($)
+}
+
+/** The note the model reads after the plan is approved: the outline and how to report on it. */
+function approvalNote(planText: string): string | undefined {
+  const tree = outline(parsePlan(planText))
+  if (tree === '') return undefined
+  return [
+    `Plan progress: the user follows this plan in the Plan progress pane. As you work, call ${TOOL_ID} with the ids below:`,
+    'status "in_progress" when you start a phase or step, "completed" when it is done ("2" covers all of phase 2, "2.3" one step).',
+    '',
+    tree,
+  ].join('\n')
 }
 
 async function plansFolder($: Engine): Promise<string | undefined> {
@@ -56,8 +81,8 @@ async function newestPlan($: Engine): Promise<string | undefined> {
 }
 
 async function refreshStatus($: Engine): Promise<void> {
-  const [p, t, d] = await Promise.all([read($, plan), read($, tasks), read($, todos)])
-  const progress = progressOf(p?.text ?? '', t ?? [], d ?? [])
+  const [p, t, d, m] = await Promise.all([read($, plan), read($, tasks), read($, todos), read($, marks)])
+  const progress = progressOf(p?.text ?? '', t ?? [], d ?? [], m ?? {})
   if (!p?.path && progress.total === 0) {
     $.ui.status(undefined)
     return
@@ -90,6 +115,20 @@ export const register: Register = (on, options) => {
       description: 'Toggle the pane showing the plan and its progress',
       argumentHint: '[on|off|plan|progress|<path to plan.md>]',
     })
+    // The tool is how the model reports progress; a refusal must not cost the command or the pane.
+    await $.tool.register({
+      name: TOOL,
+      description: TOOL_DESCRIPTION,
+      isDeferred: false,
+      inputSchema: {
+        type: 'object',
+        properties: {
+          steps: { type: 'array', items: { type: 'string' }, description: 'Phase ids ("2"), step ids ("2.3") or step texts' },
+          status: { type: 'string', enum: ['in_progress', 'completed', 'pending'] },
+        },
+        required: ['steps', 'status'],
+      },
+    }).catch(() => undefined)
     if (autoOpen && e.surface !== null && e.isInteractive) void $.ui.open({ id: PANE, title: TITLE })
     await refreshStatus($)
     return next(e)
@@ -145,12 +184,44 @@ export const register: Register = (on, options) => {
       const result = ran.result as { plan?: string | null; filePath?: string }
       if (result.filePath) await loadPlan($, result.filePath, false)
       else if (result.plan) {
+        await update($, marks, () => ({}))
         await update($, plan, old => ({ ...(old ?? EMPTY_PLAN), text: result.plan ?? '', isPlanMode: false }))
         await refreshStatus($)
       } else await update($, plan, old => ({ ...(old ?? EMPTY_PLAN), isPlanMode: false }))
+      // Without a word from the model nothing marks the steps: ask it to report on them.
+      const note = approvalNote((await read($, plan))?.text ?? '')
+      if (note) return { ...ran, context: [...(ran.context ?? []), note] }
     }
     return ran
   }).catch(($, e, next) => next(e))
+
+  on('tool.call', { tool: TOOL_ID }, async ($, e) => {
+    const steps = Array.isArray(e.steps) ? e.steps.map(String) : []
+    const status = e.status === 'completed' || e.status === 'pending' ? e.status : 'in_progress'
+    const p = await read($, plan)
+    const phases = parsePlan(p?.text ?? '')
+    if (phases.every(ph => ph.steps.length === 0)) {
+      return { result: 'No plan with steps is loaded, so there is nothing to mark.' }
+    }
+    const { keys, unknown } = resolveSteps(phases, steps)
+    if (keys.length > 0) {
+      await update($, marks, old => {
+        const next = { ...(old ?? {}) }
+        for (const key of keys) next[key] = status
+        return next
+      })
+      await refreshStatus($)
+    }
+    const [t, d, m] = await Promise.all([read($, tasks), read($, todos), read($, marks)])
+    const progress = progressOf(p?.text ?? '', t ?? [], d ?? [], m ?? {})
+    const lines = [
+      keys.length > 0 ? `Marked ${keys.length} step(s) ${status}. Progress: ${progress.done}/${progress.total} (${progress.percent}%).` : `Progress: ${progress.done}/${progress.total} (${progress.percent}%).`,
+      ...(unknown.length > 0 ? [`No step matches: ${unknown.join(', ')}. Use the ids below.`] : []),
+      '',
+      outline(progress.phases),
+    ]
+    return { result: lines.join('\n') }
+  })
 
   // The model edits the plan file: re-read it.
   on('tool.call', { tool: ['Write', 'Edit'] }, async ($, e, next) => {
@@ -230,10 +301,10 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button, Markdown } = $.ui.resolve(e)
-    const [p, t, d, v] = await Promise.all([read($, plan), read($, tasks), read($, todos), read($, view)])
+    const [p, t, d, v, m] = await Promise.all([read($, plan), read($, tasks), read($, todos), read($, view), read($, marks)])
     const source = p ?? EMPTY_PLAN
     const mode: PlanView = v ?? 'progress'
-    const progress = progressOf(source.text, t ?? [], d ?? [])
+    const progress = progressOf(source.text, t ?? [], d ?? [], m ?? {})
     const columns = Math.max(20, e.props.bodyColumns)
     const fileName = source.path ? source.path.split('/').pop() ?? source.path : undefined
     const barWidth = Math.max(6, Math.min(30, columns - 20))
@@ -275,10 +346,13 @@ export const register: Register = (on, options) => {
     } else {
       const rows = progress.phases.map((phase, i) => (
         <Box key={`phase:${i}`} flexDirection="column" marginTop={1}>
-          <Text weight="bold">{phase.title}</Text>
+          <Text>
+            <Text weight="bold">{phase.title}</Text>
+            {phase.steps.length > 0 && <Text dimColor tabular>  {phase.steps.filter(s => s.status === 'completed').length}/{phase.steps.length}</Text>}
+          </Text>
           {phase.steps.map(step => (
             <Text dimColor={step.status === 'pending'} wrap="truncate-end">
-              <Text color={step.status === 'completed' ? 'success' : step.status === 'in_progress' ? 'warning' : undefined}>{glyph[step.status]}</Text> {step.text}
+              <Text color={step.status === 'completed' ? 'success' : step.status === 'in_progress' ? 'warning' : undefined}>{glyph[step.status]}</Text> <Text dimColor>{step.id}</Text> {step.text}
             </Text>
           ))}
           {phase.steps.length === 0 && <Text dimColor>  (no steps listed)</Text>}

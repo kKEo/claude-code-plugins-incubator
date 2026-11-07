@@ -1,7 +1,7 @@
 {
   "name": "plan-progress",
-  "version": "0.1.0",
-  "description": "A pane showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes)",
+  "version": "0.2.0",
+  "description": "A pane showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes, steps the model marks)",
   "author": {
     "name": "Krzysztof Maziarz"
   },

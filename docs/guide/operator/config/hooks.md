@@ -34,7 +34,7 @@ This page documents `hooks/hooks.json`, the one shipped hook, its script wrapper
 
 ## Hooks modules (mods)
 
-`plan-progress` ships a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, it names one TypeScript module exporting `register(on)`, which subscribes to engine events (`session.start`, `command.run`, `tool.call`, `prompt.attachment`, `ui.render`) and draws a pane. Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. It is validated with `claude plugin validate plugins/plan-progress` and tested with `claude plugin test plugins/plan-progress`; `claude --plugin-dir plugins/plan-progress` runs it with hot reload while developing.
+`plan-progress` ships a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, it names one TypeScript module exporting `register(on)`, which subscribes to engine events (`session.start`, `command.run`, `tool.call`, `prompt.attachment`, `ui.render`) and draws a pane. It also registers a tool of its own, `mcp__plan-progress__mark_step`, which the model calls to mark plan steps done. Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. It is validated with `claude plugin validate plugins/plan-progress` and tested with `claude plugin test plugins/plan-progress`; `claude --plugin-dir plugins/plan-progress` runs it with hot reload while developing.
 
 ## The script wrapper
 

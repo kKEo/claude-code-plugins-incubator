@@ -5,7 +5,20 @@ A Claude Code mod that keeps the current plan and its progress in a pane beside 
 ## What it shows
 
 - A progress bar with the share of done items, the item being worked on now, and the plan file name.
-- **Progress view**: the plan's phases and steps (parsed from the plan markdown written in plan mode) with a glyph per step: `✓` done, `▶` in progress, `·` pending. Steps are marked from the session's tasks (TaskCreate / TaskUpdate / TaskList) or todos (TodoWrite); plan checkboxes (`- [ ]` / `- [x]`) count when there are no tasks. Tasks that match no plan step are listed below.
+- **Progress view**: the plan's phases and steps (parsed from the plan markdown written in plan mode), each step with its id (`2.3`) and a glyph: `✓` done, `▶` in progress, `·` pending. Tasks that match no plan step are listed below.
+- What counts, first match wins:
+  1. the session's tasks (TaskCreate / TaskUpdate / TaskList),
+  2. its todos (TodoWrite),
+  3. the plan's steps: its checkboxes (`- [ ]` / `- [x]`) when it has any, else every step.
+
+  Plan steps are ticked by the model through the mod's own tool, `mcp__plan-progress__mark_step` (`steps: ["2"]` for all of phase 2, `["2.3"]` for one step, `status: in_progress | completed | pending`). When a plan is approved with `ExitPlanMode`, the mod adds a note with the step outline and asks the model to report on it. Without this, a session that has no task or todo tools would always show 0%.
+
+## How the plan is split
+
+- When some heading names a unit of work (`Phase 2: …`, `Stage`, `Milestone`, `Step 3`, `1. Setup`), only those headings open phases; deeper headings inside a phase fold into it, and other sections (Context, Verification, …) are not counted.
+- Otherwise every heading opens a phase, except note sections such as Context, Background, Goals, Notes, Open questions, Risks.
+- A step is a bullet at the section's outermost indent; nested bullets are details of it. Bullets inside code fences are ignored.
+- Marks are kept by step text, so editing the plan keeps them; loading a different plan file clears them.
 - **Plan view**: the plan markdown itself.
 - A status-line entry under the prompt: `plan 3/5 ✓ · Running tests`.
 
@@ -53,7 +66,7 @@ claude --plugin-dir plugins/plan-progress
 
 ## Files
 
-- `hooks/register.tsx`: the hooks module (session start, command, plan and task collection, the pane).
+- `hooks/register.tsx`: the hooks module (session start, command, the `mark_step` tool, plan and task collection, the pane).
 - `hooks/progress.ts`: the pure plan parser and progress computation.
-- `types/index.d.ts`: the state contract (`plan`, `tasks`, `todos`, `view`).
+- `types/index.d.ts`: the state contract (`plan`, `tasks`, `todos`, `view`, `marks`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/plan-progress`.

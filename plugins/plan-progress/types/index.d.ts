@@ -27,6 +27,9 @@ export type PlanTodo = {
 
 export type PlanView = 'plan' | 'progress'
 
+/** Step statuses the model recorded with `mark_step`, keyed by the step's normalised text. */
+export type PlanMarks = Record<string, PlanStatus>
+
 declare module 'claude-code' {
   interface PluginState {
     'plan-progress': {
@@ -34,6 +37,7 @@ declare module 'claude-code' {
       tasks: PlanTask[]
       todos: PlanTodo[]
       view: PlanView
+      marks: PlanMarks
     }
   }
 }
