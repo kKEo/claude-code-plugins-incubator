@@ -41,6 +41,12 @@
       "description": "A pane beside the chat showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes)",
       "source": "./plugins/plan-progress",
       "category": "Development"
+    },
+    {
+      "name": "session-cost",
+      "description": "A pane beside the chat listing every model request with its tokens and cost (ledger share and price estimate), with session totals and history",
+      "source": "./plugins/session-cost",
+      "category": "Development"
     }
   ]
 }

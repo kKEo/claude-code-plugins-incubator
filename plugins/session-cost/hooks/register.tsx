@@ -1,0 +1,486 @@
+import { atom, read, update } from 'claude-code'
+import type { EngineInterface, Register } from 'claude-code'
+
+import type { CostView, RequestKind, RequestRow, SessionSummary, Tokens } from '../types'
+import { clockTime, count, duration, padEnd, padStart, percent, shortModel, usd } from './format'
+import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, tokenSum } from './ledger'
+import { estimate } from './pricing'
+
+const PLUGIN = 'session-cost'
+const PANE = 'session-cost'
+const TITLE = 'Session cost'
+const COMMAND = 'session-cost'
+const STORE_PREFIX = 'session:'
+const DAY_MS = 24 * 60 * 60 * 1000
+/** Rows drawn in the Requests view; older ones stay counted in the totals. */
+const DRAWN_ROWS = 300
+
+const requests = atom({ plugin: 'session-cost', key: 'requests' } as const, [] as RequestRow[])
+const totals = atom({ plugin: 'session-cost', key: 'totals' } as const, emptyTotals())
+const ledger = atom({ plugin: 'session-cost', key: 'ledger' } as const, EMPTY_LEDGER)
+const view = atom({ plugin: 'session-cost', key: 'view' } as const, 'requests' as CostView)
+
+type Engine = EngineInterface
+
+/** From the manifest's userConfig; the module reloads with new values on a change. */
+let isStatusLineOn = true
+let historyDays = 30
+/** Model requests whose response has not ended yet; the ledger is read when it drops to 0. */
+let inFlight = 0
+/** Serialises state writes so rows, totals and ledger move together. */
+let queue: Promise<unknown> = Promise.resolve()
+
+function serial<T>(work: () => Promise<T>): Promise<T> {
+  const run = queue.then(work, work)
+  queue = run.catch(() => undefined)
+  return run
+}
+
+async function ledgerUsd($: Engine): Promise<number | undefined> {
+  try {
+    return (await $.session.usage()).cost?.usd
+  } catch {
+    return undefined
+  }
+}
+
+async function record($: Engine, row: Omit<RequestRow, 'seq' | 'estUsd' | 'ledgerUsd' | 'isApprox'>): Promise<void> {
+  await serial(async () => {
+    const t = (await read($, totals)) ?? emptyTotals()
+    const full: RequestRow = {
+      ...row,
+      seq: t.requests + 1,
+      estUsd: estimate(row.model, row),
+      ledgerUsd: null,
+      isApprox: false,
+    }
+    await update($, requests, rows => appendRow(rows ?? [], full))
+    await update($, totals, old => addRow(old ?? emptyTotals(), full))
+    await update($, ledger, old => ({ ...(old ?? EMPTY_LEDGER), pending: [...(old ?? EMPTY_LEDGER).pending, full.seq] }))
+  })
+}
+
+/** Reads /cost and hands the delta to the requests that finished since the last read. */
+async function settleLedger($: Engine): Promise<void> {
+  const now = await ledgerUsd($)
+  if (now === undefined) return
+  await serial(async () => {
+    const [rows, t, l] = await Promise.all([read($, requests), read($, totals), read($, ledger)])
+    const applied = applyLedger(rows ?? [], t ?? emptyTotals(), l ?? EMPTY_LEDGER, now)
+    await update($, requests, () => applied.rows)
+    await update($, totals, () => applied.totals)
+    await update($, ledger, () => applied.ledger)
+  })
+  await refreshStatus($)
+}
+
+async function refreshStatus($: Engine): Promise<void> {
+  if (!isStatusLineOn) {
+    $.ui.status(undefined)
+    return
+  }
+  const [t, l] = await Promise.all([read($, totals), read($, ledger)])
+  if (!t || t.requests === 0) {
+    $.ui.status(undefined)
+    return
+  }
+  $.ui.status(`${usd(l?.sessionUsd ?? t.ledgerUsd)} · ${t.requests} req · ${count(tokenSum(t))} tok`)
+}
+
+// ── history across sessions ──────────────────────────────────────────────────
+
+async function saveSummary($: Engine, sessionId?: string): Promise<void> {
+  try {
+    const [t, l] = await Promise.all([read($, totals), read($, ledger)])
+    if (!t || t.requests === 0) return
+    const id = sessionId ?? (await $.session.id())
+    const usage = await $.session.usage()
+    const summary: SessionSummary = {
+      startedAt: usage.startedAt,
+      lastAt: await $.clock.now(),
+      ledgerUsd: l?.sessionUsd ?? t.ledgerUsd,
+      estUsd: t.estUsd,
+      requests: t.requests,
+      input: t.input,
+      output: t.output,
+      cacheRead: t.cacheRead,
+      cacheWrite: t.cacheWrite,
+    }
+    await $.store.set(STORE_PREFIX + id, summary)
+  } catch {
+    // History is a convenience; never fail a turn over it.
+  }
+}
+
+async function loadHistory($: Engine): Promise<Array<SessionSummary & { id: string }>> {
+  try {
+    const keys = (await $.store.keys()).filter(k => k.startsWith(STORE_PREFIX))
+    const values = await Promise.all(keys.map(k => $.store.get(k)))
+    return keys
+      .map((k, i) => ({ id: k.slice(STORE_PREFIX.length), ...(values[i] as SessionSummary) }))
+      .filter(s => typeof s.lastAt === 'number')
+  } catch {
+    return []
+  }
+}
+
+async function pruneHistory($: Engine): Promise<void> {
+  const now = await $.clock.now()
+  for (const s of await loadHistory($)) {
+    if (now - s.lastAt > historyDays * DAY_MS) await $.store.delete(STORE_PREFIX + s.id)
+  }
+}
+
+function startOfDay(ms: number): number {
+  const d = new Date(ms)
+  d.setHours(0, 0, 0, 0)
+  return d.getTime()
+}
+
+// ── pane toggle ──────────────────────────────────────────────────────────────
+
+async function isOpen($: Engine): Promise<boolean> {
+  return (await $.ui.panes()).some(pane => pane.id === PANE)
+}
+
+async function toggle($: Engine): Promise<string> {
+  if (await isOpen($)) {
+    await $.ui.close({ id: PANE })
+    return 'Session cost pane closed.'
+  }
+  const opened = await $.ui.open({ id: PANE, title: TITLE })
+  return opened.isPlaced ? 'Session cost pane opened.' : `Session cost pane waits for a wider terminal (${opened.reason}).`
+}
+
+async function reset($: Engine): Promise<void> {
+  await serial(async () => {
+    const now = (await ledgerUsd($)) ?? 0
+    await update($, requests, () => [])
+    await update($, totals, () => emptyTotals())
+    await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [] }))
+  })
+  await refreshStatus($)
+}
+
+const VIEWS: readonly CostView[] = ['requests', 'models', 'history']
+
+export const register: Register = (on, options) => {
+  const autoOpen = options.autoOpen === true
+  const isBandOn = options.band !== false
+  const toggleAction = typeof options.toggleAction === 'string' && options.toggleAction !== '' ? options.toggleAction : 'app:toggleReplTab'
+  isStatusLineOn = options.statusLine !== false
+  historyDays = typeof options.historyDays === 'number' && options.historyDays > 0 ? options.historyDays : 30
+  inFlight = 0
+
+  on('session.start', async ($, e, next) => {
+    await $.command.register({
+      name: COMMAND,
+      description: 'Toggle the pane listing every model request with its tokens and cost',
+      argumentHint: '[on|off|requests|models|history|reset]',
+    })
+    // A reload keeps the rows; spend before the first new request is not theirs.
+    const now = await ledgerUsd($)
+    if (now !== undefined) {
+      await serial(async () => {
+        await update($, ledger, old => ({ ...(old ?? EMPTY_LEDGER), lastUsd: now, sessionUsd: now, pending: [] }))
+      })
+    }
+    void pruneHistory($)
+    if (autoOpen && e.surface !== null && e.isInteractive) void $.ui.open({ id: PANE, title: TITLE })
+    await refreshStatus($)
+    return next(e)
+  })
+
+  // Every model request, main loop and subagents alike.
+  on('turn.step', async function* ($, e, next) {
+    let startedAt = 0
+    try {
+      startedAt = await $.clock.now()
+    } catch {
+      startedAt = 0
+    }
+    inFlight += 1
+    let result
+    try {
+      result = yield* next(e)
+      return result
+    } finally {
+      inFlight = Math.max(0, inFlight - 1)
+      try {
+        const ended = await $.clock.now()
+        const u = result?.usage ?? null
+        const tokens: Tokens = {
+          input: u?.input_tokens ?? 0,
+          output: u?.output_tokens ?? 0,
+          cacheRead: u?.cache_read_input_tokens ?? 0,
+          cacheWrite: u?.cache_creation_input_tokens ?? 0,
+        }
+        const kind: RequestKind = e.agentId === undefined ? 'main' : 'subagent'
+        await record($, {
+          ...tokens,
+          at: ended,
+          durationMs: startedAt > 0 ? ended - startedAt : 0,
+          turnId: e.turnId,
+          index: e.index,
+          agentId: e.agentId,
+          kind,
+          model: u?.model ?? e.model,
+          stopReason: result?.stopReason ?? null,
+        })
+        if (inFlight === 0) await settleLedger($)
+        else await refreshStatus($)
+      } catch {
+        // Recording is best effort; the request itself is untouched.
+      }
+    }
+  })
+
+  on('session.compact', async ($, e, next) => {
+    const startedAt = await $.clock.now()
+    const ran = await next(e)
+    try {
+      if (ran.messages !== undefined && ran.usage) {
+        const ended = await $.clock.now()
+        await record($, {
+          input: ran.usage.input_tokens,
+          output: ran.usage.output_tokens,
+          cacheRead: ran.usage.cache_read_input_tokens,
+          cacheWrite: ran.usage.cache_creation_input_tokens,
+          at: ended,
+          durationMs: ended - startedAt,
+          turnId: 'compact',
+          index: 0,
+          agentId: e.agentId,
+          kind: 'compact',
+          model: await $.session.model(),
+          stopReason: null,
+        })
+        if (inFlight === 0) await settleLedger($)
+      }
+    } catch {
+      // best effort
+    }
+    return ran
+   }).catch(($, e, next) => next(e))
+
+  // A turn's end: settle anything the ledger added late, and keep history current.
+  on('turn.complete', async ($, e, next) => {
+    const ran = await next(e)
+    if (inFlight === 0) await settleLedger($)
+    if (e.agentId === undefined) await saveSummary($)
+    return ran
+  })
+
+  on('session.end', async ($, e, next) => {
+    await saveSummary($, e.sessionId)
+    if (e.reason === 'clear') {
+      await serial(async () => {
+        await update($, requests, () => [])
+        await update($, totals, () => emptyTotals())
+        await update($, ledger, () => EMPTY_LEDGER)
+      })
+      $.ui.status(undefined)
+    }
+    return next(e)
+  })
+
+  on('command.run', { command: COMMAND }, async ($, e) => {
+    const arg = e.args.trim().toLowerCase()
+    if (arg === 'off' || arg === 'close' || arg === 'hide') {
+      if (await isOpen($)) await $.ui.close({ id: PANE })
+      return { text: 'Session cost pane closed.' }
+    }
+    if (arg === 'reset') {
+      await reset($)
+      return { text: 'Session cost: this session’s request list and totals were cleared.' }
+    }
+    if ((VIEWS as readonly string[]).includes(arg)) {
+      await update($, view, () => arg as CostView)
+      const opened = await $.ui.open({ id: PANE, title: TITLE })
+      return { text: opened.isPlaced ? `Session cost pane: ${arg} view.` : `Session cost pane waits for a wider terminal (${opened.reason}).` }
+    }
+    if (arg === 'on' || arg === 'open' || arg === 'show') {
+      const opened = await $.ui.open({ id: PANE, title: TITLE })
+      return { text: opened.isPlaced ? 'Session cost pane opened.' : `Session cost pane waits for a wider terminal (${opened.reason}).` }
+    }
+    if (arg !== '' && arg !== 'toggle') {
+      return { text: `Unknown argument "${arg}". Use: on, off, requests, models, history or reset.` }
+    }
+    return { text: await toggle($) }
+  }).catch(async () => ({ text: 'Session cost: the command failed; see the debug log.' }))
+
+  // The chip above the prompt; its Button carries the keyboard toggle.
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    if (!isBandOn || e.props.hasSurvey) return next(e)
+    const { Box, Text, Button } = $.ui.resolve(e)
+    const [t, l] = await Promise.all([read($, totals), read($, ledger)])
+    const below = await next(e)
+    const spent = usd(l?.sessionUsd ?? t?.ledgerUsd ?? 0)
+    const chip = (
+      <Box key="session-cost-chip" flexDirection="row" gap={1}>
+        <Text dimColor>
+          {spent} · {t?.requests ?? 0} req · {count(t ? tokenSum(t) : 0)} tok
+        </Text>
+        <Button key="session-cost-toggle" label="usage" plain action={toggleAction} onPress={() => toggle($)} />
+      </Box>
+    )
+    return (
+      <Box flexDirection="column">
+        {chip}
+        {below}
+      </Box>
+    )
+  })
+
+  on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
+    const { Box, Text, Button } = $.ui.resolve(e)
+    const [rows, t0, l, v] = await Promise.all([read($, requests), read($, totals), read($, ledger), read($, view)])
+    const t = t0 ?? emptyTotals()
+    const mode: CostView = v ?? 'requests'
+    const sessionUsd = l?.sessionUsd ?? t.ledgerUsd
+    const unattributed = sessionUsd - t.ledgerUsd
+
+    const tabs = (
+      <Box flexDirection="row" gap={1}>
+        <Button key="view:requests" hotkey="r" variant={mode === 'requests' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'requests')}>
+          Requests
+        </Button>
+        <Button key="view:models" hotkey="m" variant={mode === 'models' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'models')}>
+          Models
+        </Button>
+        <Button key="view:history" hotkey="h" variant={mode === 'history' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'history')}>
+          History
+        </Button>
+      </Box>
+    )
+
+    const header = (
+      <Box flexDirection="column">
+        <Text>
+          <Text weight="bold" color="claude">{usd(sessionUsd)}</Text>
+          <Text dimColor> /cost</Text>
+          <Text>  est {usd(t.estUsd)}{t.hasUnpriced ? '+' : ''}</Text>
+          <Text dimColor>  {t.requests} req</Text>
+        </Text>
+        <Text tabular>
+          in {count(t.input)} · out {count(t.output)} · cache r {count(t.cacheRead)} · w {count(t.cacheWrite)}
+        </Text>
+        <Text dimColor>
+          cache hit {percent(cacheHit(t))} · main {t.byKind.main} · sub {t.byKind.subagent} · compact {t.byKind.compact}
+          {Math.abs(unattributed) >= 0.00005 ? ` · unattributed ${usd(unattributed)}` : ''}
+        </Text>
+      </Box>
+    )
+
+    let body
+    if (mode === 'requests') {
+      const list = (rows ?? []).slice(-DRAWN_ROWS).reverse()
+      body =
+        list.length === 0 ? (
+          <Text dimColor>No requests yet. Every model request of this session will be listed here.</Text>
+        ) : (
+          <Box flexDirection="column">
+            {list.map(r => {
+              const who = r.kind === 'main' ? 'main' : r.kind === 'compact' ? 'compact' : `sub:${(r.agentId ?? '').slice(0, 6)}`
+              const ledgerText = r.ledgerUsd === null ? '…' : `${r.isApprox ? '~' : ''}${usd(r.ledgerUsd)}`
+              return (
+                <Box key={`req:${r.seq}`} flexDirection="column">
+                  <Text wrap="truncate-end">
+                    <Text dimColor>#{r.seq} {clockTime(r.at)}</Text> {shortModel(r.model)} <Text color={r.kind === 'main' ? undefined : 'warning'}>{who}</Text>
+                    <Text dimColor> {duration(r.durationMs)}{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
+                  </Text>
+                  <Text wrap="truncate-end" tabular>
+                    {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)} cr {padStart(count(r.cacheRead), 5)} cw {padStart(count(r.cacheWrite), 5)}
+                    {'  '}<Text color="success">{ledgerText}</Text>
+                    <Text dimColor> / est {usd(r.estUsd)}</Text>
+                  </Text>
+                </Box>
+              )
+            })}
+            {(rows ?? []).length > DRAWN_ROWS || t.requests > (rows ?? []).length ? (
+              <Text dimColor>
+                Showing the newest {Math.min(DRAWN_ROWS, (rows ?? []).length)} of {t.requests}; totals include all.
+              </Text>
+            ) : null}
+          </Box>
+        )
+    } else if (mode === 'models') {
+      const models = Object.entries(t.byModel).sort((a, b) => b[1].ledgerUsd + b[1].estUsd - (a[1].ledgerUsd + a[1].estUsd))
+      const nameWidth = Math.min(18, Math.max(8, ...models.map(([m]) => shortModel(m).length)))
+      body =
+        models.length === 0 ? (
+          <Text dimColor>No requests yet.</Text>
+        ) : (
+          <Box flexDirection="column">
+            {models.map(([m, s]) => (
+              <Box key={`model:${m}`} flexDirection="column">
+                <Text wrap="truncate-end">
+                  <Text weight="bold">{padEnd(shortModel(m), nameWidth)}</Text> {padStart(String(s.requests), 4)} req  <Text color="success">{usd(s.ledgerUsd)}</Text>
+                  <Text dimColor> / est {usd(s.estUsd)}</Text>
+                </Text>
+                <Text wrap="truncate-end" dimColor tabular>
+                  {'  '}in {count(s.input)} · out {count(s.output)} · cr {count(s.cacheRead)} · cw {count(s.cacheWrite)} · hit {percent(cacheHit(s))}
+                </Text>
+              </Box>
+            ))}
+          </Box>
+        )
+    } else {
+      const now = await $.clock.now()
+      const history = await loadHistory($)
+      const currentId = await $.session.id()
+      const others = history.filter(s => s.id !== currentId)
+      const current: SessionSummary = {
+        startedAt: 0,
+        lastAt: now,
+        ledgerUsd: sessionUsd,
+        estUsd: t.estUsd,
+        requests: t.requests,
+        input: t.input,
+        output: t.output,
+        cacheRead: t.cacheRead,
+        cacheWrite: t.cacheWrite,
+      }
+      const all = [...others, current]
+      const since = (from: number) => all.filter(s => s.lastAt >= from)
+      const line = (label: string, list: SessionSummary[]) => {
+        const spent = list.reduce((a, s) => a + s.ledgerUsd, 0)
+        const reqs = list.reduce((a, s) => a + s.requests, 0)
+        const toks = list.reduce((a, s) => a + tokenSum(s), 0)
+        return (
+          <Text key={`hist:${label}`} wrap="truncate-end" tabular>
+            {padEnd(label, 14)} <Text color="success">{padStart(usd(spent), 9)}</Text>  {padStart(String(reqs), 5)} req  {padStart(count(toks), 6)} tok
+            <Text dimColor>  {list.length} session{list.length === 1 ? '' : 's'}</Text>
+          </Text>
+        )
+      }
+      const recent = others.sort((a, b) => b.lastAt - a.lastAt).slice(0, 10)
+      body = (
+        <Box flexDirection="column">
+          {line('This session', [current])}
+          {line('Today', since(startOfDay(now)))}
+          {line('Last 7 days', since(now - 7 * DAY_MS))}
+          {line(`Last ${historyDays} days`, since(now - historyDays * DAY_MS))}
+          {recent.length > 0 && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text weight="bold">Recent sessions</Text>
+              {recent.map(s => (
+                <Text key={`sess:${s.id}`} wrap="truncate-end" dimColor tabular>
+                  {new Date(s.lastAt).toISOString().slice(0, 16).replace('T', ' ')} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
+                </Text>
+              ))}
+            </Box>
+          )}
+        </Box>
+      )
+    }
+
+    return (
+      <Box flexDirection="column" gap={1}>
+        {tabs}
+        {header}
+        {body}
+      </Box>
+    )
+  })
+}

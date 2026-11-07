@@ -1,0 +1,49 @@
+{
+  "name": "session-cost",
+  "version": "0.1.0",
+  "description": "A pane listing every model request of the session with its tokens and cost, beside the session totals and history",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": [
+    "cost",
+    "usage",
+    "tokens",
+    "pane",
+    "mod"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "autoOpen": {
+      "type": "boolean",
+      "title": "Open pane at start",
+      "description": "Open the Session cost pane by itself when a session starts",
+      "default": false
+    },
+    "statusLine": {
+      "type": "boolean",
+      "title": "Cost status line",
+      "description": "Show the session cost, request count and tokens under the prompt",
+      "default": true
+    },
+    "band": {
+      "type": "boolean",
+      "title": "Cost chip above the prompt",
+      "description": "Show a one-line cost chip above the prompt; its button carries the keyboard toggle",
+      "default": true
+    },
+    "toggleAction": {
+      "type": "string",
+      "title": "Toggle key action",
+      "description": "The engine keybinding action whose chord toggles the pane; bind a chord to it in ~/.claude/keybindings.json",
+      "options": ["app:toggleReplTab", "app:toggleDiffNoiseFilter", "app:toggleDiffPreSession", "app:redraw"],
+      "default": "app:toggleReplTab"
+    },
+    "historyDays": {
+      "type": "number",
+      "title": "History days",
+      "description": "How many days of per-session totals to keep for the History view",
+      "default": 30
+    }
+  }
+}
