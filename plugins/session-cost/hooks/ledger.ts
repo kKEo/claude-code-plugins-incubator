@@ -97,12 +97,12 @@ export function applyLedger(
   totals: Totals,
   ledger: Ledger,
   usd: number,
-): { rows: RequestRow[]; totals: Totals; ledger: Ledger } {
+): { rows: RequestRow[]; totals: Totals; ledger: Ledger; shares: Share[]; unattributedUsd: number } {
   const delta = usd >= ledger.lastUsd ? usd - ledger.lastUsd : usd
   const shares = splitDelta(rows, ledger.pending, delta)
   if (shares.length === 0) {
     // Nothing to attribute: spend outside any request we saw stays in the header total.
-    return { rows: [...rows], totals, ledger: { lastUsd: usd, sessionUsd: usd, pending: [] } }
+    return { rows: [...rows], totals, ledger: { lastUsd: usd, sessionUsd: usd, pending: [] }, shares, unattributedUsd: delta }
   }
   const bySeq = new Map(shares.map(s => [s.seq, s]))
   const byModel = { ...totals.byModel }
@@ -117,6 +117,8 @@ export function applyLedger(
     rows: nextRows,
     totals: { ...totals, ledgerUsd: totals.ledgerUsd + sum(shares.map(s => s.usd)), byModel },
     ledger: { lastUsd: usd, sessionUsd: usd, pending: [] },
+    shares,
+    unattributedUsd: 0,
   }
 }
 

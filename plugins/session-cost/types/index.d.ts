@@ -58,7 +58,20 @@ export type Ledger = {
   pending: number[]
 }
 
-export type CostView = 'requests' | 'models' | 'history'
+export type CostView = 'requests' | 'models' | 'history' | 'days'
+
+/** What one calendar day (local time) of a session spent; a request counts on the day its response ended. */
+export type DayTotals = Tokens & {
+  requests: number
+  estUsd: number
+  /** Ledger shares of that day's requests. */
+  ledgerUsd: number
+  /** /cost growth read that day while no request was waiting for it. */
+  otherUsd: number
+}
+
+/** Day buckets keyed by local `YYYY-MM-DD`. */
+export type DayMap = Record<string, DayTotals>
 
 /** One session's totals as kept across sessions in `$.store`. */
 export type SessionSummary = Tokens & {
@@ -67,6 +80,8 @@ export type SessionSummary = Tokens & {
   ledgerUsd: number
   estUsd: number
   requests: number
+  /** The session split by day; absent on summaries saved before days were kept. */
+  days?: DayMap
 }
 
 declare module 'claude-code' {
@@ -76,6 +91,7 @@ declare module 'claude-code' {
       totals: Totals
       ledger: Ledger
       view: CostView
+      days: DayMap
     }
   }
 }

@@ -56,6 +56,11 @@ test('applying a reading updates rows, totals and the ledger; a lower total mean
   expect(near(first.totals.ledgerUsd, 0.02)).toBe(true)
   expect(near(first.totals.byModel['claude-opus-5-5']?.ledgerUsd, 0.02)).toBe(true)
   expect(first.ledger).toEqual({ lastUsd: 0.52, sessionUsd: 0.52, pending: [] })
+  expect(first.shares.map(s => s.seq)).toEqual([1])
+  expect(first.unattributedUsd).toBe(0)
+  const idle = applyLedger(first.rows, first.totals, first.ledger, 0.53)
+  expect(idle.shares).toEqual([])
+  expect(near(idle.unattributedUsd, 0.01)).toBe(true)
 
   totals = addRow(first.totals, row(2))
   const restarted = applyLedger([...first.rows, row(2)], totals, { ...first.ledger, pending: [2] }, 0.01)

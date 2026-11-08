@@ -7,7 +7,9 @@ A Claude Code mod that records every model request the session sends and shows i
 - **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate and requests by kind (main, subagent, compaction).
 - **Requests view** (`r`): one entry per request, newest first. It shows the time, model, `main` / `sub:<agent>` / `compact`, duration, stop reason, the four token counts, and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
 - **Models view** (`m`): requests, tokens, cache hit rate and both costs per model.
-- **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions.
+- **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. The windows are calendar days and count only the part of each session spent in them.
+- **Days view** (`d`): one row per day with spend in the last `historyDays` days, newest first: this session's cost and requests beside the cost of all sessions and how many had spend that day. A session open across several days says how many it spans.
+- In the Requests view, a dim `── Sat 07 Nov ──` row marks where the day changes.
 - A status-line entry under the prompt: `$0.544 · 3 req · 130k tok`.
 - A one-line chip above the prompt (`$0.544 · 3 req · 130k tok  usage`). Its button toggles the pane and carries the keyboard shortcut.
 
@@ -17,12 +19,16 @@ Claude Code reports dollars only as the running session total (the `/cost` ledge
 
 The **estimate** prices the token counts with a built-in table of Anthropic first-party list prices (`hooks/pricing.ts`). It cannot see fast mode, partner pricing (Bedrock, Vertex) or prices that changed after the table was written. An unknown model shows `?`.
 
+### How days are counted
+
+A request counts on the local calendar day its response ended, so one session can spread over several days. Ledger shares follow their request's day; `/cost` growth read while no request was waiting counts on the day it was read. Spend from before the mod loaded is in no day. A session that was already running when this version loaded has its days rebuilt from its kept rows, with anything past the 1000-row cap on the earliest day. Sessions saved by an older version count whole on the day of their last request.
+
 ## Command
 
 ```
 /session-cost                 toggle the pane
 /session-cost on|off          open or close it explicitly
-/session-cost requests|models|history   open it on that view
+/session-cost requests|models|history|days   open it on that view
 /session-cost reset           clear this session's request list and totals
 ```
 
@@ -54,12 +60,12 @@ These appear in `/config` under the plugin and are stored in `pluginConfigs["ses
 | `statusLine` | `true` | Show the `$… · n req · … tok` summary under the prompt. |
 | `band` | `true` | Show the cost chip above the prompt. The keyboard toggle needs it. |
 | `toggleAction` | `app:toggleReplTab` | The engine action the chip's button borrows for the keyboard toggle. |
-| `historyDays` | `30` | How many days of per-session totals to keep. |
+| `historyDays` | `30` | How many days of per-session, per-day totals to keep. |
 
 ## Data
 
-- The request list (the newest 1000) and the running totals live in the session's plugin state, so they survive `/reload-plugins` and a change of settings. Totals keep counting past 1000 requests.
-- Per-session totals are kept across sessions in the plugin's store and pruned after `historyDays`.
+- The request list (the newest 1000), the running totals and the day split live in the session's plugin state, so they survive `/reload-plugins` and a change of settings. Totals keep counting past 1000 requests.
+- Per-session totals, split by day, are kept across sessions in the plugin's store. Days older than `historyDays` are pruned, and a session is removed once it has none left.
 - `/clear` saves the ending session's totals to history and starts the list over.
 
 ## Install
@@ -81,7 +87,8 @@ claude --plugin-dir plugins/session-cost
 
 - `hooks/register.tsx`: the hooks module (request collection, ledger reads, history, command, chip and pane).
 - `hooks/ledger.ts`: totals, the row cap and the ledger-delta split.
+- `hooks/days.ts`: day keys, the per-day buckets, backfill and history windows.
 - `hooks/pricing.ts`: the price table and the estimate.
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
-- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`).
+- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.

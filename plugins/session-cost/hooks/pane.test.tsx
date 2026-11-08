@@ -30,10 +30,10 @@ const BAND = {
 } as const
 
 /** The engine beneath the plugin: a /cost ledger the test moves, panes, store and clock. */
-function engine(on: On) {
+function engine(on: On, store: Record<string, unknown> = {}) {
   const state = { usd: 0.5, open: false }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
-  mock.store(on)
+  mock.store(on, store)
   on('command.register', () => ({ value: { command: 'session-cost' } }))
   on('ui.open', () => { state.open = true; return { value: { isPlaced: true } } })
   on('ui.close', () => { state.open = false; return { value: undefined } })
@@ -135,4 +135,43 @@ test('the slash command toggles the pane, switches views and resets', async ($, 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(await ui.find({ type: 'Text', text: /0 req/ })).toBeDefined()
   await ui.unmount()
+})
+
+/** Local time on a January 2027 day, after the mocked clock's start in any time zone. */
+const jan = (d: number, h: number) => new Date(2027, 0, d, h).getTime()
+
+test('a session that crosses midnight is split by day in the Days tab and in History', async ($, on) => {
+  // An older session saved before days were kept: it counts whole on its last day.
+  const old = { startedAt: jan(16, 9), lastAt: jan(16, 10), ledgerUsd: 1, estUsd: 1, requests: 5, input: 1, output: 1, cacheRead: 1, cacheWrite: 1 }
+  const { clock } = engine(on, { 'session:old': old })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await clock.set(jan(15, 23))
+  await step($, 0)
+  await clock.set(jan(16, 1))
+  await step($, 1)
+  await step($, 2)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  const run = (args: string) =>
+    $.command.run({ command: 'session-cost', args, origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
+  expect((await run('days')).text).toMatch(/days view/)
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    const sat = await ui.find({ type: 'Text', text: /Sat 16 Jan/ })
+    expect(sat?.text).toMatch(/\$0\.040\s+2 req\s+\$1\.040\s+2 sess/)
+    expect(sat?.text).toMatch(/today/)
+    expect((await ui.find({ type: 'Text', text: /Fri 15 Jan/ }))?.text).toMatch(/\$0\.020\s+1 req\s+\$0\.020\s+1 sess/)
+    expect(await ui.find({ type: 'Text', text: /spans 2 days/ })).toBeDefined()
+
+    await ui.press({ key: 'view:history' })
+    expect((await ui.find({ type: 'Text', text: /^Today/ }))?.text).toMatch(/\$1\.040\s+7 req/)
+    expect((await ui.find({ type: 'Text', text: /^Last 7 days/ }))?.text).toMatch(/\$1\.060\s+8 req/)
+
+    await ui.press({ key: 'view:requests' })
+    expect(await ui.find({ type: 'Text', text: /── Fri 15 Jan ──/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /── Sat 16 Jan ──/ })).toBeDefined()
+    await ui.press({ key: 'view:days' })
+    await ui.unmount()
+  }
 })
