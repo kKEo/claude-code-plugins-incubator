@@ -12,6 +12,8 @@ This page defines the words this guide uses, in the sense they have here.
 
 **Marketplace.** A list of plugins that Claude Code can install from. This repository is one marketplace, named `km-plugin-registry`.
 
+**Mod.** A plugin that draws into the Claude Code interface, such as a pane beside the chat, a status line or a chip above the prompt, from a TypeScript module. It does this instead of adding skills or agents. plan-progress and session-cost are mods.
+
 **Phase.** One stage of building a feature: specification, design, implementation, deployment or testing.
 
 **Plugin.** A folder of skills, agents and hooks that extends what Claude can do. You install a plugin from a marketplace.

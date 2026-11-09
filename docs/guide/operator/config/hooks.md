@@ -1,6 +1,6 @@
 # Hooks
 
-This page documents `hooks/hooks.json`, the one shipped hook, its script wrapper and the environment it runs in.
+This page documents `hooks/hooks.json` in its two forms: the shell-command hooks that feature-dev-documentalist and memors-hooks ship, and the TypeScript modules that mods use. It also covers the script wrapper and the environment they run in.
 
 ## hooks.json
 
@@ -32,9 +32,16 @@ This page documents `hooks/hooks.json`, the one shipped hook, its script wrapper
 | `async` | `true` runs without blocking the turn; output arrives when ready | `true` |
 | `timeout` | Seconds before the hook is killed; default 60 | not set |
 
+memors-hooks uses the same form with five events: `SessionStart` (`orient`), `UserPromptSubmit` (`recall`, opt-in), `PreToolUse` on `Bash` (`guard-cli`, the only hook that can block), `PostToolUse` (`check-known-source` and `track`) and `Stop` (`nudge-remember`). Each sets its own `timeout`, and each runs through the same `run-hook.cmd` wrapper described below.
+
 ## Hooks modules (mods)
 
-`plan-progress` ships a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, it names one TypeScript module exporting `register(on)`, which subscribes to engine events (`session.start`, `command.run`, `tool.call`, `prompt.attachment`, `ui.render`) and draws a pane. It also registers a tool of its own, `mcp__plan-progress__mark_step`, which the model calls to mark plan steps done. Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. It is validated with `claude plugin validate plugins/plan-progress` and tested with `claude plugin test plugins/plan-progress`; `claude --plugin-dir plugins/plan-progress` runs it with hot reload while developing.
+`plan-progress` and `session-cost` ship a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, each names one TypeScript module exporting `register(on, options)`, where `options` holds the plugin's `/config` values. The module subscribes to engine events and draws into the interface.
+
+- plan-progress subscribes to `session.start`, `command.run`, `tool.call`, `prompt.attachment` and `ui.render`, and draws a pane. It registers a tool of its own, `mcp__plan-progress__mark_step`, which the model calls to mark plan steps done.
+- session-cost subscribes to `session.start`, `turn.step` (every model request), `session.compact`, `turn.complete`, `session.end`, `command.run` and `ui.render`. It reads the `/cost` ledger through `$.session.usage()`, keeps per-session totals across sessions in `$.store`, and borrows an engine keybinding action (`toggleAction`) for its chip's button, so a user's chord can toggle the pane. It registers no tool.
+
+Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. Each is validated with `claude plugin validate plugins/<name>` and tested with `claude plugin test plugins/<name>`; `claude --plugin-dir plugins/<name>` runs it with hot reload while developing.
 
 ## The script wrapper
 

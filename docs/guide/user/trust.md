@@ -4,9 +4,14 @@ This page says what each plugin reads, what it writes and what it runs without b
 
 ## What runs on its own
 
-Only one thing happens without a prompt. **feature-dev-documentalist** registers a small script that runs at the end of each Claude turn. The script asks git for the branch name and whether there are uncommitted changes, and looks for a folder under `docs/features/`. If you are on a feature branch with changes and no folder, it adds a one-line tip to the conversation. It does not read file contents, write files or send anything anywhere. On `main`, `master`, `develop`, `development` and `trunk` it does nothing.
+Several plugins act without a prompt. Each is listed here, with the switch that turns it off where there is one.
 
-The other two plugins only act when you ask.
+- **feature-dev-documentalist** registers a small script that runs at the end of each Claude turn. The script asks git for the branch name and whether there are uncommitted changes, and looks for a folder under `docs/features/`. If you are on a feature branch with changes and no folder, it adds a one-line tip to the conversation. It does not read file contents, write files or send anything anywhere. On `main`, `master`, `develop`, `development` and `trunk` it does nothing.
+- **memors-hooks** runs at the start of a session, before each Bash command, after web fetches, at the end of each turn and, if enabled, on each prompt. At the start of a session it adds an index of the knowledge base (titles and addresses, no passage text) to the conversation. It can block a Bash command that changes trust or writes to the knowledge base. It can point at a page already stored after a web fetch, and add one reminder at the end of a turn. With `MEMORS_HOOK_RECALL=1` it adds up to three matching addresses to a prompt. Its hooks never write to the knowledge base.
+- **session-cost** records every model request as its response ends, with its token counts and cost. Its summary under the prompt and its chip are on by default, and both can be switched off in `/config`. It opens its pane by itself only when *Open pane at start* is on, which it is not by default.
+- **plan-progress** opens its pane by itself in a wide fullscreen terminal, unless *Open pane at start* is switched off in `/config`. Once you approve a plan, it asks Claude to report progress through its `mark_step` tool.
+
+The other plugins (frontend-scaffold, gitbook-docs-validator and implementation-spec) act only when you ask.
 
 ## What is written to disk
 
@@ -15,13 +20,17 @@ The other two plugins only act when you ask.
 | frontend-scaffold | A new project folder at the location you choose (default: a folder named after the project in the current directory). It also runs `npm install` and `npm run build` there. |
 | feature-dev-documentalist | Markdown files under `docs/features/<date>-<branch>/` in the current repository. It asks before overwriting an existing file. |
 | gitbook-docs-validator | Nothing, unless you ask it to fix findings or to save a report to a file. |
+| implementation-spec | A spec file, `docs/specs/<date>-<slug>.md`, in the current repository. Asking again for the same feature updates that file. |
+| memors-hooks | A log of web fetches, empty searches and write-backs in the system's temporary folder (`$TMPDIR/memors-hooks/`), read by the end-of-turn reminder. The hooks write nothing to the knowledge base. The `memors` server writes to its own store (`~/.memors-mcp` by default) only when Claude records or ingests something. |
+| session-cost | Per-session totals, split by day, in the plugin's store. Days older than *History days* (30 by default) are removed. Nothing is written into your project. |
+| plan-progress | Nothing on disk. Its state lives in the session, and it reads the plan file without changing it. |
 
 ## What is read
 
-All three plugins read files in the current project through Claude, in the same way Claude reads files when you ask it a question. **gitbook-docs-validator** also runs a Python script that reads the documentation folder and, when asked, the repository's README, Makefile and workflow files.
+frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator and implementation-spec read files in the current project through Claude, in the same way Claude reads files when you ask it a question. **gitbook-docs-validator** also runs a Python script that reads the documentation folder and, when asked, the repository's README, Makefile and workflow files. **session-cost** reads the session's `/cost` total and each request's token counts and model name, never file contents. **plan-progress** reads the plan file and the task and todo lists Claude keeps. **memors-hooks** reads the knowledge base's titles, addresses and trust levels, and the URLs and search terms Claude uses. It does not read your project's files.
 
 ## Where data goes
 
-Nothing in these plugins talks to a network service of its own. Files that Claude reads are sent to the model as part of the conversation, exactly as they are when you work without plugins. The only network activity is `npm install` in a scaffolded project, which fetches packages from the npm registry.
+Nothing in these plugins talks to a network service of its own. The `memors` server runs locally, and session-cost's price table is built into the plugin, so its estimates need no lookup. Files that Claude reads are sent to the model as part of the conversation, exactly as they are when you work without plugins. The only network activity is `npm install` in a scaffolded project, which fetches packages from the npm registry.
 
 > **Note.** The validator's Python script needs only Python 3 and its standard library. It installs nothing.

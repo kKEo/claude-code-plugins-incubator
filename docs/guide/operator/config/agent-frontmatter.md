@@ -26,16 +26,18 @@ tools:
 
 | Field | Required | Meaning | Shipped values |
 |---|---|---|---|
-| `name` | yes | Agent id used by the `Agent` tool | `spec-documenter`, `architect-documenter`, `impl-documenter`, `deploy-documenter`, `testing-documenter`, `frontend-validator` |
+| `name` | yes | Agent id used by the `Agent` tool | `spec-documenter`, `architect-documenter`, `impl-documenter`, `deploy-documenter`, `testing-documenter`, `frontend-validator`, `spec-context-explorer`, `spec-readiness-reviewer` |
 | `description` | yes | When to dispatch; `<example>` blocks with `Context`, `user`, `assistant` lines teach the match | two examples each |
-| `model` | no | `haiku`, `sonnet`, `opus` or inherit | documentalist agents: `haiku`; `frontend-validator`: `sonnet` |
-| `color` | no | Colour of the agent's label in the terminal | blue, magenta, green, yellow, cyan |
-| `tools` | no | Tools the agent may call; omit for all | documentalists: Read, Bash, Write, Grep, Glob; `frontend-validator`: Read, Bash, Grep, Glob (no Write: it reports, it does not fix) |
+| `model` | no | `haiku`, `sonnet`, `opus` or inherit | documentalist agents: `haiku`; `frontend-validator` and the spec agents: `sonnet` |
+| `color` | no | Colour of the agent's label in the terminal | blue, magenta, green, yellow, cyan, red |
+| `tools` | no | Tools the agent may call; omit for all | documentalists: Read, Bash, Write, Grep, Glob; `frontend-validator`: Read, Bash, Grep, Glob (no Write: it reports, it does not fix); spec agents: Read, Bash, Grep, Glob (no Write: they report and never edit the spec) |
 
 ## Inputs
 
 The documentalist agents expect three values in the dispatch prompt: `FEATURE_FOLDER`, `BRANCH_NAME`, `CHANGED_FILES`. The `document-phase` skill supplies them. `frontend-validator` expects a project path.
 
+The spec agents expect a context block from the `write-implementation-spec` skill. `spec-context-explorer` gets `FEATURE_REQUEST`, `REPO_ROOT`, `SPEC_PATH` and `EXISTING_SPEC`. `spec-readiness-reviewer` gets `SPEC_PATH`, `REPO_ROOT`, `FEATURE_REQUEST` and `DECIDED_WITHOUT_USER`.
+
 ## Model choice
 
-The documentalists were moved to `haiku` to keep a per-phase document cheap; they read a diff and fill a fixed outline. The validator agent stays on `sonnet` because it judges code quality across a whole project and runs a build.
+The documentalists were moved to `haiku` to keep a per-phase document cheap; they read a diff and fill a fixed outline. The validator agent stays on `sonnet` because it judges code quality across a whole project and runs a build. The spec agents also use `sonnet`: a made-up file path in a spec would end up in the implementation, and checking a spec against the live code is judgment work, not extraction.
