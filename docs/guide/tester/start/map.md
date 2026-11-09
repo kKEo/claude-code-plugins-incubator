@@ -10,7 +10,7 @@ This page maps each part of the project to the asset that checks it, so a review
 | Documentalist agents | `plugins/feature-dev-documentalist/agents/*.md` | manual: one `/document-phase <phase>` per agent, read the output file | manual |
 | Stop hook | `plugins/feature-dev-documentalist/hooks/*` | `bash -n`; run with `CLAUDE_PLUGIN_ROOT` on clean and dirty trees | deterministic, manual run |
 | Scaffold skill and references | `plugins/frontend-scaffold/skills/scaffold-frontend/**` | manual scaffold plus `npm run build`; `frontend-validator` agent | manual |
-| Spec skill and agents | `plugins/implementation-spec/skills/**`, `agents/*.md` | manual: run the skill on a feature request and check the spec against the readiness reviewer's verdict | manual |
+| Spec skill and agents | `plugins/implementation-spec/skills/**`, `plugins/implementation-spec/agents/*.md` | manual: run the skill on a feature request and check the spec against the readiness reviewer's verdict | manual |
 | memors-hooks | `plugins/memors-hooks/hooks/*` | `bash -n`; the hook commands in the plugin README's "Testing" section, run with a temporary `MEMORS_HOME` and `MEMORS_KB` | deterministic, manual run |
 | Mods (plan-progress, session-cost) | `plugins/<name>/hooks/*`, `types/index.d.ts` | `claude plugin test plugins/<name>` (the `*.test.ts(x)` files) and `claude plugin validate plugins/<name>` | deterministic, manual run |
 | Validator script | `…/scripts/validate_docs.py` | fixtures `broken-docs` (9 errors) and `renamed-layout` (0 errors, 4 warnings); this repository's docs | deterministic |

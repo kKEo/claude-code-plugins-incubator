@@ -10,8 +10,8 @@ This page lists every slash command the plugins answer to and every flag of the 
 | `/frontend-scaffold:scaffold-frontend [description]` | frontend-scaffold | optional description of what the app manages | Asks for missing details, generates the project, installs and builds |
 | `/gitbook-docs-validator [path]` | gitbook-docs-validator | optional docs root | Runs the checks and writes the report |
 | `/implementation-spec:write-implementation-spec [request]` | implementation-spec | the feature request, in a sentence or two | Explores the codebase, asks at most four questions, writes `docs/specs/<date>-<slug>.md` and runs a readiness review |
-| `/session-cost [on\|off\|requests\|models\|history\|days\|reset]` | session-cost | optional switch or view | Toggles the cost pane, opens it on a view, or clears this session's totals |
-| `/plan-progress [on\|off\|plan\|progress\|<path>]` | plan-progress | optional switch, view or plan file | Toggles the plan pane, switches its view, or loads a plan file |
+| `/session-cost [on\|off\|requests\|models\|history\|days\|reset]` | session-cost | optional switch or view; `open` and `show` mean `on`, `close` and `hide` mean `off`, `toggle` is the same as no argument | Toggles the cost pane, opens it on a view, or clears this session's totals |
+| `/plan-progress [on\|off\|plan\|progress\|<path>]` | plan-progress | optional switch, view or plan file; `open`, `show` and `toggle` mean `on`, `close` and `hide` mean `off`; any other argument is read as a plan path | Toggles the plan pane, switches its view, or loads a plan file |
 
 Plugin management commands, built into Claude Code:
 

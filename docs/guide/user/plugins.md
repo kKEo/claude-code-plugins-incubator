@@ -30,7 +30,7 @@ Lists the session's model requests, newest first, in a pane beside the chat, wit
 
 `/session-cost` toggles the pane (`on` and `off` do so explicitly), `/session-cost requests`, `models`, `history` or `days` opens it on that view, and `/session-cost reset` clears this session's requests, totals and day split, and the history entry saved for it. To toggle it from the keyboard, bind a chord to the `app:toggleReplTab` action in `~/.claude/keybindings.json` (for example `ctrl+x c` in the `Global` context). The chord works only while the chip is shown and no dialog is open, so keep the chip on. The chip's button performs the same toggle. If `app:toggleReplTab` already does something in your setup, choose another action under *Toggle key action* in `/config` and bind that one instead.
 
-Five switches in `/config` change the mod. *Open pane at start* (off) opens the pane when a session starts. *Cost status line* (on) and *Cost chip above the prompt* (on) hide the summary under the prompt and the chip. *Toggle key action* picks the action the keyboard toggle uses. *History days* (30) sets how many days of totals are kept. Like plan-progress, this is a *mod*.
+Five switches in `/config` change the mod. *Open pane at start* (off by default) opens the pane when a session starts. *Cost status line* and *Cost chip above the prompt* (both on by default) show the summary under the prompt and the chip; switch either off to hide it. *Toggle key action* picks the action the keyboard toggle uses. *History days* (30) sets how many days of totals are kept. Like plan-progress, this is a *mod*.
 
 ## implementation-spec
 
