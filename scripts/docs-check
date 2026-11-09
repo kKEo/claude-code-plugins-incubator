@@ -32,15 +32,15 @@ for m in plugins/*/.claude-plugin/plugin.json; do
 done
 
 # Every argparse flag of the validator is in the commands reference.
-grep -o 'add_argument("--[a-z-]*"' "$VALIDATOR" | sed 's/add_argument("//; s/"$//' | sort -u | while read -r flag; do
-  grep -qF -- "\`$flag" "$DOCS/operator/config/commands.md" || { echo "missing: flag '$flag' in $DOCS/operator/config/commands.md"; exit 9; }
-done || fail=1
+while read -r flag; do
+  grep -qF -- "\`$flag" "$DOCS/operator/config/commands.md" || { echo "missing: flag '$flag' in $DOCS/operator/config/commands.md"; fail=1; }
+done < <(grep -o 'add_argument("--[a-z-]*"' "$VALIDATOR" | sed 's/add_argument("//; s/"$//' | sort -u)
 
 # Every hook event registered by any plugin is in the hooks reference.
 for h in plugins/*/hooks/hooks.json; do
-  python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1])).get("hooks", {}).keys()))' "$h" | while read -r ev; do
-    grep -qF -- "$ev" "$DOCS/operator/config/hooks.md" || { echo "missing: hook event '$ev' in $DOCS/operator/config/hooks.md"; exit 9; }
-  done || fail=1
+  while read -r ev; do
+    grep -qF -- "$ev" "$DOCS/operator/config/hooks.md" || { echo "missing: hook event '$ev' in $DOCS/operator/config/hooks.md"; fail=1; }
+  done < <(python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1])).get("hooks", {}).keys()))' "$h")
 done
 
 # Every skill and agent name is in the matching frontmatter reference.
