@@ -37,6 +37,14 @@ export function clockTime(ms: number): string {
   return [d.getHours(), d.getMinutes(), d.getSeconds()].map(v => String(v).padStart(2, '0')).join(':')
 }
 
+/** Local date and minute: `2026-11-08 09:30`. */
+export function stamp(ms: number): string {
+  const d = new Date(ms)
+  const day = [d.getFullYear(), d.getMonth() + 1, d.getDate()].map(v => String(v).padStart(2, '0')).join('-')
+  const time = [d.getHours(), d.getMinutes()].map(v => String(v).padStart(2, '0')).join(':')
+  return `${day} ${time}`
+}
+
 export function duration(ms: number): string {
   return ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`
 }

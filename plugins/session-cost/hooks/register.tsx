@@ -15,7 +15,7 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { clockTime, count, duration, padEnd, padStart, percent, shortModel, usd } from './format'
+import { clockTime, count, duration, padEnd, padStart, percent, shortModel, stamp, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, tokenSum } from './ledger'
 import { estimate } from './pricing'
 
@@ -186,6 +186,12 @@ async function reset($: Engine): Promise<void> {
     await update($, days, () => ({}))
     await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [] }))
   })
+  // Drop the session's saved summary too, or its pre-reset spend would still count in History.
+  try {
+    await $.store.delete(STORE_PREFIX + (await $.session.id()))
+  } catch {
+    // History is a convenience; the reset itself has already happened.
+  }
   await refreshStatus($)
 }
 
@@ -513,7 +519,7 @@ export const register: Register = (on, options) => {
                 <Text weight="bold">Recent sessions</Text>
                 {recent.map(s => (
                   <Text key={`sess:${s.id}`} wrap="truncate-end" dimColor tabular>
-                    {new Date(s.lastAt).toISOString().slice(0, 16).replace('T', ' ')} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
+                    {stamp(s.lastAt)} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
                   </Text>
                 ))}
               </Box>
