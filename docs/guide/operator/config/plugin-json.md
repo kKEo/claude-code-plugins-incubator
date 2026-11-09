@@ -22,4 +22,4 @@ This page lists every field of a plugin's `.claude-plugin/plugin.json`.
 | `keywords` | no | `[]` | Search tags |
 | `homepage`, `repository`, `license` | no | none | Optional metadata; the `LICENSE` file is what `CONTRIBUTING.md` requires |
 
-Claude Code discovers `skills/`, `agents/`, `hooks/` and `commands/` by directory, so the manifest does not list components. Optional keys `skills`, `agents`, `hooks`, `commands` can point at non-default locations; none of the three plugins uses them.
+Claude Code discovers `skills/`, `agents/`, `hooks/` and `commands/` by directory, so the manifest does not list components. Optional keys `skills`, `agents`, `hooks`, `commands` can point at non-default locations; none of the shipped plugins uses them. plan-progress and session-cost add a `types` key pointing at `./types/index.d.ts`, the contract for their session state, and a `userConfig` block that defines their `/config` switches.

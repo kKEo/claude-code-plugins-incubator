@@ -5,7 +5,7 @@
 - [Part I: How it works](intro/README.md)
   - [Marketplace overview](intro/overview.md)
   - [Plugin anatomy](intro/plugin-anatomy.md)
-  - [Inside the three plugins](intro/components.md)
+  - [Inside the plugins](intro/components.md)
 - [Part II: Install and deploy](install/README.md)
   - [Local development](install/local-dev.md)
   - [Installing from the marketplace](install/marketplace.md)

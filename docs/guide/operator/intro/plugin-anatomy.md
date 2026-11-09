@@ -40,4 +40,4 @@ An agent file starts with a YAML frontmatter (`name`, `description` with `<examp
 
 ## What is not here
 
-None of the three plugins ships `commands/`. Skills with a `name` are already callable as `/<name>` (or `/<plugin>:<name>` when the name is not unique), which covers every slash-command need so far.
+None of the shipped plugins has a `commands/` folder. Skills with a `name` are already callable as `/<name>` (or `/<plugin>:<name>` when the name is not unique). The two mods, plan-progress and session-cost, register their slash commands from their TypeScript module at session start (see [Hooks](../config/hooks.md)).

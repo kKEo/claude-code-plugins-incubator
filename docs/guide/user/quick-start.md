@@ -14,13 +14,13 @@ Claude Code fetches the registry and lists it under the name `km-plugin-registry
 
 ## 2. Install a plugin
 
-Pick one of the three plugins and install it:
+Pick a plugin and install it:
 
 ```
 /plugin install gitbook-docs-validator@km-plugin-registry
 ```
 
-Replace the name with `frontend-scaffold` or `feature-dev-documentalist` to install one of the others. You can install all three; they do not interfere with each other.
+Replace the name with `frontend-scaffold`, `feature-dev-documentalist`, `implementation-spec`, `plan-progress`, `session-cost` or `memors-hooks` to install one of the others. [What is in the marketplace](plugins.md) describes each. You can install any combination; they do not interfere with each other. memors-hooks also needs `memors-mcp` and `jq` on your machine.
 
 ## 3. Reload
 
@@ -47,6 +47,12 @@ scaffold a Vue dashboard for managing deployments
 ```
 document this phase
 ```
+
+```
+write a spec for CSV export of invoice history
+```
+
+The two mods answer to a slash command instead: `/session-cost` opens the cost pane, and `/plan-progress` opens the plan pane.
 
 If Claude answers by running the plugin (you will see it read files or run a script), the installation worked. If it answers in general terms without using the plugin, see [FAQ and troubleshooting](faq.md).
 

@@ -1,6 +1,6 @@
 # Plugin author guide
 
-This guide is for people who author, maintain or publish plugins in the `km-plugin-registry` marketplace. It assumes you can use git, run commands in a shell, and have used Claude Code as a user. It explains how the marketplace and its three plugins are wired, how to develop and release one, and every field of every manifest.
+This guide is for people who author, maintain or publish plugins in the `km-plugin-registry` marketplace. It assumes you can use git, run commands in a shell, and have used Claude Code as a user. It explains how the marketplace and its plugins are wired, how to develop and release one, and every field of every manifest.
 
 The marketplace is one git repository. The manifest `.claude-plugin/marketplace.json` lists plugins by a relative `source` path; each plugin is a directory under `plugins/` with its own manifest, skills, agents and hooks. There is no build step, no package registry and no server: Claude Code reads the files straight from the clone.
 

@@ -11,8 +11,13 @@ claude-code-plugins-incubator/
 │   ├── frontend-scaffold/            # one directory per plugin
 │   ├── feature-dev-documentalist/
 │   ├── gitbook-docs-validator/
+│   ├── implementation-spec/
+│   ├── memors-hooks/
+│   ├── plan-progress/                # a mod
+│   ├── session-cost/                 # a mod
 │   └── gitbook-docs-validator-workspace/   # eval workspace, not a plugin
 ├── docs/guide/                        # this documentation
+├── scripts/docs-check                 # the documentation gate
 ├── .github/workflows/validate.yml     # CI for the manifest
 ├── CONTRIBUTING.md
 └── README.md
@@ -24,8 +29,8 @@ The marketplace manifest names the registry (`km-plugin-registry`) and lists eac
 
 1. `/plugin marketplace add kKEo/claude-code-plugins-incubator` clones the repository into Claude Code's plugin cache and reads `.claude-plugin/marketplace.json`.
 2. `/plugin install <name>@km-plugin-registry` copies the plugin's `source` directory into the installed set and records it in the user's settings.
-3. On the next session or `/reload-plugins`, Claude Code scans each installed plugin for `skills/*/SKILL.md`, `agents/*.md` and `hooks/hooks.json`.
-4. Skill descriptions are placed in Claude's context so it can match a prompt to a skill. Agents become available to the `Agent` tool. Hooks are registered for their events.
+3. On the next session or `/reload-plugins`, Claude Code scans each installed plugin for `skills/*/SKILL.md`, `agents/*.md`, `hooks/hooks.json` and `.mcp.json`.
+4. Skill descriptions are placed in Claude's context so it can match a prompt to a skill. Agents become available to the `Agent` tool. Hooks are registered for their events, and a mod's module is loaded. An `.mcp.json` (memors-hooks ships one) starts its MCP server.
 
 Nothing runs at install time. A plugin has no install script and cannot execute code until a skill is invoked or a hook event fires.
 
@@ -39,7 +44,9 @@ An agent is a Markdown file with a frontmatter (model, colour, tools) and a syst
 
 ## How a hook runs
 
-A hook is a shell command registered for an event in `hooks/hooks.json`. Claude Code runs it with the event's JSON on stdin and reads JSON from stdout. The documentalist registers one `Stop` hook that may add a line of context to the conversation. See [Hooks](../config/hooks.md).
+A hook is a shell command registered for an event in `hooks/hooks.json`. Claude Code runs it with the event's JSON on stdin and reads JSON from stdout. The documentalist registers one `Stop` hook that may add a line of context to the conversation, and memors-hooks registers hooks on five events.
+
+A mod's `hooks/hooks.json` names a TypeScript module instead. Claude Code loads the module into the session, and it subscribes to engine events and draws panes, status lines and chips. plan-progress and session-cost are mods. See [Hooks](../config/hooks.md) for both forms.
 
 ## Where things are on disk
 

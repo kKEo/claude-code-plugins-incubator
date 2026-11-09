@@ -1,4 +1,4 @@
-# Inside the three plugins
+# Inside the plugins
 
 This page shows how each shipped plugin is assembled, so you can change one or model a new plugin on it.
 
@@ -44,6 +44,50 @@ The feature folder is `docs/features/YYYY-MM-DD-<branch>/`; an existing folder w
 | Evals | `skills/gitbook-docs-validator/evals/evals.json`, `evals/fixtures/` | Three cases with assertions; two fixture trees |
 
 The script's checks are grouped by name (`landing`, `book-files`, `summary`, `page`, `link`, `image`, `readme`, `role`, `repo`); each finding carries a severity, a message and a `file:line`. The skill asks Claude to run the script first, then to read a sample of pages for what the script cannot measure, and to write a report in a fixed shape: verdict, structural failures, deviations, suggestions, not checked. See [Commands and flags](../config/commands.md) for the CLI.
+
+## implementation-spec
+
+| Component | File | Role |
+|---|---|---|
+| Skill `write-implementation-spec` | `skills/write-implementation-spec/SKILL.md` | Resolves the spec path, dispatches the explorer, asks at most four questions in one batch, writes the spec from its template, runs the reviewer at most twice, reports |
+| Agent `spec-context-explorer` | `agents/spec-context-explorer.md` | Model `sonnet`; maps the stack, commands, closest precedent and reusable code; writes nothing |
+| Agent `spec-readiness-reviewer` | `agents/spec-readiness-reviewer.md` | Model `sonnet`; audits the spec for placeholders, untestable requirements and invented paths; returns READY or NOT READY; writes nothing |
+
+The output is one flat file per feature, `docs/specs/<YYYY-MM-DD>-<slug>.md`. A second run for the same slug updates that file and keeps its date and any IDs already referenced. Security decisions with no precedent in the repository become `HALT` items, the only point at which the implementing agent may stop and ask.
+
+## memors-hooks
+
+| Component | File | Role |
+|---|---|---|
+| MCP server | `.mcp.json` | Starts the `memors` server (`memors-mcp`), which provides the knowledge-base tools |
+| Hooks | `hooks/hooks.json` | `SessionStart`, `UserPromptSubmit`, `PreToolUse` (Bash), `PostToolUse` (WebFetch, WebSearch, memors tools), `Stop` |
+| Hook scripts | `hooks/orient`, `recall`, `guard-cli`, `check-known-source`, `track`, `nudge-remember` | One script per job; `guard-cli` is the only one that can block |
+| Shared code | `hooks/lib.sh`, `hooks/run-hook.cmd` | Locating `memors-mcp`, the per-session log, the Windows/Unix wrapper |
+| Skill `memors-mcp` | `skills/memors-mcp/SKILL.md` | The upstream usage guide, plus a section on what the hooks already do |
+
+Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base.
+
+## plan-progress
+
+| Component | File | Role |
+|---|---|---|
+| Module | `hooks/hooks.json`, `hooks/register.tsx` | A mod: registers `/plan-progress` and the `mark_step` tool, collects the plan, tasks and todos, draws the pane and the status line |
+| Plan model | `hooks/progress.ts` | Parses phases and steps from the plan markdown and works out each step's state |
+| State contract | `types/index.d.ts` | `plan`, `tasks`, `todos`, `view`, `marks` |
+| Tests | `hooks/*.test.ts(x)` | Run with `claude plugin test plugins/plan-progress` |
+
+## session-cost
+
+| Component | File | Role |
+|---|---|---|
+| Module | `hooks/hooks.json`, `hooks/register.tsx` | A mod: records each request on `turn.step` and `session.compact`, reads the `/cost` ledger, saves history, registers `/session-cost`, draws the pane, chip and status line |
+| Ledger | `hooks/ledger.ts` | Totals, the 1000-row cap, and splitting a `/cost` increase across overlapping requests |
+| Days | `hooks/days.ts` | Local calendar-day buckets, backfill for older state, history windows |
+| Prices | `hooks/pricing.ts`, `hooks/format.ts` | The list-price table and the estimate; number, dollar and time formatting |
+| State contract | `types/index.d.ts` | `requests`, `totals`, `ledger`, `view`, `days` |
+| Tests | `hooks/*.test.ts(x)` | Run with `claude plugin test plugins/session-cost` |
+
+The pane shows two costs per request: its share of the `/cost` total, which always adds up to `/cost`, and an estimate from the price table. Cross-session history lives in the plugin's store under `session:<id>` keys, pruned after `historyDays`.
 
 ## The workspace directory
 

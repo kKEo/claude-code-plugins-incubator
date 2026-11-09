@@ -56,3 +56,44 @@ which pages are orphaned or unpublished?
 Claude runs the checks and writes a report with a verdict, a list of things that must be fixed, a list of deviations to discuss and suggestions. It does not change any file unless you ask it to fix the findings.
 
 > **Note.** Prompts that mention `SUMMARY.md`, `.gitbook.yaml`, `book.toml`, mdBook or GitBook also trigger the validator, even when you do not say "validate".
+
+## Writing a spec before building
+
+Describe the feature in a sentence or two:
+
+```
+write a spec for CSV export of invoice history
+spec this out before we write any code
+```
+
+Claude reads the repository, asks you at most four questions in one batch, and writes `docs/specs/<date>-<slug>.md`. It then has the spec reviewed and reports how many requirements, steps and tests it holds, which decisions it made for you, and anything that still needs your sign-off. To have an agent build it, say `Implement docs/specs/<file> exactly as written.`
+
+## Following a plan
+
+Plan in plan mode as usual. With plan-progress installed, the plan appears in a pane beside the chat and its steps are ticked as Claude works. To open or close the pane, or switch between the plan text and the step list:
+
+```
+/plan-progress
+/plan-progress plan
+/plan-progress progress
+```
+
+## Watching what a session costs
+
+The cost of the session so far shows under the prompt. For the details:
+
+```
+/session-cost
+/session-cost days
+/session-cost reset
+```
+
+The first opens the pane with one row per request. `days` opens it on spend by calendar day, and `reset` starts this session's count again.
+
+## Using a knowledge base
+
+With memors-hooks installed there is nothing to type. Claude sees what the knowledge base holds when a session starts, and is reminded to record what it learned. To have it look up something it may already know:
+
+```
+search the knowledge base for our retry policy
+```

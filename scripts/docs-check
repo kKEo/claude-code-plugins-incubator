@@ -31,6 +31,15 @@ for m in plugins/*/.claude-plugin/plugin.json; do
   expect "$name" "$DOCS/user/plugins.md" "plugin"
 done
 
+# Every plugin the user book describes still exists: each `## <name>` heading
+# except "Not a plugin" must name a directory with a manifest.
+while read -r name; do
+  if [ ! -f "plugins/$name/.claude-plugin/plugin.json" ]; then
+    echo "missing: plugin directory 'plugins/$name' documented in $DOCS/user/plugins.md"
+    fail=1
+  fi
+done < <(sed -n 's/^## //p' "$DOCS/user/plugins.md" | grep -vx 'Not a plugin')
+
 # Every argparse flag of the validator is in the commands reference.
 while read -r flag; do
   grep -qF -- "\`$flag" "$DOCS/operator/config/commands.md" || { echo "missing: flag '$flag' in $DOCS/operator/config/commands.md"; fail=1; }
