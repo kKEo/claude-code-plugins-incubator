@@ -5,7 +5,7 @@ function near(a: number | null | undefined, b: number, eps = 1e-9): boolean {
 }
 
 import type { RequestRow } from '../types'
-import { MAX_ROWS, addRow, appendRow, applyLedger, emptyTotals, splitDelta } from './ledger'
+import { MAX_ROWS, addRow, appendRow, applyLedger, emptyTotals, sessionSpend, splitDelta } from './ledger'
 
 function row(seq: number, over: Partial<RequestRow> = {}): RequestRow {
   return {
@@ -78,4 +78,15 @@ test('totals keep counting past the row cap', async () => {
   expect(rows[0]?.seq).toBe(6)
   expect(totals.requests).toBe(MAX_ROWS + 5)
   expect(totals.input).toBe((MAX_ROWS + 5) * 100)
+})
+
+test('a reset point survives ledger readings, and the session spend counts only what came after it', async () => {
+  const ledger = { lastUsd: 0.52, sessionUsd: 0.52, pending: [1], resetUsd: 0.52 }
+  const withShare = applyLedger([row(1)], addRow(emptyTotals(), row(1)), ledger, 0.54)
+  expect(withShare.ledger.resetUsd).toBe(0.52)
+  expect(near(sessionSpend(withShare.ledger), 0.02)).toBe(true)
+  const unattributed = applyLedger([], emptyTotals(), { ...ledger, pending: [] }, 0.6)
+  expect(unattributed.ledger.resetUsd).toBe(0.52)
+  // A ledger saved by an older version has no reset point: all of /cost is the session's.
+  expect(sessionSpend({ lastUsd: 0.5, sessionUsd: 0.5, pending: [] })).toBe(0.5)
 })

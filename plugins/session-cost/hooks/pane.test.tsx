@@ -31,7 +31,7 @@ const BAND = {
 
 /** The engine beneath the plugin: a /cost ledger the test moves, panes, store and clock. */
 function engine(on: On, store: Record<string, unknown> = {}) {
-  const state = { usd: 0.5, open: false }
+  const state = { usd: 0.5, open: false, id: 'sess-1' }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
   mock.store(on, store)
   on('command.register', () => ({ value: { command: 'session-cost' } }))
@@ -40,7 +40,7 @@ function engine(on: On, store: Record<string, unknown> = {}) {
   on('ui.panes', () => ({ value: state.open ? [{ id: 'session-cost', title: 'Session cost', isShown: true, isFocused: false, isPlaced: true }] : [] }))
   on('ui.status', () => ({ value: undefined }))
   on('session.start', (_, e) => ({ cwd: e.cwd }))
-  on('session.id', () => ({ value: 'sess-1' }))
+  on('session.id', () => ({ value: state.id }))
   on('session.model', () => ({ value: 'claude-opus-5-5' }))
   on('session.usage', () => ({ value: { startedAt: 0, rateLimits: [], cost: { usd: state.usd } } as never }))
   on('turn.complete', (_, e) => ({ text: e.answer }))
@@ -134,6 +134,43 @@ test('the slash command toggles the pane, switches views and resets', async ($, 
   expect((await run('reset')).text).toMatch(/cleared/)
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(await ui.find({ type: 'Text', text: /0 req/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('after a reset, the saved history holds only what the session spent since', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  const run = (args: string) =>
+    $.command.run({ command: 'session-cost', args, origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
+  const done = () => $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  await step($, 0)
+  await done()
+  await run('reset')
+  await step($, 1)
+  await done()
+
+  // Seen from a later session, sess-1's saved row holds the one request after the reset.
+  state.id = 'sess-2'
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  await ui.press({ key: 'view:history' })
+  const saved = await ui.find({ type: 'Text', text: /sess-1/ })
+  expect(saved?.text).toMatch(/\$0\.020\s+1 req/)
+  await ui.unmount()
+})
+
+test('a reset with no request after it leaves nothing in history', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+  await $.command.run({ command: 'session-cost', args: 'reset', origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
+
+  state.id = 'sess-2'
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  await ui.press({ key: 'view:history' })
+  expect(await ui.find({ type: 'Text', text: /This session/ })).toBeDefined()
+  expect(await ui.find({ type: 'Text', text: /sess-1/ })).toBe(undefined)
   await ui.unmount()
 })
 

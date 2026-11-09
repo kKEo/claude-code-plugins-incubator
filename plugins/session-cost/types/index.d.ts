@@ -56,6 +56,8 @@ export type Ledger = {
   sessionUsd: number
   /** Seqs of rows waiting for their ledger share. */
   pending: number[]
+  /** The /cost total when `/session-cost reset` last ran; spend up to it is not this session's history. */
+  resetUsd?: number
 }
 
 export type CostView = 'requests' | 'models' | 'history' | 'days'

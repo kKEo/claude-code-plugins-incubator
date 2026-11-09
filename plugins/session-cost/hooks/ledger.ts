@@ -102,7 +102,7 @@ export function applyLedger(
   const shares = splitDelta(rows, ledger.pending, delta)
   if (shares.length === 0) {
     // Nothing to attribute: spend outside any request we saw stays in the header total.
-    return { rows: [...rows], totals, ledger: { lastUsd: usd, sessionUsd: usd, pending: [] }, shares, unattributedUsd: delta }
+    return { rows: [...rows], totals, ledger: { ...ledger, lastUsd: usd, sessionUsd: usd, pending: [] }, shares, unattributedUsd: delta }
   }
   const bySeq = new Map(shares.map(s => [s.seq, s]))
   const byModel = { ...totals.byModel }
@@ -116,10 +116,15 @@ export function applyLedger(
   return {
     rows: nextRows,
     totals: { ...totals, ledgerUsd: totals.ledgerUsd + sum(shares.map(s => s.usd)), byModel },
-    ledger: { lastUsd: usd, sessionUsd: usd, pending: [] },
+    ledger: { ...ledger, lastUsd: usd, sessionUsd: usd, pending: [] },
     shares,
     unattributedUsd: 0,
   }
+}
+
+/** What the session spent since its last reset, by the /cost ledger. */
+export function sessionSpend(l: Ledger): number {
+  return l.sessionUsd - (l.resetUsd ?? 0)
 }
 
 function sum(xs: readonly number[]): number {

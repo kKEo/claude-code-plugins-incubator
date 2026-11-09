@@ -12,7 +12,7 @@ Each plugin has its own semantic version in `plugin.json`. The marketplace has n
 | New trigger phrases, new reference file, new optional behaviour | minor |
 | Renamed skill or agent, changed output file names or locations, removed component | major |
 
-Current versions at the time of writing: `frontend-scaffold` 0.1.0, `feature-dev-documentalist` 0.1.5, `gitbook-docs-validator` 0.1.0, `implementation-spec` 0.1.0, `memors-hooks` 0.1.0, `plan-progress` 0.2.0, `session-cost` 0.2.0. Each plugin's `plugin.json` is the authority.
+Current versions at the time of writing: `frontend-scaffold` 0.1.0, `feature-dev-documentalist` 0.1.5, `gitbook-docs-validator` 0.1.0, `implementation-spec` 0.1.0, `memors-hooks` 0.1.0, `plan-progress` 0.2.0, `session-cost` 0.2.1. Each plugin's `plugin.json` is the authority.
 
 ## Procedure
 

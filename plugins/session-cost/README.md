@@ -67,6 +67,7 @@ These appear in `/config` under the plugin and are stored in `pluginConfigs["ses
 - The request list (the newest 1000), the running totals and the day split live in the session's plugin state, so they survive `/reload-plugins` and a change of settings. Totals keep counting past 1000 requests.
 - Per-session totals, split by day, are kept across sessions in the plugin's store. Days older than `historyDays` are pruned, and a session is removed once it has none left.
 - `/clear` saves the ending session's totals to history and starts the list over.
+- `/session-cost reset` deletes the session's saved entry. From then on its history counts only spend since the reset, while the header, chip and status line keep showing the full `/cost` total. The header lists the pre-reset part as `unattributed`.
 
 ## Install
 

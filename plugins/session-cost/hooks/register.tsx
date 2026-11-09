@@ -16,7 +16,7 @@ import {
   sumDays,
 } from './days'
 import { clockTime, count, duration, padEnd, padStart, percent, shortModel, stamp, usd } from './format'
-import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, tokenSum } from './ledger'
+import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
 
 const PLUGIN = 'session-cost'
@@ -118,7 +118,7 @@ async function saveSummary($: Engine, sessionId?: string): Promise<void> {
       days: d ?? {},
       startedAt: usage.startedAt,
       lastAt: await $.clock.now(),
-      ledgerUsd: l?.sessionUsd ?? t.ledgerUsd,
+      ledgerUsd: l ? sessionSpend(l) : t.ledgerUsd,
       estUsd: t.estUsd,
       requests: t.requests,
       input: t.input,
@@ -184,7 +184,7 @@ async function reset($: Engine): Promise<void> {
     await update($, requests, () => [])
     await update($, totals, () => emptyTotals())
     await update($, days, () => ({}))
-    await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [] }))
+    await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [], resetUsd: now }))
   })
   // Drop the session's saved summary too, or its pre-reset spend would still count in History.
   try {
@@ -510,7 +510,7 @@ export const register: Register = (on, options) => {
         const recent = others.sort((a, b) => b.lastAt - a.lastAt).slice(0, 10)
         body = (
           <Box flexDirection="column">
-            {line('This session', { spent: sessionUsd, reqs: t.requests, toks: tokenSum(t), sessions: 1 })}
+            {line('This session', { spent: l ? sessionSpend(l) : t.ledgerUsd, reqs: t.requests, toks: tokenSum(t), sessions: 1 })}
             {line('Today', window(dayKeysBack(now, 1)))}
             {line('Last 7 days', window(dayKeysBack(now, 7)))}
             {line(`Last ${historyDays} days`, window(dayKeysBack(now, historyDays)))}
