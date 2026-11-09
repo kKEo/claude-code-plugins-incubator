@@ -108,25 +108,28 @@ async function refreshStatus($: Engine): Promise<void> {
 
 // ── history across sessions ──────────────────────────────────────────────────
 
+/** Saves the session's totals to history. Serialised, so a reset cannot interleave with it and leave a stale entry. */
 async function saveSummary($: Engine, sessionId?: string): Promise<void> {
   try {
-    const [t, l, d] = await Promise.all([read($, totals), read($, ledger), read($, days)])
-    if (!t || t.requests === 0) return
-    const id = sessionId ?? (await $.session.id())
-    const usage = await $.session.usage()
-    const summary: SessionSummary = {
-      days: d ?? {},
-      startedAt: usage.startedAt,
-      lastAt: await $.clock.now(),
-      ledgerUsd: l ? sessionSpend(l) : t.ledgerUsd,
-      estUsd: t.estUsd,
-      requests: t.requests,
-      input: t.input,
-      output: t.output,
-      cacheRead: t.cacheRead,
-      cacheWrite: t.cacheWrite,
-    }
-    await $.store.set(STORE_PREFIX + id, summary)
+    await serial(async () => {
+      const [t, l, d] = await Promise.all([read($, totals), read($, ledger), read($, days)])
+      if (!t || t.requests === 0) return
+      const id = sessionId ?? (await $.session.id())
+      const usage = await $.session.usage()
+      const summary: SessionSummary = {
+        days: d ?? {},
+        startedAt: usage.startedAt,
+        lastAt: await $.clock.now(),
+        ledgerUsd: l ? sessionSpend(l) : t.ledgerUsd,
+        estUsd: t.estUsd,
+        requests: t.requests,
+        input: t.input,
+        output: t.output,
+        cacheRead: t.cacheRead,
+        cacheWrite: t.cacheWrite,
+      }
+      await $.store.set(STORE_PREFIX + id, summary)
+    })
   } catch {
     // History is a convenience; never fail a turn over it.
   }
@@ -185,13 +188,13 @@ async function reset($: Engine): Promise<void> {
     await update($, totals, () => emptyTotals())
     await update($, days, () => ({}))
     await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [], resetUsd: now }))
+    // Drop the session's saved summary too, or its pre-reset spend would still count in History.
+    try {
+      await $.store.delete(STORE_PREFIX + (await $.session.id()))
+    } catch {
+      // History is a convenience; the reset itself has already happened.
+    }
   })
-  // Drop the session's saved summary too, or its pre-reset spend would still count in History.
-  try {
-    await $.store.delete(STORE_PREFIX + (await $.session.id()))
-  } catch {
-    // History is a convenience; the reset itself has already happened.
-  }
   await refreshStatus($)
 }
 
