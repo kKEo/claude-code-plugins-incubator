@@ -64,8 +64,15 @@ function engine(on: On, store: Record<string, unknown> = {}) {
   return { state, clock }
 }
 
-async function step($: Engine, index: number, agentId?: string) {
-  const stream = $.turn.step({ turnId: 'turn-1', index, model: 'claude-opus-5-5', messageCount: 3, ...(agentId ? { agentId } : {}) })
+async function step($: Engine, index: number, agentId?: string, effort?: 'low' | 'medium' | 'high' | 'xhigh' | 'max' | number) {
+  const stream = $.turn.step({
+    turnId: 'turn-1',
+    index,
+    model: 'claude-opus-5-5',
+    messageCount: 3,
+    ...(agentId ? { agentId } : {}),
+    ...(effort === undefined ? {} : { effort }),
+  })
   for await (const _ of stream) {
     // drain
   }
@@ -98,6 +105,23 @@ test('every request is recorded with its ledger share and estimate, and the pane
     expect(await ui.find({ type: 'Text', text: /This session/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /Today/ })).toBeDefined()
     await ui.press({ key: 'view:requests' })
+    await ui.unmount()
+  }
+})
+
+test('a request row shows the effort it asked for, and none when it asked for none', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0, undefined, 'xhigh')
+  await step($, 1, 'agent-abc123', 'low')
+  await step($, 2)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    expect((await ui.find({ type: 'Text', text: /^#1 / }))?.text).toMatch(/opus-5-5 xhigh main/)
+    expect((await ui.find({ type: 'Text', text: /^#2 / }))?.text).toMatch(/haiku-5-5 low sub:agent-/)
+    expect((await ui.find({ type: 'Text', text: /^#3 / }))?.text).toMatch(/opus-5-5 main/)
     await ui.unmount()
   }
 })

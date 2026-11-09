@@ -22,6 +22,11 @@ export type RequestRow = Tokens & {
   kind: RequestKind
   /** The model that answered (or the one requested when nothing came back). */
   model: string
+  /**
+   * The effort the request asked for (a level or a number), as `turn.step` carried it;
+   * absent for a model without effort, a compaction, and rows recorded before it was kept.
+   */
+  effort?: string | number
   /** Price-table estimate in USD; null for a model the table does not know. */
   estUsd: number | null
   /** Share of the engine's /cost ledger in USD; null until the ledger is read. */

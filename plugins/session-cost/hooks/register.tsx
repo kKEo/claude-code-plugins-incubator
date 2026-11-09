@@ -269,6 +269,7 @@ export const register: Register = (on, options) => {
           agentId: e.agentId,
           kind,
           model: u?.model ?? e.model,
+          ...(e.effort === undefined ? {} : { effort: e.effort }),
           stopReason: result?.stopReason ?? null,
         })
         if (inFlight === 0) await settleLedger($)
@@ -446,7 +447,7 @@ export const register: Register = (on, options) => {
               const entry = (
                 <Box key={`req:${r.seq}`} flexDirection="column">
                   <Text wrap="truncate-end">
-                    <Text dimColor>#{r.seq} {clockTime(r.at)}</Text> {shortModel(r.model)} <Text color={r.kind === 'main' ? undefined : 'warning'}>{who}</Text>
+                    <Text dimColor>#{r.seq} {clockTime(r.at)}</Text> {shortModel(r.model)}{r.effort === undefined ? null : <Text dimColor> {String(r.effort)}</Text>} <Text color={r.kind === 'main' ? undefined : 'warning'}>{who}</Text>
                     <Text dimColor> {duration(r.durationMs)}{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
                   </Text>
                   <Text wrap="truncate-end" tabular>

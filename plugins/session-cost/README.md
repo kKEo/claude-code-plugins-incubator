@@ -5,7 +5,7 @@ A Claude Code mod that records every model request the session sends and shows i
 ## What it shows
 
 - **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate and requests by kind (main, subagent, compaction).
-- **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, `main` / `sub:<agent>` / `compact`, duration, stop reason, the four token counts, and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
+- **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, the effort the request asked for (dim, after the model, e.g. `opus-5-5 high`; absent for models without effort and for compactions), `main` / `sub:<agent>` / `compact`, duration, stop reason, the four token counts, and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
 - **Models view** (`m`): requests, tokens, cache hit rate and both costs per model.
 - **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. The windows are calendar days and count only the part of each session spent in them.
 - **Days view** (`d`): one row per day with spend in the last `historyDays` days, newest first: this session's cost and requests beside the cost of all sessions and how many had spend that day. A session open across several days says how many it spans.
