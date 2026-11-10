@@ -72,7 +72,7 @@
       "id": 4,
       "name": "structure-only-fast-path",
       "prompt": "Quick lint before I push: are there any orphan pages, broken links or missing SUMMARY entries in plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide? Just the structural problems, please. Write the report to the output directory as report.md.",
-      "expected_output": "A short report listing the 8 structural errors, produced from the script output without a qualitative read-through of pages.",
+      "expected_output": "A short, scoped report (validators landing, files, summary, links) listing the 6 structural errors, produced from the script output without a qualitative read-through of pages.",
       "files": [],
       "assertions": [
         "Report says the docs FAIL",
@@ -81,6 +81,21 @@
         "Report names the broken ../../architecture.md link in operator/README.md",
         "Report contains no qualitative tone/audience judgements (structure-only request)",
         "Report is under 50 lines"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "single-validator-links",
+      "prompt": "Only check the links in plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide: broken relative links, missing anchors, images without alt text. Nothing else. Write the report to the output directory as report.md.",
+      "expected_output": "The validator runs with --only links (or the /gitbook-docs-validator:links command); the report is titled as a scoped check, lists the broken ../../architecture.md link in operator/README.md and the missing alt text in user/README.md, and says the other validators did not run.",
+      "files": [],
+      "assertions": [
+        "The validator script is run with --only links (or via the links command), not as a full run",
+        "Report names the broken ../../architecture.md link in operator/README.md",
+        "Report names the missing alt text on the image in user/README.md",
+        "Report does not mention orphan pages, the missing tester .gitbook.yaml, the missing glossary or the second H1 (other validators)",
+        "Report states that the other validators were not run, so it is not a full template check",
+        "Report is under 40 lines"
       ]
     }
   ]

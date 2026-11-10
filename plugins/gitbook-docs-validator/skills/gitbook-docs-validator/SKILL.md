@@ -66,8 +66,15 @@ reading and writing. Keep the reading set fixed and the report short.
    Do not re-check any of these by hand.
 
    **Structure-only requests.** If the user asked only for a lint, a CI check, orphan pages,
-   broken links or "is the structure right", stop here. Fill in the verdict sentence and
-   report the skeleton. Skip step 3.
+   broken links or "is the structure right", run the script with
+   `--only landing,files,summary,links --format md` instead (no `--worklist`), fill in the
+   verdict sentence and report the skeleton. Skip step 3. The skeleton's "Validators not
+   run" line tells the reader that this was not a full check; keep it.
+
+   **One validator.** The script is a set of validators: `books` (always runs), `landing`,
+   `files`, `summary`, `pages`, `links`, `readme`, `roles`, `repo`. Use `--only a,b` or
+   `--skip a,b` to run a subset (`--list-checks` describes them). The plugin also ships them
+   as commands: `/gitbook-docs-validator:structure`, `:links`, `:content` and `:repo`.
 
 3. **Do the pass the script cannot, on the worklist only.** Read the worklist files (the
    landing page, the three book READMEs, the user quick start, one operator reference page,
@@ -131,7 +138,8 @@ what the landing page should link, and which existing pages would move into whic
 ## Files
 
 - `scripts/validate_docs.py`: the deterministic checks (python3 3.8+, stdlib only;
-  `--format text|md|json`, `--worklist`, `--quiet`).
+  `--format text|md|json`, `--worklist`, `--quiet`, `--only`/`--skip`, `--list-checks`).
+  Each validator is a module in `scripts/gbv/checks/`.
 - `references/template.md`: the template with the reasoning; consult §5–§7 and §9 as needed.
 - `assets/template.json`: roles, folder aliases, required pages; override per project with
   `<docs-root>/.docs-template.json`.

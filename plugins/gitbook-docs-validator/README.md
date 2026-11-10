@@ -40,14 +40,27 @@ The skill will:
 
 It stops at the report unless you ask for fixes.
 
+### Running one validator
+
+The checks are split into validators that also run on their own:
+
+| Command | Validators | Reads pages? |
+|---|---|---|
+| `/gitbook-docs-validator:structure [path]` | `landing`, `files`, `summary` | no |
+| `/gitbook-docs-validator:links [path]` | `links` | no |
+| `/gitbook-docs-validator:content [path]` | `pages`, `readme`, `roles` + qualitative pass | worklist only |
+| `/gitbook-docs-validator:repo [path] [--repo-root DIR]` | `repo` | no |
+
+A partial run is titled `Documentation check (<validators>)` and lists the validators it skipped, so it is never mistaken for a full template check.
+
 ### Running the script directly
 
 ```bash
 python3 skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . \
-    [--format text|md|json] [--worklist] [--quiet]
+    [--only CHECKS | --skip CHECKS] [--list-checks] [--format text|md|json] [--worklist] [--quiet]
 ```
 
-`--format md` prints the report skeleton, `--worklist` lists the files for the qualitative pass, and `--quiet` hides INFO notes. Exit status 1 means at least one ERROR. Python 3.8+, standard library only.
+`--only links,summary` runs just those validators and `--skip repo` runs the rest (`books`, the role mapping, always runs). `--list-checks` describes them. `--format md` prints the report skeleton, `--worklist` lists the files for the qualitative pass, and `--quiet` hides INFO notes. Exit status 1 means at least one ERROR, 2 means invalid arguments. Python 3.8+, standard library only.
 
 ### Custom folder names
 
@@ -58,9 +71,11 @@ The script maps folders to roles through aliases (`user`/`getting-started`, `ope
 ```
 gitbook-docs-validator/
 ├── .claude-plugin/plugin.json
+├── commands/                        # structure, links, content, repo
 └── skills/gitbook-docs-validator/
     ├── SKILL.md
-    ├── scripts/validate_docs.py     # deterministic checks
+    ├── scripts/validate_docs.py     # entry point: flags and output
+    ├── scripts/gbv/                 # core, context, render; checks/<validator>.py
     ├── references/template.md       # the template, with reasoning
     ├── assets/template.json         # roles, aliases, required pages
     └── evals/                       # eval cases and fixtures

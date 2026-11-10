@@ -54,6 +54,16 @@ python3 $V $F/renamed-layout/handbook --repo-root $F/renamed-layout --quiet; ech
 
 Expected: `broken-docs` reports nine ERROR lines and `exit 1`; `renamed-layout` reports zero errors, four warnings and `exit 0`, mapping `getting-started`, `internals`, `qa` to user, operator, tester. The exact nine faults are listed in [Fixtures and seeded faults](../contributing/fixtures.md).
 
+Each validator also runs on its own; the counts of the parts add up to the full run:
+
+```bash
+python3 $V --list-checks
+python3 $V $F/broken-docs/docs/guide --only links --quiet; echo "exit $?"
+python3 $V $F/broken-docs/docs/guide --only repo; echo "exit $?"
+```
+
+Expected: `--list-checks` prints nine validators; `--only links` prints `checks:    links (partial run)`, two ERROR lines (the broken `../../architecture.md` link and the missing alt text) and `exit 1`; `--only repo` without `--repo-root` is refused with a usage error and `exit 2`.
+
 ## 6. The validator on this documentation
 
 ```bash
