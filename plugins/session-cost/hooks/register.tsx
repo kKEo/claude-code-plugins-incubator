@@ -15,7 +15,7 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { clockTime, count, duration, padEnd, padStart, percent, shortModel, stamp, usd } from './format'
+import { clockTime, count, duration, durationBar, padEnd, padStart, percent, shortModel, stamp, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
 
@@ -426,6 +426,9 @@ export const register: Register = (on, options) => {
     if (mode === 'requests') {
       const list = (rows ?? []).slice(-DRAWN_ROWS).reverse()
       const isMultiDay = list.some(r => dayKey(r.at) !== dayKey(list[0]?.at ?? r.at))
+      // Elapsed-time bars are scaled to the slowest request drawn.
+      const maxMs = list.reduce((m, r) => Math.max(m, r.durationMs), 0)
+      const barWidth = Math.max(6, Math.min(16, e.props.bodyColumns - 40))
       body =
         list.length === 0 ? (
           <Text dimColor>No requests yet. Every model request of this session will be listed here.</Text>
@@ -448,7 +451,11 @@ export const register: Register = (on, options) => {
                 <Box key={`req:${r.seq}`} flexDirection="column">
                   <Text wrap="truncate-end">
                     <Text dimColor>#{r.seq} {clockTime(r.at)}</Text> {shortModel(r.model)}{r.effort === undefined ? null : <Text dimColor> {String(r.effort)}</Text>} <Text color={r.kind === 'main' ? undefined : 'warning'}>{who}</Text>
-                    <Text dimColor> {duration(r.durationMs)}{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
+                    <Text dimColor> {duration(r.durationMs)}</Text>
+                    {r.durationMs > 0 ? (
+                      <Text color={r.durationMs === maxMs && maxMs > 0 && list.length > 1 ? 'warning' : undefined} dimColor={r.durationMs !== maxMs || list.length === 1}> {durationBar(r.durationMs, maxMs, barWidth)}</Text>
+                    ) : null}
+                    <Text dimColor>{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
                   </Text>
                   <Text wrap="truncate-end" tabular>
                     {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)} cr {padStart(count(r.cacheRead), 5)} cw {padStart(count(r.cacheWrite), 5)}

@@ -49,6 +49,14 @@ export function duration(ms: number): string {
   return ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`
 }
 
+/** A bar of `width` cells: `ms` against the slowest request `maxMs`. A non-zero duration fills at least one cell. */
+export function durationBar(ms: number, maxMs: number, width: number): string {
+  const w = Math.max(1, Math.round(width))
+  if (!(ms > 0) || !(maxMs > 0)) return '░'.repeat(w)
+  const filled = Math.min(w, Math.max(1, Math.round((ms / maxMs) * w)))
+  return '█'.repeat(filled) + '░'.repeat(w - filled)
+}
+
 export function padEnd(s: string, n: number): string {
   return s.length >= n ? s : s + ' '.repeat(n - s.length)
 }

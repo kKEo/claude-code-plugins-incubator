@@ -31,7 +31,7 @@ const BAND = {
 
 /** The engine beneath the plugin: a /cost ledger the test moves, panes, store and clock. */
 function engine(on: On, store: Record<string, unknown> = {}) {
-  const state = { usd: 0.5, open: false, id: 'sess-1' }
+  const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], now: 1_800_000_000_000 }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
   mock.store(on, store)
   on('command.register', () => ({ value: { command: 'session-cost' } }))
@@ -50,6 +50,9 @@ function engine(on: On, store: Record<string, unknown> = {}) {
     return <Box />
   })
   on('turn.step', async function* (_, e) {
+    // A test queues how long each request takes; the mocked clock moves by that much.
+    const ms = state.stepMs.shift()
+    if (ms !== undefined) await clock.set((state.now += ms))
     // The engine adds the response's cost to the ledger as it streams.
     state.usd += e.agentId ? 0.004 : 0.02
     return {
@@ -235,4 +238,34 @@ test('a session that crosses midnight is split by day in the Days tab and in His
     await ui.press({ key: 'view:days' })
     await ui.unmount()
   }
+})
+
+test('each request row carries a bar scaled to the slowest request', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  state.stepMs.push(1000, 4000, 2000)
+  await step($, 0)
+  await step($, 1)
+  await step($, 2)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    // Pane is 80 columns wide: the bar is 16 cells; the slowest (4.0s) is full.
+    expect((await ui.find({ type: 'Text', text: /4\.0s/ }))?.text).toContain('█'.repeat(16))
+    expect((await ui.find({ type: 'Text', text: /2\.0s/ }))?.text).toContain('█'.repeat(8) + '░'.repeat(8))
+    expect((await ui.find({ type: 'Text', text: /1\.0s/ }))?.text).toContain('█'.repeat(4) + '░'.repeat(12))
+    await ui.unmount()
+  }
+})
+
+test('a request with no measured time shows no bar', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect((await ui.find({ type: 'Text', text: /#1 / }))?.text).not.toMatch(/[█░]/)
+  await ui.unmount()
 })
