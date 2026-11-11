@@ -428,7 +428,7 @@ export const register: Register = (on, options) => {
       const isMultiDay = list.some(r => dayKey(r.at) !== dayKey(list[0]?.at ?? r.at))
       // Elapsed-time bars are scaled to the slowest request drawn.
       const maxMs = list.reduce((m, r) => Math.max(m, r.durationMs), 0)
-      const barWidth = Math.max(6, Math.min(16, e.props.bodyColumns - 40))
+      const barWidth = 7
       body =
         list.length === 0 ? (
           <Text dimColor>No requests yet. Every model request of this session will be listed here.</Text>
@@ -446,15 +446,21 @@ export const register: Register = (on, options) => {
                   </Text>
                 ) : null
               const who = r.kind === 'main' ? 'main' : r.kind === 'compact' ? 'compact' : `sub:${(r.agentId ?? '').slice(0, 6)}`
+              const bar = durationBar(r.durationMs, maxMs, barWidth)
               const ledgerText = r.ledgerUsd === null ? '…' : `${r.isApprox ? '~' : ''}${usd(r.ledgerUsd)}`
               const entry = (
                 <Box key={`req:${r.seq}`} flexDirection="column">
                   <Text wrap="truncate-end">
                     <Text dimColor>#{r.seq} {clockTime(r.at)}</Text> {shortModel(r.model)}{r.effort === undefined ? null : <Text dimColor> {String(r.effort)}</Text>} <Text color={r.kind === 'main' ? undefined : 'warning'}>{who}</Text>
-                    <Text dimColor> {duration(r.durationMs)}</Text>
                     {r.durationMs > 0 ? (
-                      <Text color={r.durationMs === maxMs && maxMs > 0 && list.length > 1 ? 'warning' : undefined} dimColor={r.durationMs !== maxMs || list.length === 1}> {durationBar(r.durationMs, maxMs, barWidth)}</Text>
-                    ) : null}
+                      <Text>
+                        {' '}
+                        <Text color="inverseText" backgroundColor={r.durationMs === maxMs && list.length > 1 ? 'warning' : 'suggestion'}>{bar.label.slice(0, bar.filled)}</Text>
+                        <Text color="text" backgroundColor="subtle">{bar.label.slice(bar.filled)}</Text>
+                      </Text>
+                    ) : (
+                      <Text dimColor> {duration(r.durationMs)}</Text>
+                    )}
                     <Text dimColor>{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
                   </Text>
                   <Text wrap="truncate-end" tabular>

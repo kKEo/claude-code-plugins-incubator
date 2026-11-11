@@ -8,11 +8,12 @@ test('stamps show local time to the minute, so they agree with the day labels', 
   expect(stamp(new Date(2027, 11, 31, 23, 59, 0).getTime())).toBe('2027-12-31 23:59')
 })
 
-test('the duration bar is scaled to the slowest request and never empty for a real duration', async () => {
-  expect(durationBar(4000, 4000, 10)).toBe('██████████')
-  expect(durationBar(2000, 4000, 10)).toBe('█████░░░░░')
-  expect(durationBar(1, 4000, 10)).toBe('█░░░░░░░░░')
-  expect(durationBar(0, 4000, 10)).toBe('░░░░░░░░░░')
-  expect(durationBar(500, 0, 10)).toBe('░░░░░░░░░░')
-  expect(durationBar(9000, 4000, 10)).toBe('██████████')
+test('the duration bar is scaled to the slowest request and carries the duration flush right', async () => {
+  expect(durationBar(4000, 4000, 7)).toEqual({ label: '   4.0s', filled: 7 })
+  expect(durationBar(2000, 4000, 7)).toEqual({ label: '   2.0s', filled: 4 })
+  expect(durationBar(1, 4000, 7)).toEqual({ label: '    1ms', filled: 1 })
+  expect(durationBar(0, 4000, 7)).toEqual({ label: '    0ms', filled: 0 })
+  expect(durationBar(500, 0, 7)).toEqual({ label: '  500ms', filled: 0 })
+  expect(durationBar(9000, 4000, 7)).toEqual({ label: '   9.0s', filled: 7 })
+  expect(durationBar(1_234_500, 1_234_500, 7)).toEqual({ label: '1234.5s', filled: 7 })
 })

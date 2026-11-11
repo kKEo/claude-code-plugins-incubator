@@ -240,7 +240,7 @@ test('a session that crosses midnight is split by day in the Days tab and in His
   }
 })
 
-test('each request row carries a bar scaled to the slowest request', async ($, on) => {
+test('each request row carries a 7-cell bar scaled to the slowest request, with its duration on it', async ($, on) => {
   const { state } = engine(on)
   await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
   state.stepMs.push(1000, 4000, 2000)
@@ -251,10 +251,17 @@ test('each request row carries a bar scaled to the slowest request', async ($, o
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ ...PANE, surface })
-    // Pane is 80 columns wide: the bar is 16 cells; the slowest (4.0s) is full.
-    expect((await ui.find({ type: 'Text', text: /4\.0s/ }))?.text).toContain('█'.repeat(16))
-    expect((await ui.find({ type: 'Text', text: /2\.0s/ }))?.text).toContain('█'.repeat(8) + '░'.repeat(8))
-    expect((await ui.find({ type: 'Text', text: /1\.0s/ }))?.text).toContain('█'.repeat(4) + '░'.repeat(12))
+    const bar = async (seq: number) => {
+      const row = await ui.find({ type: 'Text', text: new RegExp(`^#${seq} `) })
+      const strip = row?.children.find(c => typeof c !== 'string' && c.type === 'Text' && c.children.some(cc => typeof cc !== 'string' && cc.props?.backgroundColor))
+      const [fill, track] = (typeof strip === 'string' ? [] : strip?.children ?? []).filter(c => typeof c !== 'string')
+      const text = (el: typeof fill) => (typeof el === 'string' || !el ? undefined : el.children.join(''))
+      return { fill: text(fill), track: text(track), color: fill?.props?.backgroundColor, trackColor: track?.props?.backgroundColor }
+    }
+    // #2 is the slowest (4.0s): full and highlighted.
+    expect(await bar(2)).toEqual({ fill: '   4.0s', track: '', color: 'warning', trackColor: 'subtle' })
+    expect(await bar(3)).toEqual({ fill: '   2', track: '.0s', color: 'suggestion', trackColor: 'subtle' })
+    expect(await bar(1)).toEqual({ fill: '  ', track: ' 1.0s', color: 'suggestion', trackColor: 'subtle' })
     await ui.unmount()
   }
 })
@@ -266,6 +273,6 @@ test('a request with no measured time shows no bar', async ($, on) => {
   await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
 
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
-  expect((await ui.find({ type: 'Text', text: /#1 / }))?.text).not.toMatch(/[█░]/)
+  expect(JSON.stringify(await ui.find({ type: 'Text', text: /^#1 / }))).not.toContain('backgroundColor')
   await ui.unmount()
 })
