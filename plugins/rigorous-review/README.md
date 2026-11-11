@@ -8,7 +8,7 @@ A strict, pre-merge code review skill. It reads a diff the way a hostile Staff E
 - **Concurrency & state:** race conditions, deadlocks, stale closures, leaks, broken mutations.
 - **Security & data integrity:** injection, missing authorization, exposed secrets, unvalidated input.
 - **Performance & scale:** N+1 queries, blocking the main thread, unbounded loops, excessive allocation.
-- **Over-engineering:** unnecessary abstractions, dead code, departures from existing project patterns.
+- **Architecture & over-engineering:** unnecessary abstractions, dead code, departures from existing project patterns, tight coupling, logic in the wrong layer.
 
 ## Installation
 
@@ -29,6 +29,20 @@ Or install it from the marketplace named `km-plugin-registry`.
 /rigorous-review src/api         # review a path
 ```
 
+### Focusing the review
+
+Add `--focus` to spend the whole review on one area, or several separated by commas:
+
+```
+/rigorous-review --focus security
+/rigorous-review 123 --focus performance,concurrency
+/rigorous-review src/api --focus extensibility
+```
+
+`logic`, `concurrency`, `security`, `performance` and `architecture` map to the built-in criteria. Any other name works too (`extensibility`, `accessibility`, `testability`, ...) and is reviewed as the name is commonly understood. Saying it in plain words ("review this, focus on performance") has the same effect.
+
+A focused review reads deeper into that area and reports only findings in it, with one exception: a CRITICAL issue noticed outside the focus is still reported.
+
 ## Output format
 
 ```
@@ -37,7 +51,15 @@ Or install it from the marketplace named `km-plugin-registry`.
 - **Fix:** Minimal copy-pasteable snippet.
 ```
 
-If nothing genuine is found, the output is exactly `No critical issues found.`
+What gets reported: anything that can cause incorrect behaviour, a crash, data loss, a security exposure, a measurable performance problem or a real maintenance cost. Each finding names the input or state that triggers it. Style and naming preferences are left out.
+
+- If there are no findings at all, the output is exactly `No critical issues found.`
+- If there is nothing to review (empty diff, unknown PR, branch or path), it says so in one sentence.
+- When the fix is not a small local change, the **Fix** line describes the change instead of giving a snippet.
+
+## Model families
+
+The prompt is written to behave the same on Haiku, Sonnet, Opus and Fable. It states the reporting bar concretely, because current models follow vague filters such as "don't nitpick" literally and then drop real findings. It gives exact commands for finding the base branch, because smaller models guess when given a placeholder.
 
 ## Requirements
 

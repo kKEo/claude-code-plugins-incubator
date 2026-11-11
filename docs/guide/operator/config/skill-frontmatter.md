@@ -15,8 +15,8 @@ allowed-tools: ["Bash", "Read", "Agent"]
 |---|---|---|---|
 | `name` | yes | Skill id; callable as `/<name>` | `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `write-implementation-spec`, `rigorous-review`, `memors-mcp` |
 | `description` | yes | The trigger. Claude sees only this before deciding; list what the skill does and the phrases that should invoke it | The first four list ten or more trigger phrases; `memors-mcp` is a reference skill and describes its use instead |
-| `argument-hint` | no | Placeholder shown after the slash command | `document-phase`: phase name; `scaffold-frontend`: app description; `write-implementation-spec`: the feature request |
-| `allowed-tools` | no | Tools the skill may use while running; omit for no restriction | `document-phase`: Bash, Read, Agent; `scaffold-frontend`: Read, Write, Edit, Bash, Agent; `gitbook-docs-validator`: unrestricted; `write-implementation-spec`: Read, Write, Edit, Bash, Glob, Agent, AskUserQuestion; `memors-mcp`: omitted |
+| `argument-hint` | no | Placeholder shown after the slash command | `document-phase`: phase name; `scaffold-frontend`: app description; `write-implementation-spec`: the feature request; `rigorous-review`: target and optional `--focus <area>` |
+| `allowed-tools` | no | Tools the skill may use while running; omit for no restriction | `document-phase`: Bash, Read, Agent; `scaffold-frontend`: Read, Write, Edit, Bash, Agent; `gitbook-docs-validator`: unrestricted; `write-implementation-spec`: Read, Write, Edit, Bash, Glob, Agent, AskUserQuestion; `rigorous-review`: Read, Bash, Glob, Grep; `memors-mcp`: omitted |
 
 ## Body conventions used here
 

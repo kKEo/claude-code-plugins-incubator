@@ -56,7 +56,7 @@ Runs the memors-mcp knowledge base alongside Claude. The plugin starts the `memo
 
 ## rigorous-review
 
-A strict pre-merge review. Ask Claude to do a rigorous review, review this diff, or stress-test a change before it ships, and it reads the diff against the default branch (or the PR, branch or path you name) and the code around each hunk. It checks logic and edge cases, concurrency and state, security and data integrity, performance and scale, and over-engineering. Every finding gets a severity, a `file:line`, the failure mode and a minimal fix. It does not praise, does not pad the report with style nitpicks, and replies `No critical issues found.` when the change is clean. It only reads; it never edits files.
+A strict pre-merge review. Ask Claude to do a rigorous review, review this diff, or stress-test a change before it ships, and it reads the diff against the default branch (or the PR, branch or path you name) and the code around each hunk. It checks logic and edge cases, concurrency and state, security and data integrity, performance and scale, and architecture and over-engineering. Add `--focus <area>` (for example `--focus security`, or any other name such as `extensibility`) to spend the whole review on one area; a critical issue outside it is still reported. Every finding gets a severity, a `file:line`, the failure mode and a minimal fix. It does not praise, does not pad the report with style nitpicks, and replies `No critical issues found.` when the change is clean. It only reads; it never edits files.
 
 ## Not a plugin
 
