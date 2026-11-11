@@ -13,6 +13,7 @@ This directory contains all plugins available in the Claude Plugins Marketplace.
 - **[feature-dev-documentalist](feature-dev-documentalist/)** - Auto-document feature development phases from git diff — spec, architecture, implementation, deployment, and testing
 - **[implementation-spec](implementation-spec/)** - Write implementation-ready feature specs — explored from the codebase, interviewed once, and audited so an orchestrator agent can build the whole thing with no further input
 - **[memors-hooks](memors-hooks/)** - Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only
+- **[rigorous-review](rigorous-review/)** - A strict, pre-merge code review skill that reports bugs, concurrency issues, security holes, performance traps and over-engineering, each with a minimal fix
 - **[plan-progress](plan-progress/)** - A pane beside the chat showing the current plan and its progress (a mod: a hooks module drawing into the interface)
 - **[session-cost](session-cost/)** - A pane beside the chat listing every model request with its tokens and cost, with session totals and history (a mod)
 

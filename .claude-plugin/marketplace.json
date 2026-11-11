@@ -37,6 +37,12 @@
       "category": "Development"
     },
     {
+      "name": "rigorous-review",
+      "description": "A strict, pre-merge code review skill that hunts for logic bugs, concurrency issues, security holes, performance traps and over-engineering, and reports each with a minimal fix",
+      "source": "./plugins/rigorous-review",
+      "category": "Development"
+    },
+    {
       "name": "plan-progress",
       "description": "A pane beside the chat showing the current plan and how far its realisation has advanced (tasks, todos, plan checkboxes, steps the model marks)",
       "source": "./plugins/plan-progress",
