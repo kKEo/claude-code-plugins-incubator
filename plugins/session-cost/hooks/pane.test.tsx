@@ -31,7 +31,7 @@ const BAND = {
 
 /** The engine beneath the plugin: a /cost ledger the test moves, panes, store and clock. */
 function engine(on: On, store: Record<string, unknown> = {}) {
-  const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], stepTools: [] as string[][], now: 1_800_000_000_000 }
+  const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], stepTools: [] as string[][], stepCache: [] as { read: number; write: number }[], now: 1_800_000_000_000 }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
   mock.store(on, store)
   on('command.register', () => ({ value: { command: 'session-cost' } }))
@@ -57,13 +57,15 @@ function engine(on: On, store: Record<string, unknown> = {}) {
     state.usd += e.agentId ? 0.004 : 0.02
     // A test queues the tools each response calls; none queued is a plain answer.
     const tools = state.stepTools.shift() ?? []
+    // A test queues what each request read from and wrote to the cache; the default is read-heavy.
+    const cache = state.stepCache.shift() ?? { read: 40_000, write: 2000 }
     return {
       turnId: e.turnId,
       index: e.index,
       answer: '',
       toolUses: tools.map(name => ({ name, input: {} })),
       stopReason: tools.length > 0 ? ('tool_use' as const) : ('end_turn' as const),
-      usage: { model: e.agentId ? 'claude-haiku-5-5' : 'claude-opus-5-5', input_tokens: 1200, output_tokens: 300, cache_read_input_tokens: 40_000, cache_creation_input_tokens: 2000 },
+      usage: { model: e.agentId ? 'claude-haiku-5-5' : 'claude-opus-5-5', input_tokens: 1200, output_tokens: 300, cache_read_input_tokens: cache.read, cache_creation_input_tokens: cache.write },
     }
   })
   return { state, clock }
@@ -293,6 +295,29 @@ test('a request that called tools names them in place of the bare stop reason', 
     expect(called).toMatch(/→ Read ×2, create_issue/)
     expect(called).not.toMatch(/tool_use/)
     expect((await ui.find({ type: 'Text', text: /^#2 / }))?.text).toMatch(/end_turn/)
+    await ui.unmount()
+  }
+})
+
+test('cache reads are green and cache writes red, more vivid the larger their share of the prompt', async ($, on) => {
+  const { state } = engine(on)
+  // Newest first in the pane: #3 neither read nor wrote, #2 mostly wrote, #1 mostly read.
+  state.stepCache.push({ read: 40_000, write: 2000 }, { read: 800, write: 38_000 }, { read: 0, write: 0 })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await step($, 1)
+  await step($, 2)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    const reads = await ui.findAll({ type: 'Text', text: /^cr / })
+    const writes = await ui.findAll({ type: 'Text', text: /^cw / })
+    expect(reads.map(r => r.props.color)).toEqual([undefined, '#9bd3a4', '#0a8a2a'])
+    expect(writes.map(w => w.props.color)).toEqual([undefined, '#d01919', '#e3a6a6'])
+    // A zero count has no hue: it is dimmed instead.
+    expect(reads[0]?.props.dimColor).toBe(true)
+    expect(reads[2]?.props.dimColor).toBe(false)
     await ui.unmount()
   }
 })

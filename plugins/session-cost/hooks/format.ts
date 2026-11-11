@@ -44,6 +44,22 @@ export function toolList(names: readonly string[]): string {
   return [...counts].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name)).join(', ')
 }
 
+/** Light to vivid green: how much of a request's prompt was read from the cache. */
+export const CACHE_READ_RAMP = ['#9bd3a4', '#6fc27d', '#45ad5a', '#229a3d', '#0a8a2a'] as const
+/** Light to vivid red: how much of a request's prompt was written to the cache. */
+export const CACHE_WRITE_RAMP = ['#e3a6a6', '#de8080', '#d95b5b', '#d43a3a', '#d01919'] as const
+
+/** How strongly to color `part` of `whole`: 0 for nothing, then 1..5 as its share passes 0, 20, 40, 60 and 80%. */
+export function heatLevel(part: number, whole: number): number {
+  if (!(part > 0) || !(whole > 0)) return 0
+  return Math.min(5, Math.floor((part / whole) * 5) + 1)
+}
+
+/** The ramp's color for a level; none for level 0, which stays uncolored. */
+export function heatColor(ramp: readonly string[], level: number): string | undefined {
+  return level <= 0 ? undefined : ramp[Math.min(ramp.length, Math.round(level)) - 1]
+}
+
 export function percent(x: number): string {
   return `${Math.round(x * 100)}%`
 }

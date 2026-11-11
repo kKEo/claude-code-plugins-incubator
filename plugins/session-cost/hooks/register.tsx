@@ -15,7 +15,7 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { clockTime, count, duration, durationBar, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
+import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
 
@@ -449,6 +449,10 @@ export const register: Register = (on, options) => {
                 ) : null
               const who = r.kind === 'main' ? 'main' : r.kind === 'compact' ? 'compact' : `sub:${(r.agentId ?? '').slice(0, 6)}`
               const bar = durationBar(r.durationMs, maxMs, barWidth)
+              // Cache reads in green and writes in red, each more vivid the larger its share of the prompt.
+              const prompt = r.input + r.cacheRead + r.cacheWrite
+              const readColor = heatColor(CACHE_READ_RAMP, heatLevel(r.cacheRead, prompt))
+              const writeColor = heatColor(CACHE_WRITE_RAMP, heatLevel(r.cacheWrite, prompt))
               const ledgerText = r.ledgerUsd === null ? '…' : `${r.isApprox ? '~' : ''}${usd(r.ledgerUsd)}`
               const entry = (
                 <Box key={`req:${r.seq}`} flexDirection="column">
@@ -471,7 +475,9 @@ export const register: Register = (on, options) => {
                     )}
                   </Text>
                   <Text wrap="truncate-end" tabular>
-                    {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)} cr {padStart(count(r.cacheRead), 5)} cw {padStart(count(r.cacheWrite), 5)}
+                    {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)}{' '}
+                    <Text color={readColor} dimColor={readColor === undefined}>cr {padStart(count(r.cacheRead), 5)}</Text>{' '}
+                    <Text color={writeColor} dimColor={writeColor === undefined}>cw {padStart(count(r.cacheWrite), 5)}</Text>
                     {'  '}<Text color="success">{ledgerText}</Text>
                     <Text dimColor> / est {usd(r.estUsd)}</Text>
                   </Text>
