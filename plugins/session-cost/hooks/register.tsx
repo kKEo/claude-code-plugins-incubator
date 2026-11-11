@@ -15,7 +15,7 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { clockTime, count, duration, durationBar, padEnd, padStart, percent, shortModel, stamp, usd } from './format'
+import { clockTime, count, duration, durationBar, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
 
@@ -260,6 +260,7 @@ export const register: Register = (on, options) => {
           cacheWrite: u?.cache_creation_input_tokens ?? 0,
         }
         const kind: RequestKind = e.agentId === undefined ? 'main' : 'subagent'
+        const tools = [...(result?.toolUses ?? []), ...(result?.serverToolUses ?? [])].map(use => use.name)
         await record($, {
           ...tokens,
           at: ended,
@@ -271,6 +272,7 @@ export const register: Register = (on, options) => {
           model: u?.model ?? e.model,
           ...(e.effort === undefined ? {} : { effort: e.effort }),
           stopReason: result?.stopReason ?? null,
+          ...(tools.length === 0 ? {} : { tools }),
         })
         if (inFlight === 0) await settleLedger($)
         else await refreshStatus($)
@@ -461,7 +463,12 @@ export const register: Register = (on, options) => {
                     ) : (
                       <Text dimColor> {duration(r.durationMs)}</Text>
                     )}
-                    <Text dimColor>{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
+                    {r.tools !== undefined && r.tools.length > 0 ? (
+                      // What it called says more than `tool_use`; any other stop reason stays beside it.
+                      <Text dimColor>{r.stopReason && r.stopReason !== 'tool_use' ? ` ${r.stopReason}` : ''} → {toolList(r.tools)}</Text>
+                    ) : (
+                      <Text dimColor>{r.stopReason ? ` ${r.stopReason}` : ''}</Text>
+                    )}
                   </Text>
                   <Text wrap="truncate-end" tabular>
                     {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)} cr {padStart(count(r.cacheRead), 5)} cw {padStart(count(r.cacheWrite), 5)}

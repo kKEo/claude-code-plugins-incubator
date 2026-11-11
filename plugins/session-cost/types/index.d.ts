@@ -34,6 +34,11 @@ export type RequestRow = Tokens & {
   /** True when the ledger delta was split across overlapping requests. */
   isApprox: boolean
   stopReason: string | null
+  /**
+   * Names of the tools the response called, in order (the engine's, then the ones the API ran itself);
+   * absent when it called none, and on rows recorded before they were kept.
+   */
+  tools?: string[]
 }
 
 export type ModelTotals = Tokens & {

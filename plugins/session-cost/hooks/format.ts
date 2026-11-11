@@ -27,6 +27,23 @@ export function shortModel(model: string): string {
   return id.startsWith('claude-') ? id.slice('claude-'.length) : id
 }
 
+/** `mcp__github__create_issue` → `create_issue`; a built-in tool's name is kept. */
+export function shortTool(name: string): string {
+  if (!name.startsWith('mcp__')) return name
+  const tool = name.slice(name.lastIndexOf('__') + 2)
+  return tool === '' ? name : tool
+}
+
+/** The tools one response called, in first-call order, repeats counted: `Bash, Read ×3`. */
+export function toolList(names: readonly string[]): string {
+  const counts = new Map<string, number>()
+  for (const n of names) {
+    const short = shortTool(n)
+    counts.set(short, (counts.get(short) ?? 0) + 1)
+  }
+  return [...counts].map(([name, n]) => (n > 1 ? `${name} ×${n}` : name)).join(', ')
+}
+
 export function percent(x: number): string {
   return `${Math.round(x * 100)}%`
 }

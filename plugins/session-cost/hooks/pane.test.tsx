@@ -31,7 +31,7 @@ const BAND = {
 
 /** The engine beneath the plugin: a /cost ledger the test moves, panes, store and clock. */
 function engine(on: On, store: Record<string, unknown> = {}) {
-  const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], now: 1_800_000_000_000 }
+  const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], stepTools: [] as string[][], now: 1_800_000_000_000 }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
   mock.store(on, store)
   on('command.register', () => ({ value: { command: 'session-cost' } }))
@@ -55,12 +55,14 @@ function engine(on: On, store: Record<string, unknown> = {}) {
     if (ms !== undefined) await clock.set((state.now += ms))
     // The engine adds the response's cost to the ledger as it streams.
     state.usd += e.agentId ? 0.004 : 0.02
+    // A test queues the tools each response calls; none queued is a plain answer.
+    const tools = state.stepTools.shift() ?? []
     return {
       turnId: e.turnId,
       index: e.index,
       answer: '',
-      toolUses: [],
-      stopReason: 'end_turn' as const,
+      toolUses: tools.map(name => ({ name, input: {} })),
+      stopReason: tools.length > 0 ? ('tool_use' as const) : ('end_turn' as const),
       usage: { model: e.agentId ? 'claude-haiku-5-5' : 'claude-opus-5-5', input_tokens: 1200, output_tokens: 300, cache_read_input_tokens: 40_000, cache_creation_input_tokens: 2000 },
     }
   })
@@ -275,4 +277,22 @@ test('a request with no measured time shows no bar', async ($, on) => {
   const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(JSON.stringify(await ui.find({ type: 'Text', text: /^#1 / }))).not.toContain('backgroundColor')
   await ui.unmount()
+})
+
+test('a request that called tools names them in place of the bare stop reason', async ($, on) => {
+  const { state } = engine(on)
+  state.stepTools.push(['Read', 'mcp__github__create_issue', 'Read'], [])
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await step($, 1)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    const called = (await ui.find({ type: 'Text', text: /^#1 / }))?.text
+    expect(called).toMatch(/→ Read ×2, create_issue/)
+    expect(called).not.toMatch(/tool_use/)
+    expect((await ui.find({ type: 'Text', text: /^#2 / }))?.text).toMatch(/end_turn/)
+    await ui.unmount()
+  }
 })
