@@ -18,6 +18,7 @@ The marketplace is called `km-plugin-registry`. It currently holds seven plugins
 - **implementation-spec** writes a specification for a feature that does not exist yet, complete enough for an agent to build it without asking you more.
 - **plan-progress** shows the current plan and how far Claude has got with it in a pane beside the chat.
 - **session-cost** lists every model request with its tokens and cost in a pane beside the chat, with totals by model and by day.
+- **prompt-coach** collects the prompts you type, shows a language correction for each in a pane beside the chat, and has a practice game built from your own mistakes.
 - **memors-hooks** connects Claude to a local memors-mcp knowledge base and reminds it to search before re-fetching and to record what it learns.
 
 ## If you want to…

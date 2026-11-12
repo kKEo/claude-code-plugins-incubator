@@ -17,6 +17,9 @@ This directory contains all plugins available in the Claude Plugins Marketplace.
 - **[plan-progress](plan-progress/)** - A pane beside the chat showing the current plan and its progress (a mod: a hooks module drawing into the interface)
 - **[session-cost](session-cost/)** - A pane beside the chat listing every model request with its tokens and cost, with session totals and history (a mod)
 
+### Productivity
+- **[prompt-coach](prompt-coach/)** - Collects the prompts you type, shows a language correction for each in a pane beside the chat, and has a practice game built from your own mistakes (a mod)
+
 ## Plugin Structure
 
 Each plugin follows this structure:

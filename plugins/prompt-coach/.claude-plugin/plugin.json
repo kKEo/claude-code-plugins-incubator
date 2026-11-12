@@ -1,0 +1,43 @@
+{
+  "name": "prompt-coach",
+  "version": "0.1.0",
+  "description": "Collects the prompts you type, corrects their language, and lets you practise the corrections in a pane beside the chat",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "keywords": [
+    "language",
+    "fluency",
+    "grammar",
+    "prompts",
+    "pane",
+    "mod"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "collect": {
+      "type": "boolean",
+      "title": "Collect prompts",
+      "description": "Save every prompt you type to the corpus and have its language checked",
+      "default": true
+    },
+    "model": {
+      "type": "string",
+      "title": "Correction model",
+      "description": "The model alias or id that checks each prompt's language",
+      "default": "haiku"
+    },
+    "notify": {
+      "type": "boolean",
+      "title": "Toast on a correction",
+      "description": "Show a short toast when a prompt you typed has a correction",
+      "default": true
+    },
+    "autoOpen": {
+      "type": "boolean",
+      "title": "Open pane at start",
+      "description": "Open the Prompt coach pane by itself when a session starts",
+      "default": false
+    }
+  }
+}

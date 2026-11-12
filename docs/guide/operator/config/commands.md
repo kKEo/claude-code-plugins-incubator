@@ -15,6 +15,7 @@ This page lists every slash command the plugins answer to and every flag of the 
 | `/gitbook-docs-validator:repo [path] [--repo-root DIR]` | gitbook-docs-validator | optional docs root and repo root (defaults to the git top level) | Runs only the `repo` validator |
 | `/implementation-spec:write-implementation-spec [request]` | implementation-spec | the feature request, in a sentence or two | Explores the codebase, asks at most four questions, writes `docs/specs/<date>-<slug>.md` and runs a readiness review |
 | `/session-cost [on\|off\|requests\|models\|history\|days\|reset]` | session-cost | optional switch or view; `open` and `show` mean `on`, `close` and `hide` mean `off`, `toggle` is the same as no argument | Toggles the cost pane, opens it on a view, or clears this session's totals |
+| `/prompt-coach [on\|off\|prompts\|practice\|recheck\|clear]` | prompt-coach | optional switch, tab or action; `open` and `show` mean `on`, `close` and `hide` mean `off`, `list` means `prompts`, `game` means `practice`, `toggle` is the same as no argument | Toggles the prompt pane, opens it on a tab, rechecks failed prompts, or removes the collected prompts |
 | `/plan-progress [on\|off\|plan\|progress\|<path>]` | plan-progress | optional switch, view or plan file; `open`, `show` and `toggle` mean `on`, `close` and `hide` mean `off`; any other argument is read as a plan path | Toggles the plan pane, switches its view, or loads a plan file |
 
 Plugin management commands, built into Claude Code:

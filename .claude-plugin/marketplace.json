@@ -53,6 +53,12 @@
       "description": "A pane beside the chat listing every model request with its tokens and cost (ledger share and price estimate), with session totals and history",
       "source": "./plugins/session-cost",
       "category": "Development"
+    },
+    {
+      "name": "prompt-coach",
+      "description": "A pane beside the chat that collects the prompts you type, shows a language correction for each, and has a practice game built from your own mistakes",
+      "source": "./plugins/prompt-coach",
+      "category": "Productivity"
     }
   ]
 }

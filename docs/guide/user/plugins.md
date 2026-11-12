@@ -42,6 +42,12 @@ Lists the session's model requests, newest first, in a pane beside the chat, wit
 
 Five switches in `/config` change the mod. *Open pane at start* (off by default) opens the pane when a session starts. *Cost status line* and *Cost chip above the prompt* (both on by default) show the summary under the prompt and the chip; switch either off to hide it. *Toggle key action* picks the action the keyboard toggle uses. *History days* (30) sets how many days of totals are kept. Like plan-progress, this is a *mod*.
 
+## prompt-coach
+
+Builds a corpus for improving your written fluency out of the prompts you type. Once installed, the mod collects every prompt you type, in every session, and has a small model (`haiku` by default) proofread it in the background, so the prompt itself is never delayed or changed. A pane beside the chat has two tabs. **Prompts** lists what was collected, newest first, each marked as fine or shown with its corrected form and a one-line note on the main mistakes. **Practice** is a game: it shows a random prompt of yours that needed a correction, you think how it should read and press *Show the correct form*, then answer *I know it* or *Not yet*, and the next prompt appears. Prompts you do not know yet come up more often.
+
+`/prompt-coach` toggles the pane (`on` and `off` do so explicitly), `/prompt-coach prompts` or `practice` opens it on that tab, `/prompt-coach recheck` checks again the prompts whose check failed, and `/prompt-coach clear` removes every collected prompt. Four switches in `/config` change the mod: *Collect prompts* (on by default), *Correction model* (`haiku`), *Toast on a correction* (on) and *Open pane at start* (off). Like plan-progress and session-cost, this is a *mod*.
+
 ## implementation-spec
 
 Writes a specification for a feature that does not exist yet, complete enough to hand to an agent that will build it. Ask Claude to write a spec for a feature, or to spec it out before any code is written, and it explores the repository, asks at most four questions it cannot answer itself, and writes `docs/specs/<date>-<slug>.md`. The spec has numbered requirements, exact contracts, ordered steps, tests and a security section. A readiness reviewer then checks it before it is handed back. Running it again for the same feature updates the same file. It is the forward counterpart of feature-dev-documentalist, which documents work after the code exists.
