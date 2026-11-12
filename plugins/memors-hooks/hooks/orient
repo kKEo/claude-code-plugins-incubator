@@ -10,7 +10,9 @@ source "$(dirname "$0")/lib.sh"
 status=$("$MEMORS" status 2>&1)
 
 if [[ "$status" == *"No knowledge base named"* ]]; then
-  emit_context SessionStart "memors knowledge base '${MEMORS_KB}' is empty. When you find something worth keeping (a fact with its source, a fetched doc), record it with the memors remember/ingest tools so later sessions can search it."
+  hint=""
+  [[ "$MEMORS_KB_SOURCE" == default ]] && hint=" (no .memors-kb marker in the project, so this is the shared 'default' knowledge base)"
+  emit_context SessionStart "memors knowledge base '${MEMORS_KB}' is empty${hint}. When you find something worth keeping (a fact with its source, a fetched doc), record it with the memors remember/ingest tools so later sessions can search it."
   exit 0
 fi
 
@@ -38,6 +40,9 @@ if [[ -n "$findings" && "$findings" != 0 ]]; then
 fi
 
 msg="memors knowledge base '${MEMORS_KB}' is available. Search it before re-deriving or re-fetching; record what you learn with remember (with evidence_uri) or ingest."
+if [[ "$MEMORS_KB_SOURCE" == default ]]; then
+  notes+=("no .memors-kb marker in the project, so this is the shared 'default' knowledge base; tell the human if the project should have one of its own")
+fi
 if (( ${#notes[@]} )); then
   msg+=$'\n'"Status: $(IFS=';'; printf '%s' "${notes[*]}" | sed 's/;/; /g')."
 fi

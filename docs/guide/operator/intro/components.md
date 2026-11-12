@@ -59,10 +59,10 @@ The output is one flat file per feature, `docs/specs/<YYYY-MM-DD>-<slug>.md`. A 
 
 | Component | File | Role |
 |---|---|---|
-| MCP server | `.mcp.json` | Starts the `memors` server (`memors-mcp`), which provides the knowledge-base tools |
+| MCP server | `.mcp.json`, `hooks/serve` | Starts the `memors` server (`memors-mcp serve`) for the knowledge base the project's `.memors-kb` marker names, which provides the knowledge-base tools |
 | Hooks | `hooks/hooks.json` | `SessionStart`, `UserPromptSubmit`, `PreToolUse` (Bash), `PostToolUse` (WebFetch, WebSearch, memors tools), `Stop` |
 | Hook scripts | `hooks/orient`, `recall`, `guard-cli`, `check-known-source`, `track`, `nudge-remember` | One script per job; `guard-cli` is the only one that can block |
-| Shared code | `hooks/lib.sh`, `hooks/run-hook.cmd` | Locating `memors-mcp`, the per-session log, the Windows/Unix wrapper |
+| Shared code | `hooks/common.sh`, `hooks/lib.sh`, `hooks/run-hook.cmd` | Locating `memors-mcp` and the project's knowledge base (marker, `MEMORS_KB`, `default`); the per-session log; the Windows/Unix wrapper |
 | Skill `memors-mcp` | `skills/memors-mcp/SKILL.md` | The upstream usage guide, plus a section on what the hooks already do |
 
 Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base.

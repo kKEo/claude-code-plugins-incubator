@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# The plugin's MCP server entry (.mcp.json): start memors-mcp on stdio for the
+# knowledge base this project names. The name comes from the nearest
+# .memors-kb marker above the project directory, then $MEMORS_KB, then
+# "default" — the same rule the hooks use, so both read one file.
+#
+# Unlike the hooks this must not fail open: without memors-mcp there is no
+# server, and Claude Code should show that. stdin is the MCP transport and is
+# left untouched.
+
+set -uo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+
+MEMORS=$(resolve_memors) || {
+  echo "memors-hooks: memors-mcp not found on PATH (set MEMORS_BIN=/path/to/memors-mcp)" >&2
+  exit 1
+}
+
+MEMORS_KB_SOURCE=""
+resolve_kb "${CLAUDE_PROJECT_DIR:-}" "$PWD"
+export MEMORS_KB
+echo "memors-hooks: knowledge base '$MEMORS_KB' (from $MEMORS_KB_SOURCE)" >&2
+
+exec "$MEMORS" serve "$@"

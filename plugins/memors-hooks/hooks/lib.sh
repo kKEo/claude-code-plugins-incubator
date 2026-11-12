@@ -10,24 +10,19 @@ HOOK_INPUT=$(cat 2>/dev/null || true)
 
 command -v jq >/dev/null 2>&1 || exit 0
 
+source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+
 hook_field() { printf '%s' "$HOOK_INPUT" | jq -r "$1 // empty" 2>/dev/null; }
 
-# Resolve the memors-mcp binary: $MEMORS_BIN, PATH, then common install dirs
-# (hooks may run with a thinner PATH than the user's shell).
-resolve_memors() {
-  local c
-  for c in "${MEMORS_BIN:-}" "$(command -v memors-mcp 2>/dev/null)" \
-           "$HOME/.local/bin/memors-mcp" /opt/homebrew/bin/memors-mcp /usr/local/bin/memors-mcp; do
-    if [[ -n "$c" && -x "$c" ]]; then
-      printf '%s' "$c"
-      return 0
-    fi
-  done
-  return 1
-}
-
 MEMORS=$(resolve_memors) || exit 0
-export MEMORS_KB="${MEMORS_KB:-default}"
+
+# The knowledge base for this project: the .memors-kb marker nearest to the
+# session's working directory (which the hook input carries), then the
+# project directory, then $MEMORS_KB, then "default". Exported so every
+# memors-mcp call below reads the same file the plugin's server writes.
+MEMORS_KB_SOURCE=""
+resolve_kb "$(hook_field '.cwd')" "${CLAUDE_PROJECT_DIR:-}" "$PWD"
+export MEMORS_KB
 
 # Run a read-only CLI command; the server logs to stderr, so drop it.
 kb() { "$MEMORS" "$@" 2>/dev/null; }

@@ -85,6 +85,9 @@ remember(statement: "grpc-go retries are configured per method in the service co
 
 ## What the memors-hooks plugin already does for you
 
+- **The knowledge base is the project's.** Its name comes from the `.memors-kb` file at the
+  project root (else `MEMORS_KB`, else `default`), for the server and the hooks alike. If the
+  session start says the project has no marker, suggest one to the human; never create it.
 - **Orient is done.** At session start (and after `/compact`) the index, search state and open
   lint count are injected as context. Call `status` only if you need more than that.
 - **Already-fetched sources are flagged.** After a `WebFetch` of a URL that is already ingested,
