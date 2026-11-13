@@ -321,3 +321,55 @@ test('cache reads are green and cache writes red, more vivid the larger their sh
     await ui.unmount()
   }
 })
+
+test('the Version tab shows the installed version and says when a newer one is published', async ($, on) => {
+  const { clock, state } = engine(on)
+  const published = { version: '9.9.9', status: 200, fetched: 0 }
+  on('fs.read', () => ({ value: '{"name":"session-cost","version":"0.4.0"}' }))
+  on('session.version', () => ({ value: { version: '2.1.322' } as never }))
+  on('http.fetch', () => {
+    published.fetched += 1
+    return { value: { status: published.status, ok: published.status === 200, headers: {}, text: JSON.stringify({ version: published.version }) } }
+  })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    published.version = '9.9.9'
+    published.status = 200
+    const ui = await $.ui.mount({ ...PANE, surface })
+    // The first opening checks by itself; a later surface asks for a fresh check.
+    const isFirst = published.fetched === 0
+    await ui.press({ key: 'view:version' })
+    if (isFirst) {
+      expect(published.fetched).toBe(1)
+      expect(await ui.find({ type: 'Text', text: /Update available/ })).toBeDefined()
+    }
+    await ui.press({ key: 'version:check' })
+    expect(await ui.find({ type: 'Text', text: /^0\.4\.0$/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /Update available: 0\.4\.0 → 9\.9\.9/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /2\.1\.322/ })).toBeDefined()
+
+    // Opening the tab again within a day does not ask the network again; the button does.
+    const before = published.fetched
+    await ui.press({ key: 'view:requests' })
+    await ui.press({ key: 'view:version' })
+    expect(published.fetched).toBe(before)
+    published.version = '0.4.0'
+    await ui.press({ key: 'version:check' })
+    expect(published.fetched).toBe(before + 1)
+    expect(await ui.find({ type: 'Text', text: /Up to date/ })).toBeDefined()
+
+    published.status = 404
+    await ui.press({ key: 'version:check' })
+    expect(await ui.find({ type: 'Text', text: /update check failed: HTTP 404/ })).toBeDefined()
+
+    // A day later the tab checks by itself.
+    published.status = 200
+    await clock.set((state.now += 25 * 60 * 60 * 1000))
+    await ui.press({ key: 'view:requests' })
+    await ui.press({ key: 'view:version' })
+    expect(await ui.find({ type: 'Text', text: /Up to date/ })).toBeDefined()
+    await ui.press({ key: 'view:requests' })
+    await ui.unmount()
+  }
+})

@@ -1,6 +1,6 @@
 {
   "name": "session-cost",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "A pane listing every model request of the session with its tokens and cost, beside the session totals and history",
   "author": {
     "name": "Krzysztof Maziarz"

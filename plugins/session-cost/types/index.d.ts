@@ -70,7 +70,19 @@ export type Ledger = {
   resetUsd?: number
 }
 
-export type CostView = 'requests' | 'models' | 'history' | 'days'
+export type CostView = 'requests' | 'models' | 'history' | 'days' | 'version'
+
+/** The last look at the published manifest, for the Version view. */
+export type UpdateCheck = {
+  /** When the check ended, in `$.clock.now()` milliseconds; 0 before the first one. */
+  at: number
+  /** The version the published manifest states; null when it could not be read. */
+  latest: string | null
+  /** Why it could not be read. */
+  error?: string
+  /** True while a check is on its way. */
+  isChecking?: boolean
+}
 
 /** What one calendar day (local time) of a session spent; a request counts on the day its response ended. */
 export type DayTotals = Tokens & {
@@ -104,6 +116,7 @@ declare module 'claude-code' {
       ledger: Ledger
       view: CostView
       days: DayMap
+      update: UpdateCheck
     }
   }
 }
