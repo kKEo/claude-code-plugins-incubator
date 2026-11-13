@@ -34,7 +34,7 @@ which pages are orphaned or unpublished?
 The skill will:
 
 1. Locate the docs root (the directory holding `index.html` and the book folders, usually `docs/guide/`).
-2. Run `scripts/validate_docs.py` once for the mechanical checks: landing page links, the three roles present once each, `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book, orphan pages, missing files, heading structure, images and alt text, relative links and anchors, stub pages without a `> Draft.` marker, reading-map rows that point to unpublished pages, a timed quick start, required pages per role, and (with `--repo-root`) the root README, Makefile targets and docs CI workflow. It prints a ready report skeleton and a short worklist of files for step 3.
+2. Run `scripts/validate_docs.py` once for the mechanical checks: landing page links, the three roles present once each, `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book (with the Home-button script that links back to the landing page), orphan pages, missing files, heading structure, images and alt text, relative links and anchors, stub pages without a `> Draft.` marker, reading-map rows that point to unpublished pages, a timed quick start, required pages per role, and (with `--repo-root`) the root README, Makefile targets and docs CI workflow. It prints a ready report skeleton and a short worklist of files for step 3.
 3. Read only the worklist (landing page, the three book READMEs, one page per role) and judge what the script cannot: audience fit, lead paragraphs, reading-map tables, drift against the code. For structure-only requests this step is skipped.
 4. Finish the skeleton into a report with a verdict, structural failures, template deviations, suggestions and what was not checked.
 

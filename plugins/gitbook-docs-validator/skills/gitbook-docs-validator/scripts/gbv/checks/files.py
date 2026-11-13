@@ -32,3 +32,19 @@ def run(ctx: Context, role: str) -> None:
             rep.warn("book-files", f"book.toml build-dir does not end in site/{book.name}", bt)
         if not re.search(r"^title\s*=", txt, re.M):
             rep.warn("book-files", "book.toml has no title", bt)
+        _home_button(ctx, role, book, bt, txt)
+
+
+def _home_button(ctx: Context, role: str, book, bt, txt: str) -> None:
+    """mdBook twin: a Home icon in the menu bar (additional-js) links back to the landing page."""
+    rep = ctx.rep
+    m = re.search(r"^additional-js\s*=\s*\[(.*?)\]", txt, re.M | re.S)
+    scripts = re.findall(r"[\"']([^\"']+\.js)[\"']", m.group(1)) if m else []
+    if not scripts:
+        rep.warn("book-files", f"{role} book.toml has no additional-js home button (a Home icon linking to the landing page)", bt)
+        return
+    for name in scripts:
+        f = book / name
+        if f.exists() and re.search(r"\bHome\b", f.read_text(encoding="utf-8", errors="replace")):
+            return
+    rep.warn("book-files", f"{role} book.toml additional-js lists no existing script that adds a 'Home' link to the landing page", bt)

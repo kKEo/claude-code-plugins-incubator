@@ -67,6 +67,7 @@ Each book is a self-contained GitBook space that mdBook can also build:
 | `SUMMARY.md` | Navigation; only listed chapters are published | required; see §4 |
 | `.gitbook.yaml` | `root: ./` and `structure: {readme: README.md, summary: SUMMARY.md}` | required so GitBook finds the files |
 | `book.toml` | mdBook twin: `title`, `description`, `src = "."`, `build-dir = "../../../site/<book>"`, `site-url = "/<repo>/<book>/"`, `create-missing = false` | recommended; `create-missing = false` makes a typo in SUMMARY a build failure instead of a silent empty page |
+| `home-button.js` | Menu-bar **Home** icon linking back to the landing page (`path_to_root + "../"`), loaded from `book.toml` with `additional-js = ["home-button.js"]`; the same file in every book | recommended; without it a reader deep in a book has no way back to the three-card front door (GitBook has its own site header, so this is mdBook-only) |
 | `images/*.svg` | Diagrams, one folder per book | referenced from pages with long alt text |
 
 Each book's `README.md` stays in the book root. The entry-level (user) book may be **flat**

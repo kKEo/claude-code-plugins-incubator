@@ -48,7 +48,7 @@ reading and writing. Keep the reading set fixed and the report short.
    What the script covers:
    - landing page cards and links;
    - the three roles present exactly once;
-   - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book;
+   - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book (plus the `additional-js` Home button back to the landing page);
    - SUMMARY rules: it starts with README, every page is listed (orphans are unpublished
      pages), every listed file exists, `Part I..N` numbering, part directories have a README;
    - headings: one H1 per page on line one (code-fence comments are ignored), no skipped
