@@ -15,6 +15,7 @@
   main { max-width: 920px; margin: 0 auto; padding: 56px 16px 40px; }
   h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.01em; }
   .lede { color: var(--muted); margin: 0 0 36px; max-width: 640px; }
+  .overview { display: block; width: 100%; height: auto; aspect-ratio: 920 / 650; margin: 0 0 36px; border-radius: 12px; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
   a.card { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; color: inherit; text-decoration: none; }
   a.card:hover { border-color: var(--accent); }
@@ -30,6 +31,10 @@
 <main>
   <h1>Claude Code plugins incubator</h1>
   <p class="lede">A small marketplace of Claude Code plugins that scaffold front ends, write specs and document feature work, validate documentation, show plan progress and session cost beside the chat, and connect Claude to a local knowledge base. Pick the guide written for you.</p>
+
+  <object class="overview" type="image/svg+xml" data="images/plugins-overview.svg" aria-label="The plugins of the km-plugin-registry marketplace grouped by type: skill and agent plugins, mods and a hooks plugin. Each plugin links to its description in the user guide.">
+    <img src="images/plugins-overview.svg" alt="The plugins of the km-plugin-registry marketplace grouped by type: skill and agent plugins, mods and a hooks plugin">
+  </object>
 
   <div class="cards">
     <a class="card" href="user/">

@@ -2,13 +2,7 @@
 
 This guide is for anyone who wants to use the plugins in this marketplace inside Claude Code. It assumes you have Claude Code installed and can type a prompt; it does not assume you know how plugins are built.
 
-<object type="image/svg+xml" data="images/plugins-overview.svg" aria-label="The seven plugins of the km-plugin-registry marketplace grouped by type: four skill and agent plugins, two mods and one hooks plugin. Each plugin links to its description." style="display: block; width: 100%; height: auto; aspect-ratio: 920 / 650;">
-
-![The seven plugins of the km-plugin-registry marketplace grouped by type: four skill and agent plugins, two mods and one hooks plugin](images/plugins-overview.svg)
-
-</object>
-
-Select a plugin in the picture to open its description, or see all of them in [What is in the marketplace](plugins.md).
+[What is in the marketplace](plugins.md) describes every plugin.
 
 The marketplace is called `km-plugin-registry`. It currently holds seven plugins:
 

@@ -17,7 +17,7 @@ Triggers on pull requests and pushes to `master` that touch `docs/**`, `scripts/
 1. Check out, set up Python 3.
 2. Run `scripts/docs-check` (fails the job on exit 1).
 3. Download a pinned mdBook release, verify its SHA-256, build the three books into `site/`.
-4. Copy `docs/guide/index.html` to `site/index.html`.
+4. Copy `docs/guide/index.html` to `site/index.html` and `docs/guide/images/` to `site/images/`.
 5. On `master` only, deploy `site/` to GitHub Pages.
 
 **State.** Blocking on every pull request that touches the docs. What it checks is described in [The documentation gate](docs-gate.md).

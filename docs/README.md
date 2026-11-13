@@ -6,7 +6,7 @@ Everything published about this marketplace lives under `docs/guide/` as one lan
 
 | Page | Path | For |
 |---|---|---|
-| Landing page | [docs/guide/index.html](guide/index.html) | Everyone; one card per book |
+| Landing page | [docs/guide/index.html](guide/index.html) | Everyone; the marketplace overview picture (`guide/images/plugins-overview.svg`) above one card per book |
 | User guide | [docs/guide/user/](guide/user/README.md) | People who install and use the plugins |
 | Plugin author guide | [docs/guide/operator/](guide/operator/README.md) | People who author, configure, publish and operate plugins |
 | Tester guide | [docs/guide/tester/](guide/tester/README.md) | People who check a change before merge |
@@ -19,6 +19,7 @@ Each book is a GitBook space (`.gitbook.yaml`) that mdBook also builds (`book.to
 make docs-check              # validator + reconciliation against the code
 make docs                    # docs-check, then build all three books (needs mdbook)
 make docs-serve BOOK=user    # serve one book locally
+make docs-site               # build, then serve the whole site from the landing page (PORT=8000)
 ```
 
 ## Design and reference documents
