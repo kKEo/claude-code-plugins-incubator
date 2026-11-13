@@ -5,7 +5,7 @@
 <rect class="panel" x=".5" y=".5" width="919" height="865" rx="14"/>
 <rect class="dot" x="32" y="28" width="44" height="44" rx="11"/>
 <path class="onaccent" d="M54 37l3.1 9.9 9.9 3.1-9.9 3.1-3.1 9.9-3.1-9.9-9.9-3.1 9.9-3.1z"/>
-<text x="92" y="48" class="fg b" font-size="22">Claude Code plugins incubator</text>
+<text x="92" y="48" class="fg b" font-size="22">kKEo's Claude Code plugins</text>
 <text x="92" y="69" class="muted mono" font-size="12.5">km-plugin-registry · nine plugins, three kinds</text>
 <text x="678" y="54" class="fg b" font-size="24" text-anchor="middle">5</text>
 <text x="678" y="71" class="faint caps" font-size="10" text-anchor="middle">SKILLS</text>

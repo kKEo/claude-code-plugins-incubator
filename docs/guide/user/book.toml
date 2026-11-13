@@ -1,5 +1,5 @@
 [book]
-title = "Claude Code plugins incubator: user guide"
+title = "kKEo's Claude Code plugins: user guide"
 description = "Install a plugin from the km-plugin-registry marketplace and use it in Claude Code."
 authors = ["Krzysztof Maziarz"]
 language = "en"
@@ -12,3 +12,5 @@ create-missing = false
 [output.html]
 site-url = "/claude-code-plugins-incubator/user/"
 git-repository-url = "https://github.com/kKEo/claude-code-plugins-incubator"
+
+additional-js = ["home-button.js"]
