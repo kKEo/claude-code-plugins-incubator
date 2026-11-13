@@ -5,6 +5,8 @@
 # (PreToolUse cannot inject context, so this runs after the fetch.)
 
 set -uo pipefail
+source "$(dirname "$0")/common.sh"
+option_on CHECK_KNOWN_SOURCE true || exit 0
 source "$(dirname "$0")/lib.sh"
 
 url=$(hook_field '.tool_input.url')

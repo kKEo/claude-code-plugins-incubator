@@ -4,6 +4,8 @@
 # empty memors searches without calling remember/ingest, nudge once. Never blocks.
 
 set -uo pipefail
+source "$(dirname "$0")/common.sh"
+option_on NUDGE_REMEMBER true || exit 0
 source "$(dirname "$0")/lib.sh"
 
 [[ "$(hook_field '.stop_hook_active')" == true ]] && exit 0

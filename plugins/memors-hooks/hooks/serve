@@ -11,6 +11,34 @@
 set -uo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
+# The server is off unless the mcp_server option is on (.mcp.json passes it in
+# as MEMORS_HOOKS_MCP_SERVER). A plugin cannot ship a server that is disabled
+# by default, so when off this answers MCP with an empty tool list instead of
+# exiting, which Claude Code would report as a failed server every session.
+if [[ "${MEMORS_HOOKS_MCP_SERVER:-}" == *'${'* ]]; then MEMORS_HOOKS_MCP_SERVER=""; fi
+CLAUDE_PLUGIN_OPTION_MCP_SERVER="${MEMORS_HOOKS_MCP_SERVER:-${CLAUDE_PLUGIN_OPTION_MCP_SERVER:-}}"
+if ! option_on MCP_SERVER false; then
+  echo "memors-hooks: the memors server is off (turn on 'Start the memors MCP server' in /config)" >&2
+  command -v jq >/dev/null 2>&1 || exit 0
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    id=$(jq -c '.id // empty' <<<"$line" 2>/dev/null) || continue
+    [[ -z "$id" ]] && continue   # a notification: no reply
+    case "$(jq -r '.method // empty' <<<"$line" 2>/dev/null)" in
+      initialize)
+        jq -cn --argjson id "$id" --arg v "$(jq -r '.params.protocolVersion // "2025-06-18"' <<<"$line")" '{
+          jsonrpc: "2.0", id: $id,
+          result: {protocolVersion: $v, capabilities: {tools: {}},
+                   serverInfo: {name: "memors (off)", version: "0"},
+                   instructions: "The memors server is turned off in this plugin'"'"'s /config settings, so it offers no tools."}}' ;;
+      tools/list) jq -cn --argjson id "$id" '{jsonrpc: "2.0", id: $id, result: {tools: []}}' ;;
+      ping) jq -cn --argjson id "$id" '{jsonrpc: "2.0", id: $id, result: {}}' ;;
+      *) jq -cn --argjson id "$id" '{jsonrpc: "2.0", id: $id, error: {code: -32601, message: "method not found: the memors server is off"}}' ;;
+    esac
+  done
+  exit 0
+fi
+
 MEMORS=$(resolve_memors) || {
   echo "memors-hooks: memors-mcp not found on PATH (set MEMORS_BIN=/path/to/memors-mcp)" >&2
   exit 1

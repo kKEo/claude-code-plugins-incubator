@@ -32,7 +32,7 @@ This page documents `hooks/hooks.json` in its two forms: the shell-command hooks
 | `async` | `true` runs without blocking the turn; output arrives when ready | `true` |
 | `timeout` | Seconds before the hook is killed; default 60 | not set |
 
-memors-hooks uses the same form with five events: `SessionStart` (`orient`), `UserPromptSubmit` (`recall`, opt-in), `PreToolUse` on `Bash` (`guard-cli`, the only hook that can block), `PostToolUse` (`check-known-source` and `track`) and `Stop` (`nudge-remember`). Each sets its own `timeout`, and each runs through the same `run-hook.cmd` wrapper described below.
+memors-hooks uses the same form with five events: `SessionStart` (`orient`), `UserPromptSubmit` (`recall`, opt-in), `PreToolUse` on `Bash` (`guard-cli`, the only hook that can block), `PostToolUse` (`check-known-source` and `track`) and `Stop` (`nudge-remember`). Each sets its own `timeout`, and each runs through the same `run-hook.cmd` wrapper described below. hooks.json cannot depend on a setting, so every script checks its own `/config` option first: Claude Code exports each plugin option to hooks as `CLAUDE_PLUGIN_OPTION_<KEY>` (key uppercased), and the script exits 0 when its option is off.
 
 ## Hooks modules (mods)
 

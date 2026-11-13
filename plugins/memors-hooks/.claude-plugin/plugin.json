@@ -1,9 +1,62 @@
 {
   "name": "memors-hooks",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only",
   "author": {
     "name": "Krzysztof Maziarz"
   },
-  "keywords": ["memors", "memory", "knowledge-base", "mcp", "hooks", "trust"]
+  "keywords": [
+    "memors",
+    "memory",
+    "knowledge-base",
+    "mcp",
+    "hooks",
+    "trust"
+  ],
+  "userConfig": {
+    "mcp_server": {
+      "type": "boolean",
+      "title": "Start the memors MCP server",
+      "description": "Start the bundled memors server (memors-mcp serve) for the project's knowledge base. Off by default: leave it off if you register memors yourself or only want the hooks",
+      "default": false
+    },
+    "orient": {
+      "type": "boolean",
+      "title": "Knowledge-base index at session start",
+      "description": "At session start and after /compact, add the knowledge base's index, search status and open lint count to the conversation",
+      "default": true
+    },
+    "guard_cli": {
+      "type": "boolean",
+      "title": "Block memors CLI writes from Bash",
+      "description": "Deny Bash commands that change trust, write or forget through the memors-mcp CLI, or edit its database with sqlite3",
+      "default": true
+    },
+    "check_known_source": {
+      "type": "boolean",
+      "title": "Point at already-stored pages",
+      "description": "After a web fetch, say when the URL is already in the knowledge base and where",
+      "default": true
+    },
+    "nudge_remember": {
+      "type": "boolean",
+      "title": "Remind to record findings",
+      "description": "Log web fetches and empty memors searches, and remind Claude once at the end of a turn when nothing was recorded",
+      "default": true
+    },
+    "recall": {
+      "type": "boolean",
+      "title": "Prompt recall",
+      "description": "On each prompt of 20 characters or more, add up to 3 keyword-matched knowledge-base addresses",
+      "default": false
+    },
+    "index_bytes": {
+      "type": "number",
+      "title": "Index size limit (bytes)",
+      "description": "The largest index the session-start hook adds to the conversation",
+      "default": 8192,
+      "min": 1024,
+      "max": 65536
+    }
+  }
 }

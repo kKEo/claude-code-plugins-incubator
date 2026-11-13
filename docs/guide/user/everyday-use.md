@@ -95,7 +95,7 @@ When the Version view says an update is available, run `/plugin marketplace upda
 
 ## Using a knowledge base
 
-With memors-hooks installed there is nothing to type. Claude sees what the knowledge base holds when a session starts, and is reminded to record what it learned. To have it look up something it may already know:
+With memors-hooks installed, and a memors server running (the plugin's own, turned on in `/config`, or one you registered), there is nothing to type. Claude sees what the knowledge base holds when a session starts, and is reminded to record what it learned. To have it look up something it may already know:
 
 ```
 search the knowledge base for our retry policy

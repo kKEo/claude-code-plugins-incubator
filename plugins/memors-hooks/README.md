@@ -11,10 +11,10 @@ Hooks that run the [memors-mcp](https://github.com/kKEo/memors) knowledge-base l
 | Don't re-derive | `PostToolUse` `WebFetch` | `check-known-source` | If the fetched URL is already ingested, points at its `memo://doc/...` address. |
 | Record what you found | `PostToolUse` `WebFetch\|WebSearch\|mcp__*memors*__(search\|remember\|ingest)` | `track` | Logs web fetches, empty memors searches and write-backs to `$TMPDIR/memors-hooks/<session>.log`. Prints nothing. |
 | Record what you found | `Stop` | `nudge-remember` | Sends one non-blocking reminder when the session fetched or missed but recorded nothing since the last nudge or write. |
-| Search, then read | `UserPromptSubmit` (opt-in) | `recall` | With `MEMORS_HOOK_RECALL=1`, injects up to 3 keyword-matched `memo://` addresses for the prompt. |
+| Search, then read | `UserPromptSubmit` (opt-in) | `recall` | With *Prompt recall* on in `/config` (or `MEMORS_HOOK_RECALL=1`), injects up to 3 keyword-matched `memo://` addresses for the prompt. |
 
 The plugin also bundles:
-- the `memors` MCP server (`.mcp.json`, started through `hooks/serve`, which picks the project's knowledge base);
+- the `memors` MCP server (`.mcp.json`, started through `hooks/serve`, which picks the project's knowledge base). It is **off by default**: turn on *Start the memors MCP server* in `/config` to run it;
 - the upstream `memors-mcp` skill, plus a section describing what these hooks already do.
 
 ## Design Rules
@@ -59,15 +59,37 @@ same file.
 
 ## Configuration
 
+### Settings in `/config`
+
+Each feature has a switch in the plugin's `/config` settings. Claude Code passes them to the hooks as `CLAUDE_PLUGIN_OPTION_<KEY>` and to the server through `.mcp.json`.
+
+| Setting | Key | Default | Controls |
+|---|---|---|---|
+| Start the memors MCP server | `mcp_server` | off | The bundled `memors` server. |
+| Knowledge-base index at session start | `orient` | on | `orient` |
+| Block memors CLI writes from Bash | `guard_cli` | on | `guard-cli` |
+| Point at already-stored pages | `check_known_source` | on | `check-known-source` |
+| Remind to record findings | `nudge_remember` | on | `track` and `nudge-remember` |
+| Prompt recall | `recall` | off | `recall` |
+| Index size limit (bytes) | `index_bytes` | 8192 | `orient`'s size cap |
+
+**Why the server is off by default.** Many setups already run memors elsewhere: registered with `claude mcp add`, or served over HTTP by MemoRS Tray. A second copy would show every tool twice. A plugin cannot ship an MCP server that is disabled by default, so with the setting off `hooks/serve` answers MCP with an empty tool list instead of starting `memors-mcp`. It does not exit, because Claude Code would then report a failed server in every session. `/mcp` lists it as connected with no tools. Once the setting is on, restart Claude Code or reconnect the server in `/mcp`. While it is off, `orient` tells Claude so, in case no other memors server provides the tools.
+
+The hooks work with any memors server, so the usual choices are:
+- the plugin's server: turn on *Start the memors MCP server*;
+- your own registration (`claude mcp add memors ...`, or an HTTP URL): leave the setting off.
+
+### Environment variables
+
 | Variable | Default | Used by |
 |---|---|---|
 | `MEMORS_KB` | `default` | MCP server and all hooks, when the project has no `.memors-kb` marker (see above). |
 | `MEMORS_HOME` | `~/.memors-mcp` | MCP server and hooks (memors' own variable) |
 | `MEMORS_BIN` | `memors-mcp` on `PATH` | MCP server command and hooks |
-| `MEMORS_HOOK_RECALL` | `0` | `recall`: set to `1` to enable prompt recall |
-| `MEMORS_HOOK_INDEX_BYTES` | `8192` | `orient`: size cap for the injected index |
+| `MEMORS_HOOK_RECALL` | `0` | `recall`: `1` turns prompt recall on even when the *Prompt recall* setting is off |
+| `MEMORS_HOOK_INDEX_BYTES` | the *Index size limit* setting | `orient`: size cap for the injected index; overrides the setting when set |
 
-If you already registered memors yourself (`claude mcp add memors ...`), either remove that entry or disable the plugin's `memors` server in `/mcp`. Otherwise the tools show up twice. The hooks work with either server name and read the knowledge base the marker names, whichever server writes it.
+If you registered memors yourself (`claude mcp add memors ...`), keep *Start the memors MCP server* off. Otherwise the tools show up twice. The hooks work with either server name and read the knowledge base the marker names, whichever server writes it.
 
 ## Caveats
 
@@ -83,9 +105,10 @@ printf '# Retry\n\nBackoff doubles.\n' | memors-mcp ingest - --uri https://docs.
 echo '{"source":"startup"}' | plugins/memors-hooks/hooks/run-hook.cmd orient
 proj=$(mktemp -d) && echo t > "$proj/.memors-kb" && mkdir "$proj/sub"
 echo "{\"source\":\"startup\",\"cwd\":\"$proj/sub\"}" | MEMORS_KB=other plugins/memors-hooks/hooks/run-hook.cmd orient   # → knowledge base 't', the marker wins
-(cd "$proj" && bash plugins/memors-hooks/hooks/serve </dev/null)                                           # → stderr: knowledge base 't' (from marker)
+(cd "$proj" && MEMORS_HOOKS_MCP_SERVER=true bash plugins/memors-hooks/hooks/serve </dev/null)                # → stderr: knowledge base 't' (from marker)
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | bash plugins/memors-hooks/hooks/serve   # server off: → {"result":{"tools":[]}}
 echo '{"tool_name":"Bash","tool_input":{"command":"memors-mcp trust promote memo://fact/1 --to curated"}}' \
-  | plugins/memors-hooks/hooks/run-hook.cmd guard-cli      # → permissionDecision: deny
+  | plugins/memors-hooks/hooks/run-hook.cmd guard-cli      # → permissionDecision: deny (nothing with CLAUDE_PLUGIN_OPTION_GUARD_CLI=false)
 echo '{"tool_name":"WebFetch","tool_input":{"url":"https://docs.example.io/retry/"}}' \
   | plugins/memors-hooks/hooks/run-hook.cmd check-known-source
 ```

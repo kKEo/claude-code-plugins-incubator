@@ -2,7 +2,12 @@
   "mcpServers": {
     "memors": {
       "command": "bash",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/hooks/serve"]
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/hooks/serve"
+      ],
+      "env": {
+        "MEMORS_HOOKS_MCP_SERVER": "${user_config.mcp_server}"
+      }
     }
   }
 }

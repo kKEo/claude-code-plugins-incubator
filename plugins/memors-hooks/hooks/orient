@@ -5,6 +5,8 @@
 # so the index survives context compaction. Read-only: never migrates or writes.
 
 set -uo pipefail
+source "$(dirname "$0")/common.sh"
+option_on ORIENT true || exit 0
 source "$(dirname "$0")/lib.sh"
 
 status=$("$MEMORS" status 2>&1)
@@ -23,7 +25,7 @@ fi
 
 [[ "$status" == Knowledge\ base:* ]] || exit 0
 
-index=$(kb export --index --max-bytes "${MEMORS_HOOK_INDEX_BYTES:-8192}")
+index=$(kb export --index --max-bytes "${MEMORS_HOOK_INDEX_BYTES:-${CLAUDE_PLUGIN_OPTION_INDEX_BYTES:-8192}}")
 [[ -z "$index" ]] && exit 0
 
 notes=()
@@ -42,6 +44,9 @@ fi
 msg="memors knowledge base '${MEMORS_KB}' is available. Search it before re-deriving or re-fetching; record what you learn with remember (with evidence_uri) or ingest."
 if [[ "$MEMORS_KB_SOURCE" == default ]]; then
   notes+=("no .memors-kb marker in the project, so this is the shared 'default' knowledge base; tell the human if the project should have one of its own")
+fi
+if ! option_on MCP_SERVER false; then
+  notes+=("this plugin's memors server is off, so if no memors tools are available, tell the human to turn on 'Start the memors MCP server' in /config or register memors themselves")
 fi
 if (( ${#notes[@]} )); then
   msg+=$'\n'"Status: $(IFS=';'; printf '%s' "${notes[*]}" | sed 's/;/; /g')."

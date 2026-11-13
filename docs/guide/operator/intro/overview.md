@@ -30,7 +30,7 @@ The marketplace manifest names the registry (`km-plugin-registry`) and lists eac
 1. `/plugin marketplace add kKEo/claude-code-plugins-incubator` clones the repository into Claude Code's plugin cache and reads `.claude-plugin/marketplace.json`.
 2. `/plugin install <name>@km-plugin-registry` copies the plugin's `source` directory into the installed set and records it in the user's settings.
 3. On the next session or `/reload-plugins`, Claude Code scans each installed plugin for `skills/*/SKILL.md`, `agents/*.md`, `hooks/hooks.json` and `.mcp.json`.
-4. Skill descriptions are placed in Claude's context so it can match a prompt to a skill. Agents become available to the `Agent` tool. Hooks are registered for their events, and a mod's module is loaded. An `.mcp.json` (memors-hooks ships one) starts its MCP server.
+4. Skill descriptions are placed in Claude's context so it can match a prompt to a skill. Agents become available to the `Agent` tool. Hooks are registered for their events, and a mod's module is loaded. An `.mcp.json` (memors-hooks ships one) starts its MCP server; memors-hooks' server stays idle until its `mcp_server` option is on.
 
 Nothing runs at install time. A plugin has no install script and cannot execute code until a skill is invoked or a hook event fires.
 

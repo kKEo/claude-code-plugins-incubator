@@ -68,3 +68,15 @@ resolve_kb() {
   MEMORS_KB=default
   MEMORS_KB_SOURCE=default
 }
+
+# option_on <KEY> <default> — whether a boolean /config option is on. Claude
+# Code exports each plugin option to hooks as CLAUDE_PLUGIN_OPTION_<KEY>; the
+# server wrapper gets it through .mcp.json instead. An unset or empty value
+# means the manifest's default. true, 1, yes and on (any case) mean on.
+option_on() {
+  local var="CLAUDE_PLUGIN_OPTION_$1" v
+  v="${!var:-}"
+  [[ -z "$v" ]] && v="$2"
+  v=$(printf '%s' "$v" | tr '[:upper:]' '[:lower:]')
+  [[ "$v" == true || "$v" == 1 || "$v" == yes || "$v" == on ]]
+}

@@ -59,13 +59,14 @@ The output is one flat file per feature, `docs/specs/<YYYY-MM-DD>-<slug>.md`. A 
 
 | Component | File | Role |
 |---|---|---|
-| MCP server | `.mcp.json`, `hooks/serve` | Starts the `memors` server (`memors-mcp serve`) for the knowledge base the project's `.memors-kb` marker names, which provides the knowledge-base tools |
+| MCP server | `.mcp.json`, `hooks/serve` | Starts the `memors` server (`memors-mcp serve`) for the knowledge base the project's `.memors-kb` marker names, which provides the knowledge-base tools. Only when the `mcp_server` option is on (off by default; `.mcp.json` passes it as `MEMORS_HOOKS_MCP_SERVER`); otherwise `serve` answers MCP with an empty tool list |
+| Settings | `.claude-plugin/plugin.json` (`userConfig`) | `mcp_server`, `orient`, `guard_cli`, `check_known_source`, `nudge_remember`, `recall`, `index_bytes`; the hooks read them as `CLAUDE_PLUGIN_OPTION_<KEY>` through `option_on` in `hooks/common.sh` |
 | Hooks | `hooks/hooks.json` | `SessionStart`, `UserPromptSubmit`, `PreToolUse` (Bash), `PostToolUse` (WebFetch, WebSearch, memors tools), `Stop` |
 | Hook scripts | `hooks/orient`, `recall`, `guard-cli`, `check-known-source`, `track`, `nudge-remember` | One script per job; `guard-cli` is the only one that can block |
 | Shared code | `hooks/common.sh`, `hooks/lib.sh`, `hooks/run-hook.cmd` | Locating `memors-mcp` and the project's knowledge base (marker, `MEMORS_KB`, `default`); the per-session log; the Windows/Unix wrapper |
 | Skill `memors-mcp` | `skills/memors-mcp/SKILL.md` | The upstream usage guide, plus a section on what the hooks already do |
 
-Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base.
+Each hook exits at once when its option is off. Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base.
 
 ## plan-progress
 

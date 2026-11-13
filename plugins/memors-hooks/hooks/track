@@ -6,6 +6,8 @@
 # Never prints anything.
 
 set -uo pipefail
+source "$(dirname "$0")/common.sh"
+option_on NUDGE_REMEMBER true || exit 0
 source "$(dirname "$0")/lib.sh"
 
 log=$(state_file) || exit 0

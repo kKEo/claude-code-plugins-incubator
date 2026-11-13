@@ -85,6 +85,10 @@ remember(statement: "grpc-go retries are configured per method in the service co
 
 ## What the memors-hooks plugin already does for you
 
+Each item below has a switch in the plugin's `/config` settings and may be off; the plugin's own
+`memors` server is off by default. If the memors tools are missing, tell the human rather than
+falling back to the CLI.
+
 - **The knowledge base is the project's.** Its name comes from the `.memors-kb` file at the
   project root (else `MEMORS_KB`, else `default`), for the server and the hooks alike. If the
   session start says the project has no marker, suggest one to the human; never create it.
@@ -98,7 +102,7 @@ remember(statement: "grpc-go retries are configured per method in the service co
   was learned.
 - **The CLI is the human's channel.** `memors-mcp ingest|remember|forget|trust promote|demote`
   run from Bash are denied: CLI writes are stored as trust `user`. Use the MCP tools.
-- **Prompt recall (opt-in, `MEMORS_HOOK_RECALL=1`).** Up to three keyword matches for the prompt are
+- **Prompt recall (opt-in, *Prompt recall* in `/config`).** Up to three keyword matches for the prompt are
   injected as addresses. They are candidates, not answers: `read` before relying on them.
 
 _Upstream: [kKEo/memors SKILL.md](https://github.com/kKEo/memors/blob/master/SKILL.md) (MIT), vendored with the section above added._
