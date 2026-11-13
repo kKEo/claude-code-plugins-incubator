@@ -1,128 +1,150 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 650" width="920" height="650" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 866" width="920" height="866" role="img" aria-labelledby="t d">
 <title id="t">Plugins in the km-plugin-registry marketplace, grouped by type</title>
-<desc id="d">Four skill and agent plugins: frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator and implementation-spec. Two mods: plan-progress and session-cost. One hooks plugin: memors-hooks. Each plugin links to its description.</desc>
+<desc id="d">Five skill and agent plugins: frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator, implementation-spec and rigorous-review. Three mods: plan-progress, session-cost and prompt-coach. One hooks plugin: memors-hooks. Each plugin links to its description.</desc>
 <style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.soft{fill:var(--soft)}.dot{fill:var(--accent)}.ring{fill:var(--bg);stroke:var(--faint);stroke-width:1.2}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}a{cursor:pointer}a:hover .card,a:focus .card{stroke:var(--accent)}a:hover .arrow,a:focus .arrow{stroke:var(--accent)}a:hover .name,a:focus .name{fill:var(--accent)}a:focus{outline:none}</style>
-<rect class="panel" x=".5" y=".5" width="919" height="649" rx="14"/>
+<rect class="panel" x=".5" y=".5" width="919" height="865" rx="14"/>
 <rect class="dot" x="32" y="28" width="44" height="44" rx="11"/>
 <path class="onaccent" d="M54 37l3.1 9.9 9.9 3.1-9.9 3.1-3.1 9.9-3.1-9.9-9.9-3.1 9.9-3.1z"/>
 <text x="92" y="48" class="fg b" font-size="22">Claude Code plugins incubator</text>
-<text x="92" y="69" class="muted mono" font-size="12.5">km-plugin-registry · seven plugins, three kinds</text>
-<text x="678" y="54" class="fg b" font-size="24" text-anchor="middle">4</text>
+<text x="92" y="69" class="muted mono" font-size="12.5">km-plugin-registry · nine plugins, three kinds</text>
+<text x="678" y="54" class="fg b" font-size="24" text-anchor="middle">5</text>
 <text x="678" y="71" class="faint caps" font-size="10" text-anchor="middle">SKILLS</text>
-<path class="rule" d="M720 32v36"/>
-<text x="762" y="54" class="fg b" font-size="24" text-anchor="middle">2</text>
+<text x="762" y="54" class="fg b" font-size="24" text-anchor="middle">3</text>
 <text x="762" y="71" class="faint caps" font-size="10" text-anchor="middle">MODS</text>
-<path class="rule" d="M804 32v36"/>
 <text x="846" y="54" class="fg b" font-size="24" text-anchor="middle">1</text>
 <text x="846" y="71" class="faint caps" font-size="10" text-anchor="middle">HOOKS</text>
+<path class="rule" d="M720 32v36"/>
+<path class="rule" d="M804 32v36"/>
 <path class="rule" d="M32 96H888"/>
-<g transform="translate(32 115) scale(0.6666666666666666)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="56" y="128" class="fg caps" font-size="11.5">SKILLS &amp; AGENTS<tspan class="faint" dx="8">4</tspan></text>
+<g transform="translate(32 115) scale(0.6667)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="56" y="128" class="fg caps" font-size="11.5">SKILLS &amp; AGENTS<tspan class="faint" dx="8">5</tspan></text>
 <text x="888" y="128" class="faint" font-size="12" text-anchor="end">you ask, Claude follows a packaged workflow</text>
 <a href="../user/plugins.html#frontend-scaffold" target="_top"><title>frontend-scaffold: open the description</title>
-<rect class="card" x="32.0" y="144" width="420.0" height="108" rx="10"/>
-<rect class="tile" x="48.0" y="160" width="36" height="36" rx="8"/>
-<g transform="translate(54.0 166) scale(1.0)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="98.0" y="175" class="fg b mono name" font-size="15">frontend-scaffold</text>
-<text x="98.0" y="195" class="muted" font-size="12.5">A complete Vue 3 web application</text>
-<text x="98.0" y="212" class="muted" font-size="12.5">from a one-line description.</text>
-<rect class="tile" x="98.0" y="218" width="60" height="20" rx="10"/>
-<text x="128.0" y="232" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
-<rect class="tile" x="164.0" y="218" width="60" height="20" rx="10"/>
-<text x="194.0" y="232" class="muted sb" font-size="11" text-anchor="middle">1 agent</text>
-<path class="arrow" d="M425.0 165l5 5-5 5"/>
+<rect class="card" x="32" y="144" width="420" height="108" rx="10"/>
+<rect class="tile" x="48" y="160" width="36" height="36" rx="8"/>
+<g transform="translate(54 166)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="98" y="175" class="fg b mono name" font-size="15">frontend-scaffold</text>
+<text x="98" y="195" class="muted" font-size="12.5">A complete Vue 3 web application</text>
+<text x="98" y="212" class="muted" font-size="12.5">from a one-line description.</text>
+<rect class="tile" x="98" y="218" width="60" height="20" rx="10"/>
+<text x="128" y="232" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<rect class="tile" x="164" y="218" width="60" height="20" rx="10"/>
+<text x="194" y="232" class="muted sb" font-size="11" text-anchor="middle">1 agent</text>
+<path class="arrow" d="M425 165l5 5-5 5"/>
 </a>
 <a href="../user/plugins.html#feature-dev-documentalist" target="_top"><title>feature-dev-documentalist: open the description</title>
-<rect class="card" x="468.0" y="144" width="420.0" height="108" rx="10"/>
-<rect class="tile" x="484.0" y="160" width="36" height="36" rx="8"/>
-<g transform="translate(490.0 166) scale(1.0)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="534.0" y="175" class="fg b mono name" font-size="15">feature-dev-documentalist</text>
-<text x="534.0" y="195" class="muted" font-size="12.5">A document for each phase of a feature,</text>
-<text x="534.0" y="212" class="muted" font-size="12.5">written from what changed in git.</text>
-<rect class="tile" x="534.0" y="218" width="60" height="20" rx="10"/>
-<text x="564.0" y="232" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
-<rect class="tile" x="600.0" y="218" width="66" height="20" rx="10"/>
-<text x="633.0" y="232" class="muted sb" font-size="11" text-anchor="middle">5 agents</text>
-<rect class="tile" x="672.0" y="218" width="54" height="20" rx="10"/>
-<text x="699.0" y="232" class="muted sb" font-size="11" text-anchor="middle">1 hook</text>
-<path class="arrow" d="M861.0 165l5 5-5 5"/>
+<rect class="card" x="468" y="144" width="420" height="108" rx="10"/>
+<rect class="tile" x="484" y="160" width="36" height="36" rx="8"/>
+<g transform="translate(490 166)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="534" y="175" class="fg b mono name" font-size="15">feature-dev-documentalist</text>
+<text x="534" y="195" class="muted" font-size="12.5">A document for each phase of a feature,</text>
+<text x="534" y="212" class="muted" font-size="12.5">written from what changed in git.</text>
+<rect class="tile" x="534" y="218" width="60" height="20" rx="10"/>
+<text x="564" y="232" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<rect class="tile" x="600" y="218" width="66" height="20" rx="10"/>
+<text x="633" y="232" class="muted sb" font-size="11" text-anchor="middle">5 agents</text>
+<rect class="tile" x="672" y="218" width="54" height="20" rx="10"/>
+<text x="699" y="232" class="muted sb" font-size="11" text-anchor="middle">1 hook</text>
+<path class="arrow" d="M861 165l5 5-5 5"/>
 </a>
 <a href="../user/plugins.html#gitbook-docs-validator" target="_top"><title>gitbook-docs-validator: open the description</title>
-<rect class="card" x="32.0" y="268" width="420.0" height="108" rx="10"/>
-<rect class="tile" x="48.0" y="284" width="36" height="36" rx="8"/>
-<g transform="translate(54.0 290) scale(1.0)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="98.0" y="299" class="fg b mono name" font-size="15">gitbook-docs-validator</text>
-<text x="98.0" y="319" class="muted" font-size="12.5">Checks a documentation folder against</text>
-<text x="98.0" y="336" class="muted" font-size="12.5">the three-book layout.</text>
-<rect class="tile" x="98.0" y="342" width="60" height="20" rx="10"/>
-<text x="128.0" y="356" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
-<path class="arrow" d="M425.0 289l5 5-5 5"/>
+<rect class="card" x="32" y="268" width="420" height="108" rx="10"/>
+<rect class="tile" x="48" y="284" width="36" height="36" rx="8"/>
+<g transform="translate(54 290)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="98" y="299" class="fg b mono name" font-size="15">gitbook-docs-validator</text>
+<text x="98" y="319" class="muted" font-size="12.5">Checks a documentation folder against</text>
+<text x="98" y="336" class="muted" font-size="12.5">the three-book layout.</text>
+<rect class="tile" x="98" y="342" width="60" height="20" rx="10"/>
+<text x="128" y="356" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<path class="arrow" d="M425 289l5 5-5 5"/>
 </a>
 <a href="../user/plugins.html#implementation-spec" target="_top"><title>implementation-spec: open the description</title>
-<rect class="card" x="468.0" y="268" width="420.0" height="108" rx="10"/>
-<rect class="tile" x="484.0" y="284" width="36" height="36" rx="8"/>
-<g transform="translate(490.0 290) scale(1.0)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="534.0" y="299" class="fg b mono name" font-size="15">implementation-spec</text>
-<text x="534.0" y="319" class="muted" font-size="12.5">A build-ready specification for a feature</text>
-<text x="534.0" y="336" class="muted" font-size="12.5">that does not exist yet.</text>
-<rect class="tile" x="534.0" y="342" width="60" height="20" rx="10"/>
-<text x="564.0" y="356" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
-<rect class="tile" x="600.0" y="342" width="66" height="20" rx="10"/>
-<text x="633.0" y="356" class="muted sb" font-size="11" text-anchor="middle">2 agents</text>
-<path class="arrow" d="M861.0 289l5 5-5 5"/>
+<rect class="card" x="468" y="268" width="420" height="108" rx="10"/>
+<rect class="tile" x="484" y="284" width="36" height="36" rx="8"/>
+<g transform="translate(490 290)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="534" y="299" class="fg b mono name" font-size="15">implementation-spec</text>
+<text x="534" y="319" class="muted" font-size="12.5">A build-ready specification for a feature</text>
+<text x="534" y="336" class="muted" font-size="12.5">that does not exist yet.</text>
+<rect class="tile" x="534" y="342" width="60" height="20" rx="10"/>
+<text x="564" y="356" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<rect class="tile" x="600" y="342" width="66" height="20" rx="10"/>
+<text x="633" y="356" class="muted sb" font-size="11" text-anchor="middle">2 agents</text>
+<path class="arrow" d="M861 289l5 5-5 5"/>
 </a>
-<g transform="translate(32 403) scale(0.6666666666666666)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
-<text x="56" y="416" class="fg caps" font-size="11.5">MODS<tspan class="faint" dx="8">2</tspan></text>
-<text x="597.3333333333334" y="416" class="faint" font-size="12" text-anchor="end">draw into the Claude Code interface</text>
-<g transform="translate(613.3333333333334 403) scale(0.6666666666666666)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
-<text x="637.3333333333334" y="416" class="fg caps" font-size="11.5">HOOKS<tspan class="faint" dx="8">1</tspan></text>
-<text x="888.0" y="416" class="faint" font-size="12" text-anchor="end">run on their own</text>
+<a href="../user/plugins.html#rigorous-review" target="_top"><title>rigorous-review: open the description</title>
+<rect class="card" x="32" y="392" width="856" height="72" rx="10"/>
+<rect class="tile" x="48" y="408" width="36" height="36" rx="8"/>
+<g transform="translate(54 414)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="98" y="423" class="fg b mono name" font-size="15">rigorous-review</text>
+<text x="98" y="443" class="muted" font-size="12.5">A strict pre-merge review of a diff, branch or PR: bugs, security, performance, over-engineering.</text>
+<rect class="tile" x="784" y="409" width="60" height="20" rx="10"/>
+<text x="814" y="423" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<path class="arrow" d="M861 413l5 5-5 5"/>
+</a>
+<g transform="translate(32 491) scale(0.6667)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
+<text x="56" y="504" class="fg caps" font-size="11.5">MODS<tspan class="faint" dx="8">3</tspan></text>
+<text x="888" y="504" class="faint" font-size="12" text-anchor="end">draw into the Claude Code interface</text>
 <a href="../user/plugins.html#plan-progress" target="_top"><title>plan-progress: open the description</title>
-<rect class="card" x="32.0" y="432" width="274.6666666666667" height="124" rx="10"/>
-<rect class="tile" x="48.0" y="448" width="36" height="36" rx="8"/>
-<g transform="translate(54.0 454) scale(1.0)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
-<text x="98.0" y="463" class="fg b mono name" font-size="15">plan-progress</text>
-<text x="98.0" y="483" class="muted" font-size="12.5">The current plan and how far</text>
-<text x="98.0" y="500" class="muted" font-size="12.5">Claude has got with it.</text>
-<rect class="tile" x="98.0" y="522" width="42" height="20" rx="10"/>
-<text x="119.0" y="536" class="muted sb" font-size="11" text-anchor="middle">pane</text>
-<rect class="tile" x="146.0" y="522" width="84" height="20" rx="10"/>
-<text x="188.0" y="536" class="muted sb" font-size="11" text-anchor="middle">status line</text>
-<rect class="tile" x="236.0" y="522" width="42" height="20" rx="10"/>
-<text x="257.0" y="536" class="muted sb" font-size="11" text-anchor="middle">tool</text>
-<path class="arrow" d="M279.6666666666667 453l5 5-5 5"/>
+<rect class="card" x="32" y="520" width="274.7" height="124" rx="10"/>
+<rect class="tile" x="48" y="536" width="36" height="36" rx="8"/>
+<g transform="translate(54 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
+<text x="98" y="551" class="fg b mono name" font-size="15">plan-progress</text>
+<text x="98" y="571" class="muted" font-size="12.5">The current plan and how far</text>
+<text x="98" y="588" class="muted" font-size="12.5">Claude has got with it.</text>
+<rect class="tile" x="98" y="610" width="42" height="20" rx="10"/>
+<text x="119" y="624" class="muted sb" font-size="11" text-anchor="middle">pane</text>
+<rect class="tile" x="146" y="610" width="84" height="20" rx="10"/>
+<text x="188" y="624" class="muted sb" font-size="11" text-anchor="middle">status line</text>
+<rect class="tile" x="236" y="610" width="42" height="20" rx="10"/>
+<text x="257" y="624" class="muted sb" font-size="11" text-anchor="middle">tool</text>
+<path class="arrow" d="M279.7 541l5 5-5 5"/>
 </a>
 <a href="../user/plugins.html#session-cost" target="_top"><title>session-cost: open the description</title>
-<rect class="card" x="322.6666666666667" y="432" width="274.6666666666667" height="124" rx="10"/>
-<rect class="tile" x="338.6666666666667" y="448" width="36" height="36" rx="8"/>
-<g transform="translate(344.6666666666667 454) scale(1.0)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
-<text x="388.6666666666667" y="463" class="fg b mono name" font-size="15">session-cost</text>
-<text x="388.6666666666667" y="483" class="muted" font-size="12.5">Every model request with</text>
-<text x="388.6666666666667" y="500" class="muted" font-size="12.5">its tokens and cost.</text>
-<rect class="tile" x="388.6666666666667" y="522" width="42" height="20" rx="10"/>
-<text x="409.6666666666667" y="536" class="muted sb" font-size="11" text-anchor="middle">pane</text>
-<rect class="tile" x="436.6666666666667" y="522" width="84" height="20" rx="10"/>
-<text x="478.6666666666667" y="536" class="muted sb" font-size="11" text-anchor="middle">status line</text>
-<rect class="tile" x="526.6666666666667" y="522" width="42" height="20" rx="10"/>
-<text x="547.6666666666667" y="536" class="muted sb" font-size="11" text-anchor="middle">chip</text>
-<path class="arrow" d="M570.3333333333334 453l5 5-5 5"/>
+<rect class="card" x="322.7" y="520" width="274.7" height="124" rx="10"/>
+<rect class="tile" x="338.7" y="536" width="36" height="36" rx="8"/>
+<g transform="translate(344.7 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
+<text x="388.7" y="551" class="fg b mono name" font-size="15">session-cost</text>
+<text x="388.7" y="571" class="muted" font-size="12.5">Every model request with</text>
+<text x="388.7" y="588" class="muted" font-size="12.5">its tokens and cost.</text>
+<rect class="tile" x="388.7" y="610" width="42" height="20" rx="10"/>
+<text x="409.7" y="624" class="muted sb" font-size="11" text-anchor="middle">pane</text>
+<rect class="tile" x="436.7" y="610" width="84" height="20" rx="10"/>
+<text x="478.7" y="624" class="muted sb" font-size="11" text-anchor="middle">status line</text>
+<rect class="tile" x="526.7" y="610" width="42" height="20" rx="10"/>
+<text x="547.7" y="624" class="muted sb" font-size="11" text-anchor="middle">chip</text>
+<path class="arrow" d="M570.3 541l5 5-5 5"/>
 </a>
+<a href="../user/plugins.html#prompt-coach" target="_top"><title>prompt-coach: open the description</title>
+<rect class="card" x="613.3" y="520" width="274.7" height="124" rx="10"/>
+<rect class="tile" x="629.3" y="536" width="36" height="36" rx="8"/>
+<g transform="translate(635.3 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
+<text x="679.3" y="551" class="fg b mono name" font-size="15">prompt-coach</text>
+<text x="679.3" y="571" class="muted" font-size="12.5">Corrections for the prompts you</text>
+<text x="679.3" y="588" class="muted" font-size="12.5">type, and practice from them.</text>
+<rect class="tile" x="679.3" y="610" width="42" height="20" rx="10"/>
+<text x="700.3" y="624" class="muted sb" font-size="11" text-anchor="middle">pane</text>
+<rect class="tile" x="727.3" y="610" width="48" height="20" rx="10"/>
+<text x="751.3" y="624" class="muted sb" font-size="11" text-anchor="middle">toast</text>
+<path class="arrow" d="M861 541l5 5-5 5"/>
+</a>
+<g transform="translate(32 671) scale(0.6667)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
+<text x="56" y="684" class="fg caps" font-size="11.5">HOOKS<tspan class="faint" dx="8">1</tspan></text>
+<text x="888" y="684" class="faint" font-size="12" text-anchor="end">run on their own</text>
 <a href="../user/plugins.html#memors-hooks" target="_top"><title>memors-hooks: open the description</title>
-<rect class="card" x="613.3333333333334" y="432" width="274.6666666666667" height="124" rx="10"/>
-<rect class="tile" x="629.3333333333334" y="448" width="36" height="36" rx="8"/>
-<g transform="translate(635.3333333333334 454) scale(1.0)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
-<text x="679.3333333333334" y="463" class="fg b mono name" font-size="15">memors-hooks</text>
-<text x="679.3333333333334" y="483" class="muted" font-size="12.5">Keeps Claude in step with a</text>
-<text x="679.3333333333334" y="500" class="muted" font-size="12.5">memors-mcp knowledge base.</text>
-<rect class="tile" x="679.3333333333334" y="522" width="60" height="20" rx="10"/>
-<text x="709.3333333333334" y="536" class="muted sb" font-size="11" text-anchor="middle">5 hooks</text>
-<rect class="tile" x="745.3333333333334" y="522" width="36" height="20" rx="10"/>
-<text x="763.3333333333334" y="536" class="muted sb" font-size="11" text-anchor="middle">MCP</text>
-<rect class="tile" x="787.3333333333334" y="522" width="60" height="20" rx="10"/>
-<text x="817.3333333333334" y="536" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
-<path class="arrow" d="M861.0 453l5 5-5 5"/>
+<rect class="card" x="32" y="700" width="856" height="72" rx="10"/>
+<rect class="tile" x="48" y="716" width="36" height="36" rx="8"/>
+<g transform="translate(54 722)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
+<text x="98" y="731" class="fg b mono name" font-size="15">memors-hooks</text>
+<text x="98" y="751" class="muted" font-size="12.5">Keeps Claude in step with a memors-mcp knowledge base.</text>
+<rect class="tile" x="676" y="717" width="60" height="20" rx="10"/>
+<text x="706" y="731" class="muted sb" font-size="11" text-anchor="middle">5 hooks</text>
+<rect class="tile" x="742" y="717" width="36" height="20" rx="10"/>
+<text x="760" y="731" class="muted sb" font-size="11" text-anchor="middle">MCP</text>
+<rect class="tile" x="784" y="717" width="60" height="20" rx="10"/>
+<text x="814" y="731" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
+<path class="arrow" d="M861 721l5 5-5 5"/>
 </a>
-<rect class="card" x="32" y="576" width="856" height="38" rx="8"/>
-<text x="48" y="600" class="fg mono" font-size="12.5"><tspan class="accent">›</tspan> /plugin marketplace add kKEo/claude-code-plugins-incubator</text>
-<text x="872" y="600" class="faint" font-size="12" text-anchor="end">then /plugin install &lt;name&gt;@km-plugin-registry</text>
+<rect class="card" x="32" y="792" width="856" height="38" rx="8"/>
+<text x="48" y="816" class="fg mono" font-size="12.5"><tspan class="accent">›</tspan> /plugin marketplace add kKEo/claude-code-plugins-incubator</text>
+<text x="872" y="816" class="faint" font-size="12" text-anchor="end">then /plugin install &lt;name&gt;@km-plugin-registry</text>
 </svg>

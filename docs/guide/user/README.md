@@ -4,12 +4,13 @@ This guide is for anyone who wants to use the plugins in this marketplace inside
 
 [What is in the marketplace](plugins.md) describes every plugin.
 
-The marketplace is called `km-plugin-registry`. It currently holds seven plugins:
+The marketplace is called `km-plugin-registry`. It currently holds nine plugins:
 
 - **frontend-scaffold** builds a complete Vue 3 web application from a one-line description.
 - **feature-dev-documentalist** writes a short document for each phase of a feature you are building, by looking at what changed in git.
 - **gitbook-docs-validator** checks a documentation folder against a fixed three-book layout and tells you what is missing.
 - **implementation-spec** writes a specification for a feature that does not exist yet, complete enough for an agent to build it without asking you more.
+- **rigorous-review** does a strict review of a change before it is merged, looking for bugs, security holes and performance traps.
 - **plan-progress** shows the current plan and how far Claude has got with it in a pane beside the chat.
 - **session-cost** lists every model request with its tokens and cost in a pane beside the chat, with totals by model and by day.
 - **prompt-coach** collects the prompts you type, shows a language correction for each in a pane beside the chat, and has a practice game built from your own mistakes.
