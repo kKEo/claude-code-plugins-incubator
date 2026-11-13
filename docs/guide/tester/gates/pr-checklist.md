@@ -17,7 +17,8 @@ This page is the list a reviewer walks before approving, derived from `.github/p
 - [ ] Each agent has `<example>` blocks and the narrowest `tools` list that works.
 - [ ] Hook scripts are extensionless, called through `run-hook.cmd`, exit 0 on every path, and `bash -n` passes.
 - [ ] Ran the plugin's section of [Testing by hand](../explore/by-hand.md).
-- [ ] `docs/guide/user/plugins.md`, `everyday-use.md` and `docs/guide/operator/intro/components.md` mention the plugin.
+- [ ] `docs/guide/user/plugins/README.md`, `everyday-use.md` and `docs/guide/operator/intro/components.md` mention the plugin.
+- [ ] The plugin has its own page, `docs/guide/user/plugins/<name>.md`, listed in the user book's `SUMMARY.md`, with a workflow picture and a how-it-works picture.
 
 ## For a change to the validator
 

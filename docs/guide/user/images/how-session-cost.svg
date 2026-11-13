@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 616" width="920" height="616" role="img" aria-labelledby="t d">
+<title id="t">How the session-cost plugin works</title>
+<desc id="d">Claude code: A model request ends, The /cost total. The mod: Record it, Cost it, Add it up, Update check. Stored: Plugin store. Interface: The pane, Status line and chip. Note: Every request is recorded whether the pane is open or not. Nothing about the session is sent anywhere.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.soft{fill:var(--soft)}.dot{fill:var(--accent)}.ring{fill:var(--bg);stroke:var(--faint);stroke-width:1.2}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}a{cursor:pointer}a:hover .card,a:focus .card{stroke:var(--accent)}a:hover .arrow,a:focus .arrow{stroke:var(--accent)}a:hover .name,a:focus .name{fill:var(--accent)}a:focus{outline:none}</style>
+<rect class="panel" x=".5" y=".5" width="919" height="615" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">session-cost</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">HOW IT WORKS</tspan><tspan dx="10">pane · status line · chip</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="102" rx="10"/>
+<text x="46" y="128" class="faint caps" font-size="9.5">CLAUDE</text>
+<text x="46" y="141" class="faint caps" font-size="9.5">CODE</text>
+<rect class="card" x="32" y="198" width="856" height="102" rx="10"/>
+<text x="46" y="246" class="faint caps" font-size="9.5">THE</text>
+<text x="46" y="259" class="faint caps" font-size="9.5">MOD</text>
+<rect class="card" x="32" y="316" width="856" height="102" rx="10"/>
+<text x="46" y="370.5" class="faint caps" font-size="9.5">STORED</text>
+<rect class="card" x="32" y="434" width="856" height="102" rx="10"/>
+<text x="46" y="488.5" class="faint caps" font-size="9.5">INTERFACE</text>
+<rect class="tile" x="135" y="88" width="169" height="86" rx="8"/>
+<text x="147" y="108" class="fg b" font-size="12.5">A model request ends</text>
+<text x="147" y="124" class="muted" font-size="11">Main conversation, subagent</text>
+<text x="147" y="137.5" class="muted" font-size="11">or compaction.</text>
+<rect class="tile" x="326" y="88" width="169" height="86" rx="8"/>
+<text x="338" y="108" class="fg b" font-size="12.5">The /cost total</text>
+<text x="338" y="124" class="muted" font-size="11">The session’s running dollar</text>
+<text x="338" y="137.5" class="muted" font-size="11">total.</text>
+<rect class="tile" x="135" y="206" width="169" height="86" rx="8"/>
+<text x="147" y="226" class="fg b" font-size="12.5">Record it</text>
+<text x="147" y="242" class="muted" font-size="11">Model, kind, duration,</text>
+<text x="147" y="255.5" class="muted" font-size="11">input, output and cache</text>
+<text x="147" y="269" class="muted" font-size="11">tokens.</text>
+<circle class="dot" cx="136" cy="207" r="9"/>
+<text x="136" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">1</text>
+<rect class="tile" x="326" y="206" width="169" height="86" rx="8"/>
+<text x="338" y="226" class="fg b" font-size="12.5">Cost it</text>
+<text x="338" y="242" class="muted" font-size="11">Its share of the /cost</text>
+<text x="338" y="255.5" class="muted" font-size="11">increase, and a list-price</text>
+<text x="338" y="269" class="muted" font-size="11">estimate.</text>
+<circle class="dot" cx="327" cy="207" r="9"/>
+<text x="327" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">2</text>
+<rect class="tile" x="517" y="206" width="169" height="86" rx="8"/>
+<text x="529" y="226" class="fg b" font-size="12.5">Add it up</text>
+<text x="529" y="242" class="muted" font-size="11">Totals per session, per</text>
+<text x="529" y="255.5" class="muted" font-size="11">model and per calendar day.</text>
+<circle class="dot" cx="518" cy="207" r="9"/>
+<text x="518" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">3</text>
+<rect class="tile" x="708" y="206" width="169" height="86" rx="8"/>
+<text x="720" y="226" class="fg b" font-size="12.5">Update check</text>
+<text x="720" y="242" class="muted" font-size="11">Only from the Version view,</text>
+<text x="720" y="255.5" class="muted" font-size="11">at most once a day.</text>
+<rect class="tile" x="708" y="324" width="169" height="86" rx="8"/>
+<text x="720" y="344" class="fg b" font-size="12.5">Plugin store</text>
+<text x="720" y="360" class="muted" font-size="11">Per-session and per-day</text>
+<text x="720" y="373.5" class="muted" font-size="11">totals, kept 30 days by</text>
+<text x="720" y="387" class="muted" font-size="11">default.</text>
+<rect class="tile" x="135" y="442" width="360" height="86" rx="8"/>
+<text x="147" y="462" class="fg b" font-size="12.5">The pane</text>
+<text x="147" y="477" class="faint mono" font-size="10">/session-cost</text>
+<text x="147" y="492" class="muted" font-size="11">Requests, Models, History, Days and Version views.</text>
+<rect class="tile" x="517" y="442" width="360" height="86" rx="8"/>
+<text x="529" y="462" class="fg b" font-size="12.5">Status line and chip</text>
+<text x="529" y="478" class="muted" font-size="11">“$0.544 · 3 req · 130k tok” under the prompt and in a chip above</text>
+<text x="529" y="491.5" class="muted" font-size="11">it.</text>
+<path class="arrow" d="M219.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M410.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M307 249H322m-5 -5l5 5-5 5"/>
+<path class="arrow" d="M498 249H513m-5 -5l5 5-5 5"/>
+<path class="arrow" d="M641.5 295V308H752.5V320m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M822.5 295V320m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M561.5 295V426H375V438m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M601.5 295V438m-5 -5l5 5 5-5"/>
+<rect class="panel" stroke="none" style="stroke:none" x="413.5" y="182.5" width="36.5" height="14" rx="3"/>
+<text x="418.5" y="193" class="muted" font-size="10" text-anchor="start">reads</text>
+<rect class="panel" stroke="none" style="stroke:none" x="678.8" y="301" width="36.5" height="14" rx="3"/>
+<text x="697" y="311.5" class="muted" font-size="10" text-anchor="middle">saves</text>
+<rect class="soft" x="32" y="552" width="856" height="38" rx="8"/>
+<text x="48" y="576" class="accent caps" font-size="10.5">NOTE</text>
+<text x="95.6" y="576" class="fg" font-size="12.5">Every request is recorded whether the pane is open or not. Nothing about the session is sent anywhere.</text>
+</svg>

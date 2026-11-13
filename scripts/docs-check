@@ -28,17 +28,26 @@ echo "== reconciliation"
 # Every plugin directory with a manifest is described in the user book.
 for m in plugins/*/.claude-plugin/plugin.json; do
   name=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["name"])' "$m")
-  expect "$name" "$DOCS/user/plugins.md" "plugin"
+  expect "$name" "$DOCS/user/plugins/README.md" "plugin"
+  # ...and has a page of its own with both of its pictures.
+  page="$DOCS/user/plugins/$name.md"
+  if [ ! -f "$page" ]; then
+    echo "missing: plugin page $page"
+    fail=1
+  else
+    expect "images/workflow-$name.svg" "$page" "workflow picture"
+    expect "images/how-$name.svg" "$page" "how-it-works picture"
+  fi
 done
 
 # Every plugin the user book describes still exists: each `## <name>` heading
 # except "Not a plugin" must name a directory with a manifest.
 while read -r name; do
   if [ ! -f "plugins/$name/.claude-plugin/plugin.json" ]; then
-    echo "missing: plugin directory 'plugins/$name' documented in $DOCS/user/plugins.md"
+    echo "missing: plugin directory 'plugins/$name' documented in $DOCS/user/plugins/README.md"
     fail=1
   fi
-done < <(sed -n 's/^## //p' "$DOCS/user/plugins.md" | grep -vx 'Not a plugin')
+done < <(sed -n 's/^## //p' "$DOCS/user/plugins/README.md" | grep -vx 'Not a plugin')
 
 # Every argparse flag of the validator is in the commands reference.
 while read -r flag; do

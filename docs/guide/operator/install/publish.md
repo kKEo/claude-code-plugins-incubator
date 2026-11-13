@@ -38,7 +38,7 @@ Prefix generic skill names with the plugin name (`scaffold-frontend`, not `scaff
 
 ## 4. Write the README
 
-What it does, install line, usage examples, requirements. The [user guide](../../user/plugins.md) summarises each plugin in one paragraph; add a section for yours there and in [Everyday use](../../user/everyday-use.md).
+What it does, install line, usage examples, requirements. The [user guide](../../user/plugins/README.md) summarises each plugin in a sentence or two and links to a page per plugin; add a section for yours there, a page `docs/guide/user/plugins/<name>.md` with its workflow and how-it-works pictures, and a section in [Everyday use](../../user/everyday-use.md).
 
 ## 5. Add the marketplace entry
 

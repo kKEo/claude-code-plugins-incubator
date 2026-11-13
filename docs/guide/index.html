@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claude Code plugins incubator documentation</title>
+<title>kKEo's Claude Code plugins documentation</title>
 <meta name="description" content="Documentation for the km-plugin-registry marketplace of Claude Code plugins: a user guide, a plugin author guide and a tester guide.">
 <style>
   :root { --bg: #fbfaf7; --fg: #1d1d1b; --muted: #5f5e58; --card: #ffffff; --line: #e4e1d8; --accent: #2f5d8a; }
@@ -14,13 +14,14 @@
   body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
   main { max-width: 920px; margin: 0 auto; padding: 56px 16px 40px; }
   h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.01em; }
-  .lede { color: var(--muted); margin: 0 0 36px; max-width: 640px; }
-  .overview { display: block; width: 100%; height: auto; aspect-ratio: 920 / 866; margin: 0 0 36px; border-radius: 12px; }
+  .lede { color: var(--muted); margin: 0 0 28px; }
+  .section { font-size: 1.4rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .overview { display: block; width: 100%; height: auto; aspect-ratio: 920 / 866; margin: 0 0 44px; border-radius: 12px; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
   a.card { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; color: inherit; text-decoration: none; }
   a.card:hover { border-color: var(--accent); }
   .tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 6px; }
-  .card h2 { margin: 0 0 8px; font-size: 1.25rem; }
+  .card h3 { margin: 0 0 8px; font-size: 1.25rem; }
   .card p { margin: 0 0 12px; color: var(--muted); }
   .card ul { margin: 0; padding-left: 18px; font-size: 0.95rem; }
   footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
@@ -29,17 +30,20 @@
 </head>
 <body>
 <main>
-  <h1>Claude Code plugins incubator</h1>
-  <p class="lede">A small marketplace of Claude Code plugins that scaffold front ends, write specs and document feature work, validate documentation, show plan progress and session cost beside the chat, and connect Claude to a local knowledge base. Pick the guide written for you.</p>
+  <h1>kKEo's Claude Code plugins</h1>
+  <p class="lede">A small marketplace of nine Claude Code plugins. Select a plugin below to read what it does.</p>
 
   <object class="overview" type="image/svg+xml" data="images/plugins-overview.svg" aria-label="The plugins of the km-plugin-registry marketplace grouped by type: skill and agent plugins, mods and a hooks plugin. Each plugin links to its description in the user guide.">
     <img src="images/plugins-overview.svg" alt="The plugins of the km-plugin-registry marketplace grouped by type: skill and agent plugins, mods and a hooks plugin">
   </object>
 
+  <h2 class="section">Guides</h2>
+  <p class="lede">Three guides cover the marketplace. Pick the one written for you.</p>
+
   <div class="cards">
     <a class="card" href="user/">
       <div class="tag">For everyone</div>
-      <h2>User guide</h2>
+      <h3>User guide</h3>
       <p>Install a plugin from the marketplace and use it in a normal Claude Code session, with no plugin internals.</p>
       <ul>
         <li>Five-minute quick start</li>
@@ -50,7 +54,7 @@
 
     <a class="card" href="operator/">
       <div class="tag">For plugin authors</div>
-      <h2>Plugin author guide</h2>
+      <h3>Plugin author guide</h3>
       <p>How the marketplace and its plugins are wired, how to develop, publish and release one, and every manifest field.</p>
       <ul>
         <li>Plugin anatomy: manifests, skills, agents, hooks</li>
@@ -61,7 +65,7 @@
 
     <a class="card" href="tester/">
       <div class="tag">For testers</div>
-      <h2>Tester guide</h2>
+      <h3>Tester guide</h3>
       <p>How a change to a plugin is checked before it is merged, and how to check it by hand.</p>
       <ul>
         <li>Running every check in one sitting</li>

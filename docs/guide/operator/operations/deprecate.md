@@ -20,7 +20,7 @@ git tag -l '<name>-v*'
 
 ## 4. Update the documentation
 
-Remove the plugin from the [user guide](../../user/plugins.md) and from [Inside the plugins](../intro/components.md), and run the docs check (`make docs-check`), which fails while a documented plugin no longer exists on disk.
+Remove the plugin from the [user guide](../../user/plugins/README.md), delete its page and pictures there, and remove it from [Inside the plugins](../intro/components.md), and run the docs check (`make docs-check`), which fails while a documented plugin no longer exists on disk.
 
 ## Files in user projects
 

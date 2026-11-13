@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 616" width="920" height="616" role="img" aria-labelledby="t d">
+<title id="t">How the memors-hooks plugin works</title>
+<desc id="d">Claude code: A session starts, Before a Bash command, After a web fetch, A turn ends. Hooks: orient, guard-cli, check-known-source, nudge-remember. On disk: The knowledge base, Session log. Mcp server: The memors server, Settings. Note: Every hook fails open: if memors-mcp or jq is missing, or the knowledge base cannot be read, it does nothing.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.soft{fill:var(--soft)}.dot{fill:var(--accent)}.ring{fill:var(--bg);stroke:var(--faint);stroke-width:1.2}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}a{cursor:pointer}a:hover .card,a:focus .card{stroke:var(--accent)}a:hover .arrow,a:focus .arrow{stroke:var(--accent)}a:hover .name,a:focus .name{fill:var(--accent)}a:focus{outline:none}</style>
+<rect class="panel" x=".5" y=".5" width="919" height="615" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">memors-hooks</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">HOW IT WORKS</tspan><tspan dx="10">5 hooks · MCP server · 1 skill</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="102" rx="10"/>
+<text x="46" y="128" class="faint caps" font-size="9.5">CLAUDE</text>
+<text x="46" y="141" class="faint caps" font-size="9.5">CODE</text>
+<rect class="card" x="32" y="198" width="856" height="102" rx="10"/>
+<text x="46" y="252.5" class="faint caps" font-size="9.5">HOOKS</text>
+<rect class="card" x="32" y="316" width="856" height="102" rx="10"/>
+<text x="46" y="364" class="faint caps" font-size="9.5">ON</text>
+<text x="46" y="377" class="faint caps" font-size="9.5">DISK</text>
+<rect class="card" x="32" y="434" width="856" height="102" rx="10"/>
+<text x="46" y="482" class="faint caps" font-size="9.5">MCP</text>
+<text x="46" y="495" class="faint caps" font-size="9.5">SERVER</text>
+<rect class="tile" x="135" y="88" width="169" height="86" rx="8"/>
+<text x="147" y="108" class="fg b" font-size="12.5">A session starts</text>
+<text x="147" y="123" class="faint mono" font-size="10">SessionStart</text>
+<text x="147" y="138" class="muted" font-size="11">Also after /clear and</text>
+<text x="147" y="151.5" class="muted" font-size="11">/compact.</text>
+<rect class="tile" x="326" y="88" width="169" height="86" rx="8"/>
+<text x="338" y="108" class="fg b" font-size="12.5">Before a Bash command</text>
+<text x="338" y="123" class="faint mono" font-size="10">PreToolUse</text>
+<text x="338" y="138" class="muted" font-size="11">Every command Claude is</text>
+<text x="338" y="151.5" class="muted" font-size="11">about to run.</text>
+<rect class="tile" x="517" y="88" width="169" height="86" rx="8"/>
+<text x="529" y="108" class="fg b" font-size="12.5">After a web fetch</text>
+<text x="529" y="123" class="faint mono" font-size="10">PostToolUse</text>
+<text x="529" y="138" class="muted" font-size="11">A page Claude has just</text>
+<text x="529" y="151.5" class="muted" font-size="11">fetched.</text>
+<rect class="tile" x="708" y="88" width="169" height="86" rx="8"/>
+<text x="720" y="108" class="fg b" font-size="12.5">A turn ends</text>
+<text x="720" y="123" class="faint mono" font-size="10">Stop</text>
+<text x="720" y="138" class="muted" font-size="11">Claude has finished</text>
+<text x="720" y="151.5" class="muted" font-size="11">replying.</text>
+<rect class="tile" x="135" y="206" width="169" height="86" rx="8"/>
+<text x="147" y="226" class="fg b mono" font-size="11.5">orient</text>
+<text x="147" y="242" class="muted" font-size="11">Adds the index: titles and</text>
+<text x="147" y="255.5" class="muted" font-size="11">addresses, never passage</text>
+<text x="147" y="269" class="muted" font-size="11">text.</text>
+<circle class="dot" cx="136" cy="207" r="9"/>
+<text x="136" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">1</text>
+<rect class="tile" x="326" y="206" width="169" height="86" rx="8"/>
+<text x="338" y="226" class="fg b mono" font-size="11.5">guard-cli</text>
+<text x="338" y="242" class="muted" font-size="11">Denies CLI writes and trust</text>
+<text x="338" y="255.5" class="muted" font-size="11">changes. Only this hook can</text>
+<text x="338" y="269" class="muted" font-size="11">block.</text>
+<circle class="dot" cx="327" cy="207" r="9"/>
+<text x="327" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">2</text>
+<rect class="tile" x="517" y="206" width="169" height="86" rx="8"/>
+<text x="529" y="226" class="fg b mono" font-size="11.5">check-known-source</text>
+<text x="529" y="242" class="muted" font-size="11">Points at the stored copy.</text>
+<text x="529" y="255.5" class="muted" font-size="11">track logs the fetch.</text>
+<circle class="dot" cx="518" cy="207" r="9"/>
+<text x="518" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">3</text>
+<rect class="tile" x="708" y="206" width="169" height="86" rx="8"/>
+<text x="720" y="226" class="fg b mono" font-size="11.5">nudge-remember</text>
+<text x="720" y="242" class="muted" font-size="11">One reminder when something</text>
+<text x="720" y="255.5" class="muted" font-size="11">was fetched and nothing</text>
+<text x="720" y="269" class="muted" font-size="11">recorded.</text>
+<circle class="dot" cx="709" cy="207" r="9"/>
+<text x="709" y="211" class="onaccent b" font-size="10.5" text-anchor="middle">4</text>
+<rect class="tile" x="135" y="324" width="360" height="86" rx="8"/>
+<text x="147" y="344" class="fg b" font-size="12.5">The knowledge base</text>
+<text x="147" y="359" class="faint mono" font-size="10">~/.memors-mcp</text>
+<text x="147" y="374" class="muted" font-size="11">Chosen per project by the .memors-kb marker. The hooks only read</text>
+<text x="147" y="387.5" class="muted" font-size="11">it, by keyword, without a model.</text>
+<rect class="tile" x="517" y="324" width="360" height="86" rx="8"/>
+<text x="529" y="344" class="fg b" font-size="12.5">Session log</text>
+<text x="529" y="359" class="faint mono" font-size="10">$TMPDIR/memors-hooks/</text>
+<text x="529" y="374" class="muted" font-size="11">Fetches, empty searches and write-backs, read by the reminder.</text>
+<rect class="tile" x="135" y="442" width="360" height="86" rx="8"/>
+<text x="147" y="462" class="fg b" font-size="12.5">The memors server</text>
+<text x="147" y="477" class="faint mono" font-size="10">memors-mcp serve · off by default</text>
+<text x="147" y="492" class="muted" font-size="11">Gives Claude the search, read, remember and ingest tools. Turn it</text>
+<text x="147" y="505.5" class="muted" font-size="11">on in /config, or register your own.</text>
+<rect class="tile" x="517" y="442" width="360" height="86" rx="8"/>
+<text x="529" y="462" class="fg b" font-size="12.5">Settings</text>
+<text x="529" y="478" class="muted" font-size="11">Every hook and the server has its own switch in /config. Prompt</text>
+<text x="529" y="491.5" class="muted" font-size="11">recall is off by default.</text>
+<path class="arrow" d="M219.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M410.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M601.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M792.5 177V202m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M219.5 295V320m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M601.5 295V320m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M792.5 295V320m-5 -5l5 5 5-5"/>
+<path class="arrow" d="M315 439V414m-5 5l5-5 5 5"/>
+<rect class="panel" stroke="none" style="stroke:none" x="222.5" y="300.5" width="36.5" height="14" rx="3"/>
+<text x="227.5" y="311" class="muted" font-size="10" text-anchor="start">reads</text>
+<rect class="panel" stroke="none" style="stroke:none" x="604.5" y="300.5" width="31.2" height="14" rx="3"/>
+<text x="609.5" y="311" class="muted" font-size="10" text-anchor="start">logs</text>
+<rect class="panel" stroke="none" style="stroke:none" x="795.5" y="300.5" width="36.5" height="14" rx="3"/>
+<text x="800.5" y="311" class="muted" font-size="10" text-anchor="start">reads</text>
+<rect class="panel" stroke="none" style="stroke:none" x="318" y="419.5" width="94.8" height="14" rx="3"/>
+<text x="323" y="430" class="muted" font-size="10" text-anchor="start">reads and writes</text>
+<rect class="soft" x="32" y="552" width="856" height="38" rx="8"/>
+<text x="48" y="576" class="accent caps" font-size="10.5">NOTE</text>
+<text x="95.6" y="576" class="fg" font-size="12.5">Every hook fails open: if memors-mcp or jq is missing, or the knowledge base cannot be read, it does nothing.</text>
+</svg>

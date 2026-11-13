@@ -26,7 +26,8 @@ The script then checks that the operator book has not drifted from the code:
 
 | Check | Source of truth | Must appear in |
 |---|---|---|
-| Every plugin directory is documented | `plugins/*/.claude-plugin/plugin.json` `name` | `docs/guide/user/plugins.md` |
+| Every plugin directory is documented | `plugins/*/.claude-plugin/plugin.json` `name` | `docs/guide/user/plugins/README.md` |
+| Every plugin has a page with its two pictures | `plugins/*/.claude-plugin/plugin.json` `name` | `docs/guide/user/plugins/<name>.md`, which must use `images/workflow-<name>.svg` and `images/how-<name>.svg` |
 | Every validator flag is documented | `add_argument("--…")` lines in `validate_docs.py` | `docs/guide/operator/config/commands.md` |
 | Every hook event is documented | top-level keys under `hooks` in `plugins/*/hooks/hooks.json` | `docs/guide/operator/config/hooks.md` |
 | Every skill name is documented | `name:` in `plugins/*/skills/*/SKILL.md` | `docs/guide/operator/config/skill-frontmatter.md` |

@@ -19,7 +19,7 @@
 <g transform="translate(32 115) scale(0.6667)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
 <text x="56" y="128" class="fg caps" font-size="11.5">SKILLS &amp; AGENTS<tspan class="faint" dx="8">5</tspan></text>
 <text x="888" y="128" class="faint" font-size="12" text-anchor="end">you ask, Claude follows a packaged workflow</text>
-<a href="../user/plugins.html#frontend-scaffold" target="_top"><title>frontend-scaffold: open the description</title>
+<a href="../user/plugins/frontend-scaffold.html" target="_top"><title>frontend-scaffold: open the description</title>
 <rect class="card" x="32" y="144" width="420" height="108" rx="10"/>
 <rect class="tile" x="48" y="160" width="36" height="36" rx="8"/>
 <g transform="translate(54 166)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
@@ -32,7 +32,7 @@
 <text x="194" y="232" class="muted sb" font-size="11" text-anchor="middle">1 agent</text>
 <path class="arrow" d="M425 165l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#feature-dev-documentalist" target="_top"><title>feature-dev-documentalist: open the description</title>
+<a href="../user/plugins/feature-dev-documentalist.html" target="_top"><title>feature-dev-documentalist: open the description</title>
 <rect class="card" x="468" y="144" width="420" height="108" rx="10"/>
 <rect class="tile" x="484" y="160" width="36" height="36" rx="8"/>
 <g transform="translate(490 166)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
@@ -47,7 +47,7 @@
 <text x="699" y="232" class="muted sb" font-size="11" text-anchor="middle">1 hook</text>
 <path class="arrow" d="M861 165l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#gitbook-docs-validator" target="_top"><title>gitbook-docs-validator: open the description</title>
+<a href="../user/plugins/gitbook-docs-validator.html" target="_top"><title>gitbook-docs-validator: open the description</title>
 <rect class="card" x="32" y="268" width="420" height="108" rx="10"/>
 <rect class="tile" x="48" y="284" width="36" height="36" rx="8"/>
 <g transform="translate(54 290)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
@@ -58,7 +58,7 @@
 <text x="128" y="356" class="muted sb" font-size="11" text-anchor="middle">1 skill</text>
 <path class="arrow" d="M425 289l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#implementation-spec" target="_top"><title>implementation-spec: open the description</title>
+<a href="../user/plugins/implementation-spec.html" target="_top"><title>implementation-spec: open the description</title>
 <rect class="card" x="468" y="268" width="420" height="108" rx="10"/>
 <rect class="tile" x="484" y="284" width="36" height="36" rx="8"/>
 <g transform="translate(490 290)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
@@ -71,7 +71,7 @@
 <text x="633" y="356" class="muted sb" font-size="11" text-anchor="middle">2 agents</text>
 <path class="arrow" d="M861 289l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#rigorous-review" target="_top"><title>rigorous-review: open the description</title>
+<a href="../user/plugins/rigorous-review.html" target="_top"><title>rigorous-review: open the description</title>
 <rect class="card" x="32" y="392" width="856" height="72" rx="10"/>
 <rect class="tile" x="48" y="408" width="36" height="36" rx="8"/>
 <g transform="translate(54 414)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
@@ -84,7 +84,7 @@
 <g transform="translate(32 491) scale(0.6667)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
 <text x="56" y="504" class="fg caps" font-size="11.5">MODS<tspan class="faint" dx="8">3</tspan></text>
 <text x="888" y="504" class="faint" font-size="12" text-anchor="end">draw into the Claude Code interface</text>
-<a href="../user/plugins.html#plan-progress" target="_top"><title>plan-progress: open the description</title>
+<a href="../user/plugins/plan-progress.html" target="_top"><title>plan-progress: open the description</title>
 <rect class="card" x="32" y="520" width="274.7" height="124" rx="10"/>
 <rect class="tile" x="48" y="536" width="36" height="36" rx="8"/>
 <g transform="translate(54 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
@@ -99,7 +99,7 @@
 <text x="257" y="624" class="muted sb" font-size="11" text-anchor="middle">tool</text>
 <path class="arrow" d="M279.7 541l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#session-cost" target="_top"><title>session-cost: open the description</title>
+<a href="../user/plugins/session-cost.html" target="_top"><title>session-cost: open the description</title>
 <rect class="card" x="322.7" y="520" width="274.7" height="124" rx="10"/>
 <rect class="tile" x="338.7" y="536" width="36" height="36" rx="8"/>
 <g transform="translate(344.7 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
@@ -114,7 +114,7 @@
 <text x="547.7" y="624" class="muted sb" font-size="11" text-anchor="middle">chip</text>
 <path class="arrow" d="M570.3 541l5 5-5 5"/>
 </a>
-<a href="../user/plugins.html#prompt-coach" target="_top"><title>prompt-coach: open the description</title>
+<a href="../user/plugins/prompt-coach.html" target="_top"><title>prompt-coach: open the description</title>
 <rect class="card" x="613.3" y="520" width="274.7" height="124" rx="10"/>
 <rect class="tile" x="629.3" y="536" width="36" height="36" rx="8"/>
 <g transform="translate(635.3 542)"><rect class="ic" x="2.5" y="4" width="19" height="16" rx="2.5"/><path class="ic" d="M14 4v16M16.5 9h2.5M16.5 12.5h2.5M5.5 9h5M5.5 12.5h3.5"/></g>
@@ -130,7 +130,7 @@
 <g transform="translate(32 671) scale(0.6667)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
 <text x="56" y="684" class="fg caps" font-size="11.5">HOOKS<tspan class="faint" dx="8">1</tspan></text>
 <text x="888" y="684" class="faint" font-size="12" text-anchor="end">run on their own</text>
-<a href="../user/plugins.html#memors-hooks" target="_top"><title>memors-hooks: open the description</title>
+<a href="../user/plugins/memors-hooks.html" target="_top"><title>memors-hooks: open the description</title>
 <rect class="card" x="32" y="700" width="856" height="72" rx="10"/>
 <rect class="tile" x="48" y="716" width="36" height="36" rx="8"/>
 <g transform="translate(54 722)"><circle class="ic" cx="13" cy="4.6" r="2.1"/><path class="ic" d="M13 6.7V15a4.5 4.5 0 0 1-9 0v-2.2M1.6 14.6L4 12.2l2.4 2.4"/></g>
