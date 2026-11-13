@@ -161,7 +161,12 @@ Outside the docs root, a template-following project has:
 
 - Root `README.md` linking **every** book (not "both guides" once a third exists).
 - A docs index (`docs/README.md`) listing each book, the landing page and the design documents.
-- `Makefile` targets `docs` (check + build all books), `docs-check`, `docs-serve BOOK=…`.
+- `Makefile` targets `docs` (check + build all books), `docs-check`, `docs-serve BOOK=…`
+  (one book, live reload) and `docs-site` (build every book, copy the landing page to the
+  site root, then serve the whole site locally). Why `docs-site`: the landing page and the
+  links between books only work when the site is served from its root, so this is the one
+  way to see locally what readers get. A typical recipe ends in
+  `python3 -m http.server --directory site`.
 - A Pages workflow that builds all books with a pinned, checksum-verified mdBook and copies
   `index.html` to the site root.
 - A `docs-check` script that keeps references honest against the code (env vars, commands,

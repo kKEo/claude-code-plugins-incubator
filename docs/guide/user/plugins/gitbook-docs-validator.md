@@ -18,13 +18,13 @@ Prompts that mention `SUMMARY.md`, `.gitbook.yaml`, `book.toml`, mdBook or GitBo
 
 ## How it works
 
-![How gitbook-docs-validator works: the skill finds the docs root and runs a script of deterministic checks over your documentation, then reads a sample of pages and writes a report with a verdict](../images/how-gitbook-docs-validator.svg)
+![How gitbook-docs-validator works: the skill finds the docs root and runs a script of deterministic checks over your documentation and the repository around it, then reads a sample of pages and writes a report with a verdict](../images/how-gitbook-docs-validator.svg)
 
 The numbers match the picture.
 
 1. **Find the docs root:** the folder that holds the landing page and the book folders.
 2. **Run the script.** The mechanical checks come first.
-3. **The script checks** the landing page, the book files, each summary, pages, links, images, the README, the required pages of each role, and the repository around the docs.
+3. **The script checks** the landing page, the book files, each summary, pages, links, images, the README, the required pages of each role, and the repository around the docs: the root README, the docs index, the CI workflow, and a Makefile with a `docs-site` target that serves the whole site locally.
 4. **Read a sample.** Claude reads some pages to judge what a script cannot measure.
 5. **Write the report:** a verdict, what must be fixed, deviations to discuss, suggestions, and what was not checked.
 

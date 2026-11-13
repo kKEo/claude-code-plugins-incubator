@@ -61,7 +61,10 @@ reading and writing. Keep the reading set fixed and the report short.
    - the quick start states how long it takes;
    - each role's required pages are present;
    - with `--repo-root`: the root README, docs index, Makefile targets, docs workflow and
-     docs-check script.
+     docs-check script. The Makefile check includes `docs-site`: a target that builds every
+     book and serves the whole site locally, starting at the landing page. It warns when the
+     Makefile or the target is missing, when the target starts no web server, and when the
+     landing page is missing or never copied into the built site.
 
    Do not re-check any of these by hand.
 

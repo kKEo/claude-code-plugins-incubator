@@ -39,7 +39,7 @@ python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/val
 | Argument | Default | Meaning |
 |---|---|---|
 | `docs_root` | required (not with `--list-checks`) | Directory holding `index.html` and the book folders, usually `docs/guide` |
-| `--repo-root DIR` | none | Enables the repository checks: root README links every book, `docs/README.md` index, `Makefile` targets `docs`, `docs-check`, `docs-serve`, a docs workflow under `.github/workflows/`, a `scripts/docs-check*` script |
+| `--repo-root DIR` | none | Enables the repository checks: root README links every book, `docs/README.md` index, `Makefile` targets `docs`, `docs-check`, `docs-serve` and `docs-site` (which must start a local web server and have the landing page in the built site), a docs workflow under `.github/workflows/`, a `scripts/docs-check*` script |
 | `--template FILE` | `../assets/template.json` next to the script | Role definitions: aliases, required pages, page rules |
 | `--only CHECKS` | all | Comma-separated validators to run, for example `--only links,summary`; `books` always runs. `--only repo` needs `--repo-root` |
 | `--skip CHECKS` | none | Comma-separated validators to leave out; cannot be combined with `--only` |

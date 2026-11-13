@@ -6,7 +6,27 @@ import re
 from ..context import Context
 from ..core import rel_to
 
-DESCRIPTION = "repository integration: root README, docs index, Makefile, workflow, docs-check (needs --repo-root)"
+DESCRIPTION = "repository integration: root README, docs index, Makefile (incl. docs-site), workflow, docs-check (needs --repo-root)"
+
+# A recipe line that starts a local web server.
+SERVER_RE = re.compile(r"http\.server|http-server|\bserve\b|php\s+-S|caddy|busybox\s+httpd", re.I)
+
+
+def _check_docs_site(ctx: Context, mk, txt: str) -> None:
+    """docs-site: one target that serves the whole built site, landing page first."""
+    rep = ctx.rep
+    landing_name = ctx.tpl.get("landing_page", "index.html")
+    m = re.search(r"^docs-site:[^\n]*\n((?:\t[^\n]*\n?|[ \t]*\n)*)", txt, re.M)
+    if not m:
+        rep.warn("repo", "Makefile has no 'docs-site' target (build every book, then serve the whole site locally from the landing page)", mk)
+        return
+    line = txt.count("\n", 0, m.start()) + 1
+    if not SERVER_RE.search(m.group(1)):
+        rep.warn("repo", "Makefile 'docs-site' target does not start a local web server (for example python3 -m http.server --directory site)", mk, line)
+    if not (ctx.root / landing_name).exists():
+        rep.warn("repo", f"Makefile 'docs-site' has no landing page to open: {landing_name} is missing at the docs root", mk, line)
+    elif landing_name not in txt:
+        rep.warn("repo", f"Makefile never copies the landing page ({landing_name}) into the built site, so 'docs-site' would open without a front page", mk, line)
 
 
 def run(ctx: Context) -> None:
@@ -38,8 +58,9 @@ def run(ctx: Context) -> None:
         for tgt in ("docs:", "docs-check:", "docs-serve:"):
             if not re.search(rf"^{re.escape(tgt)}", txt, re.M):
                 rep.warn("repo", f"Makefile has no '{tgt[:-1]}' target", mk)
+        _check_docs_site(ctx, mk, txt)
     else:
-        rep.info("repo", "no Makefile; skipped the docs target check")
+        rep.warn("repo", "no Makefile; the template expects one with a 'docs-site' target that serves the built site locally, starting at the landing page", repo)
     wf_dir = repo / ".github" / "workflows"
     if wf_dir.exists():
         builds = []

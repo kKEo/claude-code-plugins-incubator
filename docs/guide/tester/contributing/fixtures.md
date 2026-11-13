@@ -24,14 +24,16 @@ The same tree, with the same faults, is duplicated at `plugins/gitbook-docs-vali
 
 ## renamed-layout
 
-A passing tree at `renamed-layout/handbook/` with books named `getting-started/`, `internals/`, `qa/`, plus a `Makefile` with only a `docs` target and no `scripts/` directory. Run with `--repo-root renamed-layout`. Expected: zero errors, exit 0, and these four warnings:
+A passing tree at `renamed-layout/handbook/` with books named `getting-started/`, `internals/`, `qa/`, plus a `Makefile` with only a `docs` target and no `scripts/` directory. Run with `--repo-root renamed-layout`. Expected: zero errors, exit 0, and these eight warnings:
 
 | Warning | Check tag |
 |---|---|
 | Makefile has no `docs-check` target | `repo` |
 | Makefile has no `docs-serve` target | `repo` |
+| Makefile has no `docs-site` target | `repo` |
 | No `scripts/docs-check` script | `repo` |
 | QA book has no exploratory-testing page | `role` |
+| Stub pages with no `> Draft.` marker, one warning per book (three in all) | `stub` |
 
 The point of this fixture is the alias mapping (`getting-started` → user, `internals` → operator, `qa` → tester) and that a passing tree is not over-reported. The same tree is duplicated at `plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/` for eval case 2.
 

@@ -52,7 +52,7 @@ python3 $V $F/broken-docs/docs/guide --quiet; echo "exit $?"
 python3 $V $F/renamed-layout/handbook --repo-root $F/renamed-layout --quiet; echo "exit $?"
 ```
 
-Expected: `broken-docs` reports nine ERROR lines and `exit 1`; `renamed-layout` reports zero errors, four warnings and `exit 0`, mapping `getting-started`, `internals`, `qa` to user, operator, tester. The exact nine faults are listed in [Fixtures and seeded faults](../contributing/fixtures.md).
+Expected: `broken-docs` reports nine ERROR lines and `exit 1`; `renamed-layout` reports zero errors, eight warnings and `exit 0`, mapping `getting-started`, `internals`, `qa` to user, operator, tester. The exact nine faults are listed in [Fixtures and seeded faults](../contributing/fixtures.md).
 
 Each validator also runs on its own; the counts of the parts add up to the full run:
 

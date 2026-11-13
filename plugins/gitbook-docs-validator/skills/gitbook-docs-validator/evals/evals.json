@@ -49,7 +49,7 @@
         "Report maps getting-started -> user/getting-started role, internals -> operator/development-deployment, qa -> tester/QA",
         "Report concludes the handbook matches the template structurally (PASS or PASS with deviations), not FAIL",
         "Report notes the QA book has no exploratory/manual testing page",
-        "Report notes missing Make targets (docs-check/docs-serve) or missing docs CI workflow",
+        "Report notes missing Make targets (docs-check/docs-serve/docs-site) or missing docs CI workflow",
         "Report does not invent structural errors (missing SUMMARY, missing landing page, broken links)",
         "Report has the Verdict / failures / deviations / suggestions structure"
       ]
