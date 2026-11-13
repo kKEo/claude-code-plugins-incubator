@@ -33,7 +33,7 @@ frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator and impleme
 
 ## Where data goes
 
-Nothing in these plugins talks to a network service of its own. session-cost's price table is built into the plugin, so its estimates need no lookup. Files that Claude reads are sent to the model as part of the conversation, exactly as they are when you work without plugins. The plugins' own network activity is `npm install` in a scaffolded project, which fetches packages from the npm registry.
+session-cost's price table is built into the plugin, so its estimates need no lookup. Its one network request is the update check: when you open its Version view (at most once a day) or press **Check now**, it downloads session-cost's published `plugin.json` from this repository on `raw.githubusercontent.com` to read its version. Nothing about your session is sent, and nothing is fetched if you never open that view. The other plugins do not talk to a network service of their own. Files that Claude reads are sent to the model as part of the conversation, exactly as they are when you work without plugins. The plugins' own network activity is `npm install` in a scaffolded project, which fetches packages from the npm registry.
 
 The `memors` server that memors-hooks starts is a separate program, `memors-mcp`, started for the knowledge base the project's `.memors-kb` names. It talks to Claude Code over stdio and keeps its data under `~/.memors-mcp`. It can also fetch embedding models (`memors-mcp model pull`); run `memors-mcp model ls` to see which are installed. The plugin's hooks never load a model, because they search with `--no-model`.
 

@@ -85,10 +85,13 @@ The cost of the session so far shows under the prompt. For the details:
 ```
 /session-cost
 /session-cost days
+/session-cost version
 /session-cost reset
 ```
 
-The first opens the pane with one row per request. `days` opens it on spend by calendar day, and `reset` starts this session's count again.
+The first opens the pane with one row per request. `days` opens it on spend by calendar day, `version` shows whether a newer session-cost is published, and `reset` starts this session's count again.
+
+When the Version view says an update is available, run `/plugin marketplace update km-plugin-registry`, then `/plugin update session-cost@km-plugin-registry`, and restart Claude Code.
 
 ## Using a knowledge base
 

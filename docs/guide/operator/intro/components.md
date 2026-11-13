@@ -80,14 +80,15 @@ Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base
 
 | Component | File | Role |
 |---|---|---|
-| Module | `hooks/hooks.json`, `hooks/register.tsx` | A mod: records each request on `turn.step` and `session.compact`, reads the `/cost` ledger, saves history, registers `/session-cost`, draws the pane, chip and status line |
+| Module | `hooks/hooks.json`, `hooks/register.tsx` | A mod: records each request on `turn.step` and `session.compact`, reads the `/cost` ledger, saves history, registers `/session-cost`, draws the pane, chip and status line, runs the update check |
 | Ledger | `hooks/ledger.ts` | Totals, the 1000-row cap, and splitting a `/cost` increase across overlapping requests |
 | Days | `hooks/days.ts` | Local calendar-day buckets, backfill for older state, history windows |
+| Version | `hooks/version.ts` | The published manifest's URL, version comparison, and when a check is a day old and runs again |
 | Prices | `hooks/pricing.ts`, `hooks/format.ts` | The list-price table and the estimate; number, dollar and time formatting |
-| State contract | `types/index.d.ts` | `requests`, `totals`, `ledger`, `view`, `days` |
+| State contract | `types/index.d.ts` | `requests`, `totals`, `ledger`, `view`, `days`, `update` |
 | Tests | `hooks/*.test.ts(x)` | Run with `claude plugin test plugins/session-cost` |
 
-The pane shows two costs per request: its share of the `/cost` total, which always adds up to `/cost`, and an estimate from the price table. Cross-session history lives in the plugin's store under `session:<id>` keys, pruned after `historyDays`.
+The pane shows two costs per request: its share of the `/cost` total, which always adds up to `/cost`, and an estimate from the price table. Cross-session history lives in the plugin's store under `session:<id>` keys, pruned after `historyDays`. The Version view reads the installed version from the plugin's own `.claude-plugin/plugin.json` and the published one from the same file on the repository's `master` branch, through `raw.githubusercontent.com`. The result is kept in the `update` state, and the view checks again only when that is missing or more than a day old.
 
 ## The workspace directory
 
