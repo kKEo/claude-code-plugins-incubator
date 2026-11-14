@@ -29,6 +29,15 @@ The check reads the published `plugin.json` from this repository's `master` bran
 /plugin update session-cost@km-plugin-registry
 ```
 
+### What it fetches and runs
+
+- **Fetches**: one fixed URL, the published `plugin.json` on `raw.githubusercontent.com` (written at the `$.http.fetch` call in `hooks/register.tsx`); `raw.githubusercontent.com` is the only host the mod contacts, and only for the update check above. The response is parsed as JSON for its `version` string; nothing in it is run, stored as code or used to choose an action.
+- **Sends**: nothing but that request. It is a plain GET to the fixed URL with no body, query string or headers of the mod's own, so it carries no session, cost, token, prompt or file data. GitHub sees only what any download of that file shows it (your IP address and the client's default headers). No other network call is made.
+- **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read prompts, responses, tool inputs or tool results. The metadata stays in the session's plugin state and the plugin's local store and is never part of the update check's request.
+- **Reads from disk**: only its own `.claude-plugin/plugin.json` (under the plugin's install folder), to learn the installed version for the Version view. That version is compared with the published one locally and is never sent.
+- **Runs**: nothing. The mod starts no processes, runs no shell commands, calls no tools, agents or models, and hooks no tool calls.
+- **Its `command.run` hook** answers only its own `/session-cost` slash command. It reads the argument against a fixed list (`on`, `off`, `requests`, `models`, `history`, `days`, `version`, `reset`, `toggle`), opens, closes or switches the pane or clears the session's data, and returns a one-line reply. Any other argument gets an "Unknown argument" reply and does nothing.
+
 ### How days are counted
 
 A request counts on the local calendar day its response ended, so one session can spread over several days. Ledger shares follow their request's day; `/cost` growth read while no request was waiting counts on the day it was read. Spend from before the mod loaded is in no day. A session that was already running when this version loaded has its days rebuilt from its kept rows, with anything past the 1000-row cap on the earliest day. Sessions saved by an older version count whole on the day of their last request.
@@ -100,7 +109,7 @@ claude --plugin-dir plugins/session-cost
 - `hooks/ledger.ts`: totals, the row cap and the ledger-delta split.
 - `hooks/days.ts`: day keys, the per-day buckets, backfill and history windows.
 - `hooks/pricing.ts`: the price table and the estimate.
-- `hooks/version.ts`: the published manifest's URL, version comparison and the check's age.
+- `hooks/version.ts`: version comparison and the check's age.
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
 - `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`, `update`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.

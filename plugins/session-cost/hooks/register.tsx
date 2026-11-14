@@ -18,7 +18,7 @@ import {
 import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
-import { MANIFEST_URL, NO_CHECK, isStale, manifestVersion, updateStatus } from './version'
+import { NO_CHECK, isStale, manifestVersion, updateStatus } from './version'
 
 const PLUGIN = 'session-cost'
 const PANE = 'session-cost'
@@ -190,7 +190,8 @@ async function checkUpdate($: Engine): Promise<void> {
   let latest: string | null = null
   let error: string | undefined
   try {
-    const res = await $.http.fetch(MANIFEST_URL)
+    // The published manifest on the default branch, where the marketplace installs from.
+    const res = await $.http.fetch('https://raw.githubusercontent.com/kKEo/claude-code-plugins-incubator/master/plugins/session-cost/.claude-plugin/plugin.json')
     if (!res.ok) error = `HTTP ${res.status}`
     else {
       latest = manifestVersion(res.text)
@@ -383,7 +384,7 @@ export const register: Register = (on, options) => {
     return next(e)
   })
 
-  on('command.run', { command: COMMAND }, async ($, e) => {
+  on('command.run', { command: 'session-cost' }, async ($, e) => {
     const arg = e.args.trim().toLowerCase()
     if (arg === 'off' || arg === 'close' || arg === 'hide') {
       if (await isOpen($)) await $.ui.close({ id: PANE })

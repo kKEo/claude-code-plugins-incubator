@@ -1,9 +1,5 @@
 import type { UpdateCheck } from '../types'
 
-/** The published manifest: the repository's default branch, where the marketplace installs from. */
-export const MANIFEST_URL =
-  'https://raw.githubusercontent.com/kKEo/claude-code-plugins-incubator/master/plugins/session-cost/.claude-plugin/plugin.json'
-
 /** A check older than this is run again when the Version view opens. */
 export const CHECK_TTL_MS = 24 * 60 * 60 * 1000
 
