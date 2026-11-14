@@ -2,6 +2,9 @@ import { expect, mock, test } from 'claude-code/testing'
 import type { Engine } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
+/** A found element's children, as the bar test walks them (FoundElement types them as unknown). */
+type Node = { type: string; props?: Record<string, unknown>; children: (Node | string)[] }
+
 const PANE = {
   plugin: 'session-cost',
   component: 'Pane',
@@ -21,6 +24,7 @@ const BAND = {
   component: 'AbovePrompt',
   props: {
     hasSurvey: false,
+    isCollapsed: false,
     isWorking: false,
     maxRows: 6,
     bodyColumns: 80,
@@ -148,6 +152,19 @@ test('the chip above the prompt carries the toggle on the configured action', as
   await ui.unmount()
 })
 
+test('a collapsed band drops the cost text but keeps the toggle mounted', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  const ui = await $.ui.mount({ ...BAND, props: { ...BAND.props, isCollapsed: true }, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /req/ })).toBeUndefined()
+  const button = await ui.find({ type: 'Button', key: 'session-cost-toggle' })
+  expect(button?.props.action).toBe('app:toggleReplTab')
+  await ui.press({ key: 'session-cost-toggle' })
+  expect(state.open).toBe(true)
+  await ui.unmount()
+})
+
 test('the slash command toggles the pane, switches views and resets', async ($, on) => {
   const { state } = engine(on)
   await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
@@ -257,8 +274,9 @@ test('each request row carries a 7-cell bar scaled to the slowest request, with 
     const ui = await $.ui.mount({ ...PANE, surface })
     const bar = async (seq: number) => {
       const row = await ui.find({ type: 'Text', text: new RegExp(`^#${seq} `) })
-      const strip = row?.children.find(c => typeof c !== 'string' && c.type === 'Text' && c.children.some(cc => typeof cc !== 'string' && cc.props?.backgroundColor))
-      const [fill, track] = (typeof strip === 'string' ? [] : strip?.children ?? []).filter(c => typeof c !== 'string')
+      const kids = (row?.children ?? []) as (Node | string)[]
+      const strip = kids.find(c => typeof c !== 'string' && c.type === 'Text' && c.children.some(cc => typeof cc !== 'string' && cc.props?.backgroundColor))
+      const [fill, track] = (typeof strip === 'string' ? [] : strip?.children ?? []).filter((c): c is Node => typeof c !== 'string')
       const text = (el: typeof fill) => (typeof el === 'string' || !el ? undefined : el.children.join(''))
       return { fill: text(fill), track: text(track), color: fill?.props?.backgroundColor, trackColor: track?.props?.backgroundColor }
     }

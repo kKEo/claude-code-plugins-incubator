@@ -413,6 +413,18 @@ export const register: Register = (on, options) => {
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     if (!isBandOn || e.props.hasSurvey) return next(e)
     const { Box, Text, Button } = $.ui.resolve(e)
+    const button = <Button key="session-cost-toggle" label="usage" plain action={toggleAction} onPress={() => toggle($)} />
+    // Collapsed: nothing is on screen, so skip the reads and the cost text, but keep
+    // the Button mounted, since its keyboard chord only works while it is mounted.
+    if (e.props.isCollapsed) {
+      const below = await next(e)
+      return (
+        <Box flexDirection="column">
+          <Box key="session-cost-chip" flexDirection="row">{button}</Box>
+          {below}
+        </Box>
+      )
+    }
     const [t, l] = await Promise.all([read($, totals), read($, ledger)])
     const below = await next(e)
     const spent = usd(l?.sessionUsd ?? t?.ledgerUsd ?? 0)
@@ -421,7 +433,7 @@ export const register: Register = (on, options) => {
         <Text dimColor>
           {spent} · {t?.requests ?? 0} req · {count(t ? tokenSum(t) : 0)} tok
         </Text>
-        <Button key="session-cost-toggle" label="usage" plain action={toggleAction} onPress={() => toggle($)} />
+        {button}
       </Box>
     )
     return (

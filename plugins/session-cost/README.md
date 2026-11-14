@@ -12,7 +12,7 @@ A Claude Code mod that records every model request the session sends and shows i
 - **Version view** (`v`): the installed version (from this copy's `plugin.json`), the published version, the Claude Code version, and whether an update is available. `u` or **Check now** checks again.
 - In the Requests view, a dim `── Sat 07 Nov ──` row marks where the day changes.
 - A status-line entry under the prompt: `$0.544 · 3 req · 130k tok`.
-- A one-line chip above the prompt (`$0.544 · 3 req · 130k tok  usage`). Its button toggles the pane and carries the keyboard shortcut.
+- A one-line chip above the prompt (`$0.544 · 3 req · 130k tok  usage`). Its button toggles the pane and carries the keyboard shortcut. While you collapse the band, the mod skips the cost text and keeps only the button, so the shortcut still works.
 
 ### How cost is counted
 
@@ -58,7 +58,7 @@ Mods can't register a global shortcut, and `keybindings.json` can't run a slash 
 }
 ```
 
-The chord works while the chip is shown (`band` on) and no dialog is up. If that action already does something in your setup, pick another in `/config` and bind that one instead.
+The chord works while the chip is on (`band` on), even with the band collapsed, and no dialog is up. If that action already does something in your setup, pick another in `/config` and bind that one instead.
 
 ## Settings
 
@@ -104,3 +104,4 @@ claude --plugin-dir plugins/session-cost
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
 - `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`, `update`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.
+- `.claude-plugin/icon.png`: the 1024×1024 listing icon, found by path (no `icon` key in `plugin.json`).

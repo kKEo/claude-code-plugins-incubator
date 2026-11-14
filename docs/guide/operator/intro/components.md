@@ -88,6 +88,7 @@ Each hook exits at once when its option is off. Every hook fails open: if `memor
 | Prices | `hooks/pricing.ts`, `hooks/format.ts` | The list-price table and the estimate; number, dollar and time formatting |
 | State contract | `types/index.d.ts` | `requests`, `totals`, `ledger`, `view`, `days`, `update` |
 | Tests | `hooks/*.test.ts(x)` | Run with `claude plugin test plugins/session-cost` |
+| Icon | `.claude-plugin/icon.png` | The 1024×1024 plugin directory listing icon, also drawn on the landing page |
 
 The pane shows two costs per request: its share of the `/cost` total, which always adds up to `/cost`, and an estimate from the price table. Cross-session history lives in the plugin's store under `session:<id>` keys, pruned after `historyDays`. The Version view reads the installed version from the plugin's own `.claude-plugin/plugin.json` and the published one from the same file on the repository's `master` branch, through `raw.githubusercontent.com`. The result is kept in the `update` state, and the view checks again only when that is missing or more than a day old.
 
