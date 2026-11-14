@@ -1,6 +1,6 @@
 {
   "name": "rigorous-review",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A strict, pre-merge code review skill that hunts for logic bugs, concurrency issues, security holes, performance traps and over-engineering, and reports each with a minimal fix",
   "author": {
     "name": "Krzysztof Maziarz"

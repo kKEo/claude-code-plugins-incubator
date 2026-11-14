@@ -2,7 +2,7 @@
 name: document-phase
 description: "Use when you want to document a feature development phase before committing. Detects the current phase (spec, design, implementation, deployment, or integration testing) from git diff analysis and generates the appropriate markdown document in docs/features/<date>-<branch-name>/. This skill documents work that already exists in the git diff; to write a forward-looking spec for a feature that has not been built yet, use the write-implementation-spec skill instead. Triggers when the user says: document this phase, capture what I built, document before committing, write the feature doc, run the documentalist, document the spec, document the design, document the architecture, document the implementation, document the deployment, or document the tests."
 argument-hint: "[optional: phase name to force a specific phase, e.g. 'design']"
-allowed-tools: ["Bash", "Read", "Agent"]
+allowed-tools: ["Read", "Glob", "Agent", "Bash(git branch --show-current)", "Bash(git symbolic-ref:*)", "Bash(git rev-parse --verify:*)", "Bash(git merge-base:*)", "Bash(git status:*)", "Bash(git diff:*)"]
 ---
 
 Document the current feature development phase by analyzing git changes and generating a structured markdown file.
@@ -30,20 +30,15 @@ Otherwise, determine the **full feature changeset** — everything on this branc
 diverged from its base, committed *and* uncommitted. Do NOT rely on `git diff HEAD`
 alone; on a branch where you commit as you go it would miss all committed work.
 
-Resolve the base branch and merge-base, then diff against it:
+Resolve the base branch and merge-base, then diff against it. Run each command on its own (no pipes, loops or variables) and carry the values forward yourself:
+
+1. Base branch: run `git symbolic-ref --quiet --short refs/remotes/origin/HEAD` and drop the leading `origin/` from its output. If it prints nothing or fails, try `git rev-parse --verify --quiet <name>` for `main`, `master` and `develop` in that order; the first that succeeds is the base branch.
+2. Merge-base (the point where this branch diverged from the base): `git merge-base <base-branch> HEAD`.
+3. The changeset:
 
 ```bash
-# Resolve the base branch (first that resolves): origin's default, then common names
-base_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
-for c in "$base_branch" main master develop; do
-  [ -n "$c" ] && git rev-parse --verify --quiet "$c" >/dev/null 2>&1 && base_branch="$c" && break
-done
-
-# Merge-base = point where this branch diverged from the base
-base=$(git merge-base "$base_branch" HEAD 2>/dev/null)
-
-git status --short                    # includes untracked files
-git diff --name-only "$base"          # committed + uncommitted changes since divergence
+git status --short              # includes untracked files
+git diff --name-only <merge-base>   # committed + uncommitted changes since divergence
 ```
 
 If the merge-base cannot be resolved (e.g. first commit with no parent, or the branch

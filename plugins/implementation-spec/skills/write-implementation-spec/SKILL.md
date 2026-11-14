@@ -2,7 +2,7 @@
 name: write-implementation-spec
 description: "This skill should be used to write an implementation-ready spec for a feature that has not been built yet, so an orchestrator agent can implement the whole thing without asking the user anything further. Use it before any code exists — it explores the codebase, asks one short batch of questions, then writes docs/specs/<date>-<slug>.md; it is not for documenting work that is already in the git diff (that is the document-phase skill). Triggers when the user asks to: write a spec for a new feature, prepare an implementation spec, spec out a feature before coding, plan a feature for an agent to build, turn this feature request into a spec, write a build plan another agent can follow, produce a handoff spec for an orchestrator, define requirements and tests before implementation, write an implementation-ready spec, or spec this out before we write any code."
 argument-hint: "[the feature request in a sentence or two, e.g. 'let users export their invoice history as CSV']"
-allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Agent", "AskUserQuestion"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Agent", "AskUserQuestion", "Bash(date +%F)", "Bash(git rev-parse --show-toplevel)"]
 ---
 
 Write an implementation-ready spec for a feature that does not exist yet. The spec explores the codebase first, asks only the questions it genuinely cannot answer, and lands at `docs/specs/<YYYY-MM-DD>-<slug>.md` — complete enough that an orchestrator agent can implement all of it without coming back to the user.
@@ -20,8 +20,9 @@ Restate the request back in one sentence to confirm you understood it, then keep
 ```bash
 date +%F                        # today, e.g. 2026-09-07
 git rev-parse --show-toplevel   # repo root; fall back to $PWD if not a git repo
-ls -1 docs/specs 2>/dev/null    # existing specs, if any
 ```
+
+Run the two commands separately. List existing specs with `Glob docs/specs/*.md` rather than `ls`.
 
 Derive a slug from the request: lowercase, 2-5 content words, hyphen-separated, `a-z0-9-` only, ≤40 characters, dropping articles and filler (`a`, `the`, `add`, `support`, `for`, `we need`).
 
@@ -31,7 +32,7 @@ Derive a slug from the request: lowercase, 2-5 content words, hyphen-separated, 
 | "add rate limiting to the public API" | `public-api-rate-limiting` |
 | "we need SSO with Okta for the admin panel" | `admin-okta-sso` |
 
-Then check for an existing spec: `Glob docs/specs/*-<slug>.md`. If a file matches, **reuse that exact path** (keep its original date in the filename) and treat this run as an update, not a new file. If none matches, the target path is `docs/specs/<YYYY-MM-DD>-<slug>.md`; create the `docs/specs/` directory if it doesn't exist yet.
+Then check for an existing spec: `Glob docs/specs/*-<slug>.md`. If a file matches, **reuse that exact path** (keep its original date in the filename) and treat this run as an update, not a new file. If none matches, the target path is `docs/specs/<YYYY-MM-DD>-<slug>.md`; Write creates the `docs/specs/` directory if it doesn't exist yet, so no `mkdir` is needed.
 
 ### Step 3: Explore the codebase
 

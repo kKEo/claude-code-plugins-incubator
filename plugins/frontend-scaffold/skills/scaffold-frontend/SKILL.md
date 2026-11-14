@@ -2,7 +2,7 @@
 name: scaffold-frontend
 description: "This skill should be used to scaffold a production-grade Vue 3 frontend application with shadcn/ui components, Pinia stores, and a typed API client. Triggers when the user asks to: create a frontend, scaffold a Vue app, generate a dashboard UI, build an admin panel, create a control plane UI, set up a Vue 3 project with Tailwind, generate CRUD views, scaffold frontend, create web UI, generate Vue project, or build a dashboard."
 argument-hint: "[description of what the app manages, e.g. 'a dashboard for managing deployments']"
-allowed-tools: ["Read", "Write", "Edit", "Bash", "Agent"]
+allowed-tools: ["Read", "Write", "Edit", "Agent", "Bash(npm install --prefix:*)", "Bash(npm run build --prefix:*)"]
 ---
 
 Scaffold a complete Vue 3 + TypeScript + Vite frontend application using proven patterns from a production control-plane UI. The generated code is backend-agnostic — it connects to any REST API.
@@ -54,16 +54,16 @@ Create the complete project in the target directory. Use the reference files bel
 
 ### Step 3: Install Dependencies
 
-After generating all files, run:
+After generating all files, run exactly this (one command, no `cd`, so it matches the skill's allowed command):
 ```bash
-cd <target-dir> && npm install
+npm install --prefix <target-dir>
 ```
 
 ### Step 4: Verify Build
 
-Run the TypeScript check and build:
+Run the TypeScript check and build, again as one command:
 ```bash
-cd <target-dir> && npm run build
+npm run build --prefix <target-dir>
 ```
 
 Fix any type errors before reporting success.
