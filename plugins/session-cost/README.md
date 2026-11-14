@@ -42,6 +42,10 @@ The check reads the published `plugin.json` from this repository's `master` bran
 
 A request counts on the local calendar day its response ended, so one session can spread over several days. Ledger shares follow their request's day; `/cost` growth read while no request was waiting counts on the day it was read. Spend from before the mod loaded is in no day. A session that was already running when this version loaded has its days rebuilt from its kept rows, with anything past the 1000-row cap on the earliest day. Sessions saved by an older version count whole on the day of their last request.
 
+## Privacy
+
+The mod keeps its data on your computer and sends none of it anywhere; see [What it fetches and runs](#what-it-fetches-and-runs) and the full [privacy policy](PRIVACY.md).
+
 ## Command
 
 ```
@@ -113,4 +117,5 @@ claude --plugin-dir plugins/session-cost
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
 - `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`, `update`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.
+- `PRIVACY.md`: the privacy policy (`privacyPolicyUrl` in `plugin.json`).
 - `.claude-plugin/icon.png`: the 1024×1024 listing icon, found by path (no `icon` key in `plugin.json`).

@@ -1,10 +1,16 @@
 {
   "name": "session-cost",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A pane listing every model request of the session with its tokens and cost, beside the session totals and history",
   "author": {
     "name": "Krzysztof Maziarz"
   },
+  "homepage": "https://github.com/kKEo/claude-code-plugins-incubator/tree/master/plugins/session-cost",
+  "repository": "https://github.com/kKEo/claude-code-plugins-incubator",
+  "license": "MIT",
+  "documentationUrl": "https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/session-cost/README.md",
+  "supportUrl": "https://github.com/kKEo/claude-code-plugins-incubator/issues",
+  "privacyPolicyUrl": "https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/session-cost/PRIVACY.md",
   "keywords": [
     "cost",
     "usage",
@@ -36,7 +42,12 @@
       "type": "string",
       "title": "Toggle key action",
       "description": "The engine keybinding action whose chord toggles the pane; bind a chord to it in ~/.claude/keybindings.json",
-      "options": ["app:toggleReplTab", "app:toggleDiffNoiseFilter", "app:toggleDiffPreSession", "app:redraw"],
+      "options": [
+        "app:toggleReplTab",
+        "app:toggleDiffNoiseFilter",
+        "app:toggleDiffPreSession",
+        "app:redraw"
+      ],
       "default": "app:toggleReplTab"
     },
     "historyDays": {
