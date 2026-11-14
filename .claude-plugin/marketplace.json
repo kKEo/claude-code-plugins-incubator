@@ -59,6 +59,12 @@
       "description": "A pane beside the chat that collects the prompts you type, shows a language correction for each, and has a practice game built from your own mistakes",
       "source": "./plugins/prompt-coach",
       "category": "Productivity"
+    },
+    {
+      "name": "instances-monitor",
+      "description": "A pane beside the chat listing every Claude Code instance running on this machine, with status, project, CPU, memory and uptime",
+      "source": "./plugins/instances-monitor",
+      "category": "Development"
     }
   ]
 }

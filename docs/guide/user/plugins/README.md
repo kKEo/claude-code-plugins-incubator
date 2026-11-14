@@ -50,6 +50,12 @@ Collects the prompts you type, shows a language correction for each in a pane be
 
 [More about prompt-coach](prompt-coach.md)
 
+## instances-monitor
+
+Lists every Claude Code instance running on your machine in a pane beside the chat, with its status, project, CPU, memory and uptime. A mod.
+
+[More about instances-monitor](instances-monitor.md)
+
 ## memors-hooks
 
 Connects Claude to a local memors-mcp knowledge base, and reminds it to search before re-fetching and to record what it learns.

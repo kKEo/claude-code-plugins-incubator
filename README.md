@@ -24,7 +24,7 @@ The landing page is `docs/guide/index.html`; `docs/README.md` indexes everything
 /reload-plugins
 ```
 
-Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs-validator`, `implementation-spec`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review` or `session-cost` as needed.
+Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs-validator`, `implementation-spec`, `instances-monitor`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review` or `session-cost` as needed.
 
 ## Browse Plugins
 

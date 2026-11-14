@@ -12,6 +12,7 @@
   - [plan-progress](plugins/plan-progress.md)
   - [session-cost](plugins/session-cost.md)
   - [prompt-coach](plugins/prompt-coach.md)
+  - [instances-monitor](plugins/instances-monitor.md)
   - [memors-hooks](plugins/memors-hooks.md)
 - [Everyday use](everyday-use.md)
 - [Use cases](use-cases.md)
