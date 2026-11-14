@@ -1,6 +1,6 @@
 {
   "name": "instances-monitor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A pane beside the chat listing every Claude Code instance running on this machine, with status, project, CPU, memory and uptime",
   "author": {
     "name": "Krzysztof Maziarz"

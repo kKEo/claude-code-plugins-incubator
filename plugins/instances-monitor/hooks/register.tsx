@@ -15,8 +15,8 @@ const dur = (ms: number): string => {
   if (s < 60) return `${s}s`
   const m = Math.floor(s / 60)
   if (m < 60) return `${m}m`
-  const h = Math.floor(m / 60)
-  return h < 24 ? `${h}h${String(m % 60).padStart(2, '0')}m` : `${Math.floor(h / 24)}d${h % 24}h`
+  const hours = Math.floor(m / 60)
+  return hours < 24 ? `${hours}h${String(m % 60).padStart(2, '0')}m` : `${Math.floor(hours / 24)}d${hours % 24}h`
 }
 
 const mem = (kb: number): string =>
