@@ -4,12 +4,11 @@ A Claude Code mod that records every model request the session sends and shows i
 
 ## What it shows
 
-- **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate and requests by kind (main, subagent, compaction).
+- **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate, requests by kind (main, subagent, compaction) and the installed version (`v<version>`, dim, from this copy's `plugin.json`). The header is the same on every view.
 - **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, the effort the request asked for (dim, after the model, e.g. `opus-5-5 high`; absent for models without effort and for compactions), `main` / `sub:<agent>` / `compact`, duration written flush right on a 7-cell bar with a background track, filled in proportion to the slowest request drawn (the slowest one is highlighted), stop reason (a request that called tools shows them instead of `tool_use`, e.g. `→ Read ×3, Bash`; MCP tools by their short name), the four token counts (`cr` in green and `cw` in red, each in five steps from light to vivid by its share of the request's prompt tokens; a zero count is dim), and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
 - **Models view** (`m`): requests, tokens, cache hit rate and both costs per model.
 - **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. The windows are calendar days and count only the part of each session spent in them.
 - **Days view** (`d`): one row per day with spend in the last `historyDays` days, newest first: this session's cost and requests beside the cost of all sessions and how many had spend that day. A session open across several days says how many it spans.
-- **Version view** (`v`): the installed version (from this copy's `plugin.json`), the published version, the Claude Code version, and whether an update is available. `u` or **Check now** checks again.
 - In the Requests view, a dim `── Sat 07 Nov ──` row marks where the day changes.
 - A status-line entry under the prompt: `$0.544 · 3 req · 130k tok`.
 - A one-line chip above the prompt (`$0.544 · 3 req · 130k tok  usage`). Its button toggles the pane and carries the keyboard shortcut. While you collapse the band, the mod skips the cost text and keeps only the button, so the shortcut still works.
@@ -20,23 +19,13 @@ Claude Code reports dollars only as the running session total (the `/cost` ledge
 
 The **estimate** prices the token counts with a built-in table of Anthropic first-party list prices (`hooks/pricing.ts`). It cannot see fast mode, partner pricing (Bedrock, Vertex), Haiku 5.5's higher rate for prompts over 100K tokens ($0.50 / $2.50 per million instead of $0.10 / $0.50), or prices that changed after the table was written. An unknown model shows `?`.
 
-### How the update check works
-
-The check reads the published `plugin.json` from this repository's `master` branch on `raw.githubusercontent.com` and compares its `version` with the installed one, number by number. It runs only when you open the Version view (at most once a day) or press **Check now**; nothing is fetched otherwise, and nothing about the session is sent. GitHub caches the file for a few minutes, so a release can take that long to show. A copy loaded with `--plugin-dir` that is newer than the published one says so. To update:
-
-```
-/plugin marketplace update km-plugin-registry
-/plugin update session-cost@km-plugin-registry
-```
-
 ### What it fetches and runs
 
-- **Fetches**: one fixed URL, the published `plugin.json` on `raw.githubusercontent.com` (written at the `$.http.fetch` call in `hooks/register.tsx`); `raw.githubusercontent.com` is the only host the mod contacts, and only for the update check above. The response is parsed as JSON for its `version` string; nothing in it is run, stored as code or used to choose an action.
-- **Sends**: nothing but that request. It is a plain GET to the fixed URL with no body, query string or headers of the mod's own, so it carries no session, cost, token, prompt or file data. GitHub sees only what any download of that file shows it (your IP address and the client's default headers). No other network call is made.
-- **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read prompts, responses, tool inputs or tool results. The metadata stays in the session's plugin state and the plugin's local store and is never part of the update check's request.
-- **Reads from disk**: only its own `.claude-plugin/plugin.json` (under the plugin's install folder), to learn the installed version for the Version view. That version is compared with the published one locally and is never sent.
+- **Network**: none. The mod fetches nothing and sends nothing; it makes no network calls of any kind.
+- **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read prompts, responses, tool inputs or tool results. The metadata stays in the session's plugin state and the plugin's local store.
+- **Reads from disk**: only its own `.claude-plugin/plugin.json` (under the plugin's install folder), to show the installed version in the pane's header.
 - **Runs**: nothing. The mod starts no processes, runs no shell commands, calls no tools, agents or models, and hooks no tool calls.
-- **Its `command.run` hook** answers only its own `/session-cost` slash command. It reads the argument against a fixed list (`on`, `off`, `requests`, `models`, `history`, `days`, `version`, `reset`, `toggle`), opens, closes or switches the pane or clears the session's data, and returns a one-line reply. Any other argument gets an "Unknown argument" reply and does nothing.
+- **Its `command.run` hook** answers only its own `/session-cost` slash command. It reads the argument against a fixed list (`on`, `off`, `requests`, `models`, `history`, `days`, `reset`, `toggle`), opens, closes or switches the pane or clears the session's data, and returns a one-line reply. Any other argument gets an "Unknown argument" reply and does nothing.
 
 ### How days are counted
 
@@ -51,7 +40,7 @@ The mod keeps its data on your computer and sends none of it anywhere; see [What
 ```
 /session-cost                 toggle the pane
 /session-cost on|off          open or close it explicitly
-/session-cost requests|models|history|days|version   open it on that view
+/session-cost requests|models|history|days   open it on that view
 /session-cost reset           clear this session's requests, totals, day split and saved history entry
 ```
 
@@ -101,6 +90,13 @@ At the prompt of a terminal session:
 /plugin install session-cost@km-plugin-registry
 ```
 
+The mod does not check for updates itself. To update:
+
+```
+/plugin marketplace update km-plugin-registry
+/plugin update session-cost@km-plugin-registry
+```
+
 For development, start a session with the folder loaded and hot-reloaded:
 
 ```
@@ -113,9 +109,8 @@ claude --plugin-dir plugins/session-cost
 - `hooks/ledger.ts`: totals, the row cap and the ledger-delta split.
 - `hooks/days.ts`: day keys, the per-day buckets, backfill and history windows.
 - `hooks/pricing.ts`: the price table and the estimate.
-- `hooks/version.ts`: version comparison and the check's age.
+- `hooks/version.ts`: reads the `version` out of a `plugin.json`.
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
-- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`, `update`).
+- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.
 - `PRIVACY.md`: the privacy policy (`privacyPolicyUrl` in `plugin.json`).
-- `.claude-plugin/icon.png`: the 1024×1024 listing icon, found by path (no `icon` key in `plugin.json`).

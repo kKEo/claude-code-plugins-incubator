@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { CostView, DayMap, RequestKind, RequestRow, SessionSummary, Tokens, UpdateCheck } from '../types'
+import type { CostView, DayMap, RequestKind, RequestRow, SessionSummary, Tokens } from '../types'
 import {
   addOtherToDays,
   addRowToDays,
@@ -18,7 +18,7 @@ import {
 import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
-import { NO_CHECK, isStale, manifestVersion, updateStatus } from './version'
+import { manifestVersion } from './version'
 
 const PLUGIN = 'session-cost'
 const PANE = 'session-cost'
@@ -34,7 +34,6 @@ const totals = atom({ plugin: 'session-cost', key: 'totals' } as const, emptyTot
 const ledger = atom({ plugin: 'session-cost', key: 'ledger' } as const, EMPTY_LEDGER)
 const view = atom({ plugin: 'session-cost', key: 'view' } as const, 'requests' as CostView)
 const days = atom({ plugin: 'session-cost', key: 'days' } as const, {} as DayMap)
-const updateCheck = atom({ plugin: 'session-cost', key: 'update' } as const, NO_CHECK as UpdateCheck)
 
 type Engine = EngineInterface
 
@@ -170,7 +169,7 @@ async function pruneHistory($: Engine): Promise<void> {
   }
 }
 
-// ── version and update check ─────────────────────────────────────────────────
+// ── installed version ────────────────────────────────────────────────────────
 
 /** The version this copy of the plugin was loaded at, from its own manifest. */
 async function installedVersion($: Engine): Promise<string | null> {
@@ -181,38 +180,6 @@ async function installedVersion($: Engine): Promise<string | null> {
     installed = null
   }
   return installed
-}
-
-/** Reads the published manifest and keeps what it says; one check at a time. */
-async function checkUpdate($: Engine): Promise<void> {
-  if ((await read($, updateCheck))?.isChecking) return
-  await update($, updateCheck, old => ({ ...(old ?? NO_CHECK), isChecking: true }))
-  let latest: string | null = null
-  let error: string | undefined
-  try {
-    // The published manifest on the default branch, where the marketplace installs from.
-    const res = await $.http.fetch('https://raw.githubusercontent.com/kKEo/claude-code-plugins-incubator/master/plugins/session-cost/.claude-plugin/plugin.json')
-    if (!res.ok) error = `HTTP ${res.status}`
-    else {
-      latest = manifestVersion(res.text)
-      if (latest === null) error = 'the published manifest states no version'
-    }
-  } catch {
-    error = 'the request failed or was refused'
-  }
-  let at = 0
-  try {
-    at = await $.clock.now()
-  } catch {
-    at = 0
-  }
-  await update($, updateCheck, () => (error === undefined ? { at, latest } : { at, latest, error }))
-}
-
-/** Opens the Version view, and checks for an update when the last check is missing or a day old. */
-async function showVersion($: Engine): Promise<void> {
-  await update($, view, () => 'version')
-  if (isStale(await read($, updateCheck), await $.clock.now())) await checkUpdate($)
 }
 
 // ── pane toggle ──────────────────────────────────────────────────────────────
@@ -247,7 +214,7 @@ async function reset($: Engine): Promise<void> {
   await refreshStatus($)
 }
 
-const VIEWS: readonly CostView[] = ['requests', 'models', 'history', 'days', 'version']
+const VIEWS: readonly CostView[] = ['requests', 'models', 'history', 'days']
 
 export const register: Register = (on, options) => {
   const autoOpen = options.autoOpen === true
@@ -262,7 +229,7 @@ export const register: Register = (on, options) => {
     await $.command.register({
       name: COMMAND,
       description: 'Toggle the pane listing every model request with its tokens and cost',
-      argumentHint: '[on|off|requests|models|history|days|version|reset]',
+      argumentHint: '[on|off|requests|models|history|days|reset]',
     })
     // A session recorded before days were kept: split what its rows still show by day.
     await serial(async () => {
@@ -279,8 +246,6 @@ export const register: Register = (on, options) => {
         await update($, ledger, old => ({ ...(old ?? EMPTY_LEDGER), lastUsd: now, sessionUsd: now, pending: [] }))
       })
     }
-    // A check cut off by a reload would otherwise read as still running.
-    await update($, updateCheck, old => ({ ...(old ?? NO_CHECK), isChecking: false }))
     void pruneHistory($)
     if (autoOpen && e.surface !== null && e.isInteractive) void $.ui.open({ id: PANE, title: TITLE })
     await refreshStatus($)
@@ -395,8 +360,7 @@ export const register: Register = (on, options) => {
       return { text: 'Session cost: this session’s request list and totals were cleared.' }
     }
     if ((VIEWS as readonly string[]).includes(arg)) {
-      if (arg === 'version') await showVersion($)
-      else await update($, view, () => arg as CostView)
+      await update($, view, () => arg as CostView)
       const opened = await $.ui.open({ id: PANE, title: TITLE })
       return { text: opened.isPlaced ? `Session cost pane: ${arg} view.` : `Session cost pane waits for a wider terminal (${opened.reason}).` }
     }
@@ -405,7 +369,7 @@ export const register: Register = (on, options) => {
       return { text: opened.isPlaced ? 'Session cost pane opened.' : `Session cost pane waits for a wider terminal (${opened.reason}).` }
     }
     if (arg !== '' && arg !== 'toggle') {
-      return { text: `Unknown argument "${arg}". Use: on, off, requests, models, history, days, version or reset.` }
+      return { text: `Unknown argument "${arg}". Use: on, off, requests, models, history, days or reset.` }
     }
     return { text: await toggle($) }
   }).catch(async () => ({ text: 'Session cost: the command failed; see the debug log.' }))
@@ -447,10 +411,11 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const [rows, t0, l, v, d0] = await Promise.all([read($, requests), read($, totals), read($, ledger), read($, view), read($, days)])
+    const [rows, t0, l, v, d0, version] = await Promise.all([read($, requests), read($, totals), read($, ledger), read($, view), read($, days), installedVersion($)])
     const sessionDays = d0 ?? {}
     const t = t0 ?? emptyTotals()
-    const mode: CostView = v ?? 'requests'
+    // A view kept by an older version (the removed Version tab) falls back to Requests.
+    const mode: CostView = v !== undefined && VIEWS.includes(v) ? v : 'requests'
     const sessionUsd = l?.sessionUsd ?? t.ledgerUsd
     const unattributed = sessionUsd - t.ledgerUsd
 
@@ -468,9 +433,6 @@ export const register: Register = (on, options) => {
         <Button key="view:days" hotkey="d" variant={mode === 'days' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'days')}>
           Days
         </Button>
-        <Button key="view:version" hotkey="v" variant={mode === 'version' ? 'primary' : 'secondary'} onPress={() => showVersion($)}>
-          Version
-        </Button>
       </Box>
     )
 
@@ -481,6 +443,7 @@ export const register: Register = (on, options) => {
           <Text dimColor> /cost</Text>
           <Text>  est {usd(t.estUsd)}{t.hasUnpriced ? '+' : ''}</Text>
           <Text dimColor>  {t.requests} req</Text>
+          {version !== null ? <Text dimColor>  · v{version}</Text> : null}
         </Text>
         <Text tabular>
           in {count(t.input)} · out {count(t.output)} · cache r {count(t.cacheRead)} · w {count(t.cacheWrite)}
@@ -581,57 +544,6 @@ export const register: Register = (on, options) => {
             ))}
           </Box>
         )
-    } else if (mode === 'version') {
-      const [mine, check] = await Promise.all([installedVersion($), read($, updateCheck)])
-      const c = check ?? NO_CHECK
-      let engineVersion: string | null = null
-      try {
-        engineVersion = (await $.session.version()).version
-      } catch {
-        engineVersion = null
-      }
-      const status = updateStatus(mine, c.latest)
-      body = (
-        <Box flexDirection="column">
-          <Text>
-            {padEnd('Installed', 12)} <Text weight="bold">{mine ?? 'unknown'}</Text>
-          </Text>
-          <Text>
-            {padEnd('Published', 12)} {c.latest ?? '—'}
-            {c.at > 0 ? <Text dimColor>  checked {stamp(c.at)}</Text> : null}
-          </Text>
-          {engineVersion !== null && (
-            <Text dimColor>
-              {padEnd('Claude Code', 12)} {engineVersion}
-            </Text>
-          )}
-          <Box marginTop={1} flexDirection="column">
-            {c.isChecking ? (
-              <Text dimColor>Checking for an update…</Text>
-            ) : c.error !== undefined ? (
-              <Text color="warning">The update check failed: {c.error}.</Text>
-            ) : c.at === 0 ? (
-              <Text dimColor>Not checked yet.</Text>
-            ) : status === 'available' ? (
-              <Box flexDirection="column">
-                <Text color="warning">Update available: {mine} → {c.latest}</Text>
-                <Text dimColor>Run /plugin marketplace update km-plugin-registry, then /plugin update session-cost@km-plugin-registry, and restart.</Text>
-              </Box>
-            ) : status === 'ahead' ? (
-              <Text dimColor>This copy is newer than the published version.</Text>
-            ) : status === 'current' ? (
-              <Text color="success">Up to date.</Text>
-            ) : (
-              <Text dimColor>The installed version is unknown, so there is nothing to compare.</Text>
-            )}
-          </Box>
-          <Box flexDirection="row">
-            <Button key="version:check" hotkey="u" variant="secondary" onPress={() => checkUpdate($)}>
-              Check now
-            </Button>
-          </Box>
-        </Box>
-      )
     } else {
       const now = await $.clock.now()
       const history = await loadHistory($)
