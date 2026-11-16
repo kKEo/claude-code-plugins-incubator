@@ -53,7 +53,44 @@ export function addRow(totals: Totals, row: RequestRow): Totals {
         requests: m.requests + 1,
         estUsd: m.estUsd + (row.estUsd ?? 0),
         ledgerUsd: m.ledgerUsd,
+        ...withOneHour(m.cacheWrite1h, row.cacheWrite1h),
       },
+    },
+    ...withOneHour(totals.cacheWrite1h, row.cacheWrite1h),
+  }
+}
+
+/** `{ cacheWrite1h }` summed, or nothing while neither side knows a split. */
+function withOneHour(sum: number | undefined, add: number | undefined): { cacheWrite1h?: number } {
+  return sum === undefined && add === undefined ? {} : { cacheWrite1h: (sum ?? 0) + (add ?? 0) }
+}
+
+/**
+ * A row's 1-hour split learned after it was recorded: the row gains it and a re-priced
+ * estimate, the totals the same difference. Unchanged when the row is gone or already split.
+ */
+export function applySplit(
+  rows: readonly RequestRow[],
+  totals: Totals,
+  seq: number,
+  cacheWrite1h: number,
+  estimate: (row: RequestRow) => number | null,
+): { rows: RequestRow[]; totals: Totals } {
+  const row = rows.find(r => r.seq === seq)
+  if (!row || row.cacheWrite1h !== undefined) return { rows: [...rows], totals }
+  const next: RequestRow = { ...row, cacheWrite1h }
+  next.estUsd = estimate(next)
+  const dEst = (next.estUsd ?? 0) - (row.estUsd ?? 0)
+  const m = totals.byModel[row.model]
+  return {
+    rows: rows.map(r => (r.seq === seq ? next : r)),
+    totals: {
+      ...totals,
+      estUsd: totals.estUsd + dEst,
+      cacheWrite1h: (totals.cacheWrite1h ?? 0) + cacheWrite1h,
+      byModel: m
+        ? { ...totals.byModel, [row.model]: { ...m, estUsd: m.estUsd + dEst, cacheWrite1h: (m.cacheWrite1h ?? 0) + cacheWrite1h } }
+        : totals.byModel,
     },
   }
 }

@@ -39,12 +39,20 @@ export type RequestRow = Tokens & {
    * absent when it called none, and on rows recorded before they were kept.
    */
   tools?: string[]
+  /**
+   * The part of `cacheWrite` written with the 1-hour TTL, read from the transcript; the rest
+   * is 5-minute. Absent when unknown: the `cacheTtlSplit` setting off, no match in the
+   * transcript, a compaction, or rows recorded before it was kept.
+   */
+  cacheWrite1h?: number
 }
 
 export type ModelTotals = Tokens & {
   requests: number
   estUsd: number
   ledgerUsd: number
+  /** 1-hour cache writes over the rows whose split is known; absent before it was kept. */
+  cacheWrite1h?: number
 }
 
 /** Running sums over every request of the session, kept past the list cap. */
@@ -57,6 +65,8 @@ export type Totals = Tokens & {
   /** True when some request's model had no price. */
   hasUnpriced: boolean
   byModel: Record<string, ModelTotals>
+  /** 1-hour cache writes over the rows whose split is known; absent before it was kept. */
+  cacheWrite1h?: number
 }
 
 export type Ledger = {

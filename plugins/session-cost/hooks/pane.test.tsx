@@ -355,3 +355,87 @@ test('every tab shows the installed version in its header', async ($, on) => {
     await ui.unmount()
   }
 })
+
+/** A transcript holding the default step's usage, written with `oneHour` of its 2000 cache-write tokens at 1 hour. */
+function transcriptLine(oneHour: number, model = 'claude-opus-5-5'): string {
+  return JSON.stringify({
+    type: 'assistant',
+    message: {
+      model,
+      usage: {
+        input_tokens: 1200,
+        output_tokens: 300,
+        cache_read_input_tokens: 40_000,
+        cache_creation_input_tokens: 2000,
+        cache_creation: { ephemeral_1h_input_tokens: oneHour, ephemeral_5m_input_tokens: 2000 - oneHour },
+      },
+    },
+  })
+}
+
+function transcripts(on: On, files: Record<string, string>) {
+  const reads: string[] = []
+  on('env.get', (_, e) => ({ value: e.name === 'HOME' ? '/home/me' : undefined }))
+  on('session.root', () => ({ value: '/srv/app' }))
+  on('fs.read', (_, e) => {
+    reads.push(e.path)
+    const text = files[e.path]
+    if (text === undefined) throw new Error('ENOENT')
+    return { value: text }
+  })
+  return reads
+}
+
+test('with the TTL split on, rows say 1h or 5m from the transcript and the estimate prices 1h at 2×', { options: { cacheTtlSplit: true } }, async ($, on) => {
+  engine(on)
+  transcripts(on, {
+    '/home/me/.claude/projects/-srv-app/sess-1.jsonl': transcriptLine(2000),
+    '/home/me/.claude/projects/-srv-app/sess-1/subagents/agent-agent-abc123.jsonl': transcriptLine(0, 'claude-haiku-5-5'),
+  })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await step($, 1, 'agent-abc123')
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    const labels = await ui.findAll({ type: 'Text', text: /^ (1h|5m)$/ })
+    // Newest first: the subagent's 5-minute write, then the main thread's 1-hour one.
+    expect(labels.map(l => l.text)).toEqual([' 5m', ' 1h'])
+    // Opus 5.5 main row: 1200 × $4 + 300 × $20 + 40k × $0.20 + 2000 × $8 per million = $0.0348.
+    expect(await ui.find({ type: 'Text', text: /est \$0\.035/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /\(1h 2k\)/ })).toBeDefined()
+    await ui.unmount()
+  }
+})
+
+test('with the TTL split off, no transcript is read and rows keep the plain cache-write count', async ($, on) => {
+  engine(on)
+  const reads = transcripts(on, { '/home/me/.claude/projects/-srv-app/sess-1.jsonl': transcriptLine(2000) })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  expect(reads.filter(p => p.endsWith('.jsonl'))).toEqual([])
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /^ (1h|5m)$/ })).toBeUndefined()
+  expect(await ui.find({ type: 'Text', text: /est \$0\.029/ })).toBeDefined()
+  await ui.unmount()
+})
+
+test('a transcript line that lands after the step is picked up a second later', { options: { cacheTtlSplit: true } }, async ($, on) => {
+  const { clock } = engine(on)
+  const files: Record<string, string> = {}
+  transcripts(on, files)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /^ 1h$/ })).toBeUndefined()
+
+  files['/home/me/.claude/projects/-srv-app/sess-1.jsonl'] = transcriptLine(2000)
+  await clock.set(1_800_000_000_000 + 1500)
+  await ui.unmount()
+  const again = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect(await again.find({ type: 'Text', text: /^ 1h$/ })).toBeDefined()
+  await again.unmount()
+})

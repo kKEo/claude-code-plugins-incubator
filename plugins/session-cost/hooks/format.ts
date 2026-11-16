@@ -94,6 +94,15 @@ export function durationBar(ms: number, maxMs: number, width: number): { label: 
   return { label, filled: Math.min(w, Math.max(1, Math.round((ms / maxMs) * w))) }
 }
 
+/** Which TTL a request's cache write used: ` 1h`, ` 5m`, or ` 1h 8k+5m 4k` when it mixed both. */
+export function ttlLabel(cacheWrite: number, cacheWrite1h: number): string {
+  const oneHour = Math.max(0, Math.min(cacheWrite1h, cacheWrite))
+  const fiveMin = cacheWrite - oneHour
+  if (fiveMin === 0) return ' 1h'
+  if (oneHour === 0) return ' 5m'
+  return ` 1h ${count(oneHour)}+5m ${count(fiveMin)}`
+}
+
 export function padEnd(s: string, n: number): string {
   return s.length >= n ? s : s + ' '.repeat(n - s.length)
 }

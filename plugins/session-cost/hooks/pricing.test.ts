@@ -30,6 +30,15 @@ test('an estimate sums the four buckets at their prices', async () => {
   expect(estimate('mystery-model', { input: 1, output: 1, cacheRead: 0, cacheWrite: 0 })).toBe(null)
 })
 
+test('1-hour cache writes are priced at twice the input price, the rest at the 5-minute rate', async () => {
+  // Opus 5.5: 100k writes, 60k of them 1-hour: 60k × $8 + 40k × $5 per million = $0.68.
+  const split = estimate('claude-opus-5-5', { input: 0, output: 0, cacheRead: 0, cacheWrite: 100_000, cacheWrite1h: 60_000 })
+  expect(near(split, 0.68)).toBe(true)
+  expect(near(priceOf('claude-opus-5-5')?.cacheWrite1h, 8)).toBe(true)
+  // Unknown split: every write at the 5-minute rate, as before.
+  expect(near(estimate('claude-opus-5-5', { input: 0, output: 0, cacheRead: 0, cacheWrite: 100_000 }), 0.5)).toBe(true)
+})
+
 test('numbers and dollars are compact', async () => {
   expect(count(950)).toBe('950')
   expect(count(1234)).toBe('1.2k')

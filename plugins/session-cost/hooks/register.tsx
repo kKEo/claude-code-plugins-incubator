@@ -15,9 +15,10 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
-import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
+import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, ttlLabel, usd } from './format'
+import { EMPTY_LEDGER, addRow, appendRow, applyLedger, applySplit, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
+import { findSplit, transcriptPath } from './ttl'
 import { manifestVersion } from './version'
 
 const PLUGIN = 'session-cost'
@@ -26,6 +27,8 @@ const TITLE = 'Session cost'
 const COMMAND = 'session-cost'
 const STORE_PREFIX = 'session:'
 const DAY_MS = 24 * 60 * 60 * 1000
+/** A transcript line may land after the step ends: one more look this much later. */
+const SPLIT_RETRY_MS = 1000
 /** Rows drawn in the Requests view; older ones stay counted in the totals. */
 const DRAWN_ROWS = 300
 
@@ -40,6 +43,8 @@ type Engine = EngineInterface
 /** From the manifest's userConfig; the module reloads with new values on a change. */
 let isStatusLineOn = true
 let historyDays = 30
+/** Read the transcript for each request's 1-hour / 5-minute cache-write split. */
+let isTtlSplitOn = false
 /** The version in this copy's plugin.json: undefined until read, null when it states none. */
 let installed: string | null | undefined
 /** Model requests whose response has not ended yet; the ledger is read when it drops to 0. */
@@ -61,8 +66,8 @@ async function ledgerUsd($: Engine): Promise<number | undefined> {
   }
 }
 
-async function record($: Engine, row: Omit<RequestRow, 'seq' | 'estUsd' | 'ledgerUsd' | 'isApprox'>): Promise<void> {
-  await serial(async () => {
+async function record($: Engine, row: Omit<RequestRow, 'seq' | 'estUsd' | 'ledgerUsd' | 'isApprox'>): Promise<number> {
+  return serial(async () => {
     const t = (await read($, totals)) ?? emptyTotals()
     const full: RequestRow = {
       ...row,
@@ -75,6 +80,51 @@ async function record($: Engine, row: Omit<RequestRow, 'seq' | 'estUsd' | 'ledge
     await update($, totals, old => addRow(old ?? emptyTotals(), full))
     await update($, days, d => addRowToDays(d ?? {}, full))
     await update($, ledger, old => ({ ...(old ?? EMPTY_LEDGER), pending: [...(old ?? EMPTY_LEDGER).pending, full.seq] }))
+    return full.seq
+  })
+}
+
+// ── 1-hour / 5-minute cache-write split ──────────────────────────────────────
+
+/** The 1-hour share of a request's cache write from its transcript; undefined when it cannot be read or matched. */
+async function readSplit($: Engine, path: string, tokens: Tokens): Promise<number | undefined> {
+  try {
+    return findSplit(await $.fs.read(path), tokens)
+  } catch {
+    // Missing, or over the 4 MiB a read takes: the row keeps a plain cache-write count.
+    return undefined
+  }
+}
+
+/** The transcript a step's request is logged in, read while the hook still runs (for its cwd). */
+async function stepTranscript($: Engine, agentId: string | undefined): Promise<string | undefined> {
+  try {
+    const [config, home, root, id] = await Promise.all([$.env.get('CLAUDE_CONFIG_DIR'), $.env.get('HOME'), $.session.root(), $.session.id()])
+    const dir = config ?? (home === undefined ? undefined : `${home}/.claude`)
+    return dir === undefined ? undefined : transcriptPath(dir, root, id, agentId)
+  } catch {
+    return undefined
+  }
+}
+
+/** Gives a recorded row its split, re-pricing its estimate in the row, totals and its day. */
+async function patchSplit($: Engine, seq: number, cacheWrite1h: number): Promise<void> {
+  await serial(async () => {
+    const [rows, t] = await Promise.all([read($, requests), read($, totals)])
+    const before = (rows ?? []).find(r => r.seq === seq)
+    const applied = applySplit(rows ?? [], t ?? emptyTotals(), seq, cacheWrite1h, r => estimate(r.model, r))
+    const after = applied.rows.find(r => r.seq === seq)
+    if (!before || !after || after === before) return
+    await update($, requests, () => applied.rows)
+    await update($, totals, () => applied.totals)
+    const dEst = (after.estUsd ?? 0) - (before.estUsd ?? 0)
+    const day = dayKey(after.at)
+    if (dEst !== 0) {
+      await update($, days, d => {
+        const bucket = d?.[day]
+        return bucket ? { ...d, [day]: { ...bucket, estUsd: bucket.estUsd + dEst } } : (d ?? {})
+      })
+    }
   })
 }
 
@@ -222,6 +272,7 @@ export const register: Register = (on, options) => {
   const toggleAction = typeof options.toggleAction === 'string' && options.toggleAction !== '' ? options.toggleAction : 'app:toggleReplTab'
   isStatusLineOn = options.statusLine !== false
   historyDays = typeof options.historyDays === 'number' && options.historyDays > 0 ? options.historyDays : 30
+  isTtlSplitOn = options.cacheTtlSplit === true
   inFlight = 0
   installed = undefined
 
@@ -278,8 +329,12 @@ export const register: Register = (on, options) => {
         }
         const kind: RequestKind = e.agentId === undefined ? 'main' : 'subagent'
         const tools = [...(result?.toolUses ?? []), ...(result?.serverToolUses ?? [])].map(use => use.name)
-        await record($, {
+        // Opt-in: the transcript tells how much of the write was 1-hour; nothing to split without a write.
+        const path = isTtlSplitOn && tokens.cacheWrite > 0 ? await stepTranscript($, e.agentId) : undefined
+        const cacheWrite1h = path === undefined ? undefined : await readSplit($, path, tokens)
+        const seq = await record($, {
           ...tokens,
+          ...(cacheWrite1h === undefined ? {} : { cacheWrite1h }),
           at: ended,
           durationMs: startedAt > 0 ? ended - startedAt : 0,
           turnId: e.turnId,
@@ -291,6 +346,12 @@ export const register: Register = (on, options) => {
           stopReason: result?.stopReason ?? null,
           ...(tools.length === 0 ? {} : { tools }),
         })
+        if (path !== undefined && cacheWrite1h === undefined) {
+          $.clock.after(SPLIT_RETRY_MS, async () => {
+            const late = await readSplit($, path, tokens)
+            if (late !== undefined) await patchSplit($, seq, late)
+          })
+        }
         if (inFlight === 0) await settleLedger($)
         else await refreshStatus($)
       } catch {
@@ -447,6 +508,7 @@ export const register: Register = (on, options) => {
         </Text>
         <Text tabular>
           in {count(t.input)} · out {count(t.output)} · cache r {count(t.cacheRead)} · w {count(t.cacheWrite)}
+          {t.cacheWrite1h !== undefined ? ` (1h ${count(t.cacheWrite1h)})` : ''}
         </Text>
         <Text dimColor>
           cache hit {percent(cacheHit(t))} · main {t.byKind.main} · sub {t.byKind.subagent} · compact {t.byKind.compact}
@@ -509,6 +571,7 @@ export const register: Register = (on, options) => {
                     {'  '}in {padStart(count(r.input), 5)} out {padStart(count(r.output), 5)}{' '}
                     <Text color={readColor} dimColor={readColor === undefined}>cr {padStart(count(r.cacheRead), 5)}</Text>{' '}
                     <Text color={writeColor} dimColor={writeColor === undefined}>cw {padStart(count(r.cacheWrite), 5)}</Text>
+                    {r.cacheWrite1h !== undefined && r.cacheWrite > 0 ? <Text dimColor>{ttlLabel(r.cacheWrite, r.cacheWrite1h)}</Text> : null}
                     {'  '}<Text color="success">{ledgerText}</Text>
                     <Text dimColor> / est {usd(r.estUsd)}</Text>
                   </Text>
@@ -538,7 +601,8 @@ export const register: Register = (on, options) => {
                   <Text dimColor> / est {usd(s.estUsd)}</Text>
                 </Text>
                 <Text wrap="truncate-end" dimColor tabular>
-                  {'  '}in {count(s.input)} · out {count(s.output)} · cr {count(s.cacheRead)} · cw {count(s.cacheWrite)} · hit {percent(cacheHit(s))}
+                  {'  '}in {count(s.input)} · out {count(s.output)} · cr {count(s.cacheRead)} · cw {count(s.cacheWrite)}
+                  {s.cacheWrite1h !== undefined ? ` (1h ${count(s.cacheWrite1h)})` : ''} · hit {percent(cacheHit(s))}
                 </Text>
               </Box>
             ))}

@@ -4,8 +4,8 @@ A Claude Code mod that records every model request the session sends and shows i
 
 ## What it shows
 
-- **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate, requests by kind (main, subagent, compaction) and the installed version (`v<version>`, dim, from this copy's `plugin.json`). The header is the same on every view.
-- **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, the effort the request asked for (dim, after the model, e.g. `opus-5-5 high`; absent for models without effort and for compactions), `main` / `sub:<agent>` / `compact`, duration written flush right on a 7-cell bar with a background track, filled in proportion to the slowest request drawn (the slowest one is highlighted), stop reason (a request that called tools shows them instead of `tool_use`, e.g. `→ Read ×3, Bash`; MCP tools by their short name), the four token counts (`cr` in green and `cw` in red, each in five steps from light to vivid by its share of the request's prompt tokens; a zero count is dim), and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
+- **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write, with `(1h …)` after the write total when the `cacheTtlSplit` setting is on), the cache hit rate, requests by kind (main, subagent, compaction) and the installed version (`v<version>`, dim, from this copy's `plugin.json`). The header is the same on every view.
+- **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, the effort the request asked for (dim, after the model, e.g. `opus-5-5 high`; absent for models without effort and for compactions), `main` / `sub:<agent>` / `compact`, duration written flush right on a 7-cell bar with a background track, filled in proportion to the slowest request drawn (the slowest one is highlighted), stop reason (a request that called tools shows them instead of `tool_use`, e.g. `→ Read ×3, Bash`; MCP tools by their short name), the four token counts (`cr` in green and `cw` in red, each in five steps from light to vivid by its share of the request's prompt tokens; a zero count is dim; with `cacheTtlSplit` on, a dim `1h`, `5m` or `1h 8k+5m 4k` after `cw` says which cache lifetime the write used), and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
 - **Models view** (`m`): requests, tokens, cache hit rate and both costs per model.
 - **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. The windows are calendar days and count only the part of each session spent in them.
 - **Days view** (`d`): one row per day with spend in the last `historyDays` days, newest first: this session's cost and requests beside the cost of all sessions and how many had spend that day. A session open across several days says how many it spans.
@@ -17,13 +17,13 @@ A Claude Code mod that records every model request the session sends and shows i
 
 Claude Code reports dollars only as the running session total (the `/cost` ledger). When a request's response ends and no other request is still running, the mod reads that total. The increase since the last reading becomes that request's cost, so the ledger column always adds up to `/cost`. When requests overlap, as parallel subagents do, the increase is split between them by estimated cost and marked `~`. Spend from before the mod loaded, or spend the engine makes outside model requests (title generation, classifiers), shows in the header as `unattributed`.
 
-The **estimate** prices the token counts with a built-in table of Anthropic first-party list prices (`hooks/pricing.ts`). It cannot see fast mode, partner pricing (Bedrock, Vertex), Haiku 5.5's higher rate for prompts over 100K tokens ($0.50 / $2.50 per million instead of $0.10 / $0.50), or prices that changed after the table was written. An unknown model shows `?`.
+The **estimate** prices the token counts with a built-in table of Anthropic first-party list prices (`hooks/pricing.ts`). It cannot see fast mode, partner pricing (Bedrock, Vertex), Haiku 5.5's higher rate for prompts over 100K tokens ($0.50 / $2.50 per million instead of $0.10 / $0.50), or prices that changed after the table was written. An unknown model shows `?`. Cache writes are priced at the 5-minute rate (1.25× input) unless `cacheTtlSplit` is on and the request's split was found; then 1-hour writes are priced at 2× input.
 
 ### What it fetches and runs
 
 - **Network**: none. The mod fetches nothing and sends nothing; it makes no network calls of any kind.
 - **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read prompts, responses, tool inputs or tool results. The metadata stays in the session's plugin state and the plugin's local store.
-- **Reads from disk**: only its own `.claude-plugin/plugin.json` (under the plugin's install folder), to show the installed version in the pane's header.
+- **Reads from disk**: its own `.claude-plugin/plugin.json` (under the plugin's install folder), to show the installed version in the pane's header. With `cacheTtlSplit` on (off by default), also the session's transcript files under `~/.claude/projects/` (or `$CLAUDE_CONFIG_DIR/projects/`), after each request that wrote to the cache, to take the 1-hour and 5-minute cache-write counts from the usage numbers there. It keeps only those counts.
 - **Runs**: nothing. The mod starts no processes, runs no shell commands, calls no tools, agents or models, and hooks no tool calls.
 - **Its `command.run` hook** answers only its own `/session-cost` slash command. It reads the argument against a fixed list (`on`, `off`, `requests`, `models`, `history`, `days`, `reset`, `toggle`), opens, closes or switches the pane or clears the session's data, and returns a one-line reply. Any other argument gets an "Unknown argument" reply and does nothing.
 
@@ -73,6 +73,7 @@ These appear in `/config` under the plugin and are stored in `pluginConfigs["ses
 | `band` | `true` | Show the cost chip above the prompt. The keyboard toggle needs it. |
 | `toggleAction` | `app:toggleReplTab` | The engine action the chip's button borrows for the keyboard toggle. |
 | `historyDays` | `30` | How many days of per-session, per-day totals to keep. |
+| `cacheTtlSplit` | `false` | Tell 1-hour from 5-minute cache writes per request. Claude Code's hooks report only the write total, so this reads the split from the session's transcript. A transcript over 4 MiB cannot be read (the mod API's limit), so long sessions show the plain `cw` count again from that point. |
 
 ## Data
 
@@ -109,6 +110,7 @@ claude --plugin-dir plugins/session-cost
 - `hooks/ledger.ts`: totals, the row cap and the ledger-delta split.
 - `hooks/days.ts`: day keys, the per-day buckets, backfill and history windows.
 - `hooks/pricing.ts`: the price table and the estimate.
+- `hooks/ttl.ts`: the transcript path and the 1-hour / 5-minute split read from it.
 - `hooks/version.ts`: reads the `version` out of a `plugin.json`.
 - `hooks/format.ts`: number, dollar, time and model-name formatting.
 - `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`).

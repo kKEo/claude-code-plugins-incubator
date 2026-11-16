@@ -5,7 +5,10 @@ export type Price = {
   input: number
   output: number
   cacheRead: number
+  /** 5-minute cache writes. */
   cacheWrite: number
+  /** 1-hour cache writes. */
+  cacheWrite1h: number
 }
 
 /** Input/output list prices; cache prices where they differ from the usual ratios. */
@@ -36,6 +39,7 @@ const SEEDS: Record<string, Seed> = {
 
 const CACHE_READ_RATIO = 0.1
 const CACHE_WRITE_RATIO = 1.25
+const CACHE_WRITE_1H_RATIO = 2
 
 const PREFIXES = Object.keys(SEEDS).sort((a, b) => b.length - a.length)
 
@@ -59,12 +63,18 @@ export function priceOf(model: string): Price | null {
     output: s.output,
     cacheRead: s.cacheRead ?? s.input * CACHE_READ_RATIO,
     cacheWrite: s.cacheWrite ?? s.input * CACHE_WRITE_RATIO,
+    cacheWrite1h: s.input * CACHE_WRITE_1H_RATIO,
   }
 }
 
-/** Estimated USD for one request; null when the model has no price. */
-export function estimate(model: string, t: Tokens): number | null {
+/**
+ * Estimated USD for one request; null when the model has no price. Cache writes are
+ * priced at the 5-minute rate unless `cacheWrite1h` says how many were 1-hour.
+ */
+export function estimate(model: string, t: Tokens & { cacheWrite1h?: number }): number | null {
   const p = priceOf(model)
   if (!p) return null
-  return (t.input * p.input + t.output * p.output + t.cacheRead * p.cacheRead + t.cacheWrite * p.cacheWrite) / 1_000_000
+  const oneHour = Math.min(t.cacheWrite1h ?? 0, t.cacheWrite)
+  const writes = (t.cacheWrite - oneHour) * p.cacheWrite + oneHour * p.cacheWrite1h
+  return (t.input * p.input + t.output * p.output + t.cacheRead * p.cacheRead + writes) / 1_000_000
 }

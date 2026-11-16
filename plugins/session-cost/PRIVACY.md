@@ -8,6 +8,8 @@ For each model request, it collects metadata only: token counts, model, effort, 
 
 It does not read prompts, responses, tool inputs, tool results or any of your files. The one exception is its own `plugin.json`, which it reads to show its installed version in the pane.
 
+With the `cacheTtlSplit` setting on (it is off by default), it also reads the session's transcript files that Claude Code keeps under `~/.claude/projects/`. Those files hold the conversation, but the mod takes only the token counts of each response from them (how many cache-write tokens used the 1-hour and the 5-minute lifetime). It keeps only those counts and nothing else from the files.
+
 ## Where it is kept
 
 The data stays on your computer. It lives in the session's plugin state and the plugin's local store inside Claude Code. Per-day history is pruned after `historyDays` days (30 by default). `/session-cost reset` deletes the current session's data.
