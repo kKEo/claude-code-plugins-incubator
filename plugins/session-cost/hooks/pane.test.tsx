@@ -225,7 +225,7 @@ test('a reset with no request after it leaves nothing in history', async ($, on)
 /** Local time on a January 2027 day, after the mocked clock's start in any time zone. */
 const jan = (d: number, h: number) => new Date(2027, 0, d, h).getTime()
 
-test('a session that crosses midnight is split by day in the Days tab and in History', async ($, on) => {
+test('a session that crosses midnight is split by day in History, and the old days view lands there', async ($, on) => {
   // An older session saved before days were kept: it counts whole on its last day.
   const old = { startedAt: jan(16, 9), lastAt: jan(16, 10), ledgerUsd: 1, estUsd: 1, requests: 5, input: 1, output: 1, cacheRead: 1, cacheWrite: 1 }
   const { clock } = engine(on, { 'session:old': old })
@@ -239,7 +239,7 @@ test('a session that crosses midnight is split by day in the Days tab and in His
 
   const run = (args: string) =>
     $.command.run({ command: 'session-cost', args, origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
-  expect((await run('days')).text).toMatch(/days view/)
+  expect((await run('days')).text).toMatch(/history view/)
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ ...PANE, surface })
@@ -249,14 +249,15 @@ test('a session that crosses midnight is split by day in the Days tab and in His
     expect((await ui.find({ type: 'Text', text: /Fri 15 Jan/ }))?.text).toMatch(/\$0\.020\s+1 req\s+\$0\.020\s+1 sess/)
     expect(await ui.find({ type: 'Text', text: /spans 2 days/ })).toBeDefined()
 
-    await ui.press({ key: 'view:history' })
+    expect(await ui.find({ type: 'Text', text: /^By day$/ })).toBeDefined()
     expect((await ui.find({ type: 'Text', text: /^Today/ }))?.text).toMatch(/\$1\.040\s+7 req/)
     expect((await ui.find({ type: 'Text', text: /^Last 7 days/ }))?.text).toMatch(/\$1\.060\s+8 req/)
 
     await ui.press({ key: 'view:requests' })
     expect(await ui.find({ type: 'Text', text: /── Fri 15 Jan ──/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /── Sat 16 Jan ──/ })).toBeDefined()
-    await ui.press({ key: 'view:days' })
+    expect(await ui.find({ type: 'Button', key: 'view:days' })).toBeUndefined()
+    await ui.press({ key: 'view:history' })
     await ui.unmount()
   }
 })
@@ -348,7 +349,7 @@ test('every tab shows the installed version in its header', async ($, on) => {
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({ ...PANE, surface })
     expect(await ui.find({ type: 'Button', key: 'view:version' })).toBeUndefined()
-    for (const tab of ['requests', 'models', 'history', 'days']) {
+    for (const tab of ['requests', 'models', 'history']) {
       await ui.press({ key: `view:${tab}` })
       expect(await ui.find({ type: 'Text', text: /v0\.4\.0/ })).toBeDefined()
     }
@@ -438,4 +439,51 @@ test('a transcript line that lands after the step is picked up a second later', 
   const again = await $.ui.mount({ ...PANE, surface: 'terminal' })
   expect(await again.find({ type: 'Text', text: /^ 1h$/ })).toBeDefined()
   await again.unmount()
+})
+
+const run = ($: Engine, args: string) =>
+  $.command.run({ command: 'session-cost', args, origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
+
+test('with stats off there is no Stats tab and the command says how to turn it on', async ($, on) => {
+  engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await step($, 0)
+  expect((await run($, 'stats')).text).toMatch(/stats are off/)
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    expect(await ui.find({ type: 'Button', key: 'view:stats' })).toBeUndefined()
+    await ui.unmount()
+  }
+})
+
+test('with stats on, the Stats tab profiles cost, cache TTL, idle gaps and requests', { options: { stats: true, cacheTtlSplit: true } }, async ($, on) => {
+  const { state, clock } = engine(on)
+  transcripts(on, { '/home/me/.claude/projects/-srv-app/sess-1.jsonl': transcriptLine(2000) })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  state.stepTools.push(['Read', 'Read', 'Bash'])
+  await step($, 0)
+  // A 10-minute pause, bridged by the first request's 1-hour write.
+  await clock.set((state.now += 10 * 60 * 1000))
+  await step($, 1)
+  await step($, 2, 'agent-abc123')
+  await $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+  expect((await run($, 'stats')).text).toMatch(/stats view/)
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    expect(await ui.find({ type: 'Text', text: /^Cost breakdown/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /^ +write 1h/ })).toBeDefined()
+    expect((await ui.find({ type: 'Text', text: /writes 1h/ }))?.text).toMatch(/writes 1h 4k · 5m 0 · \? 2k/)
+    expect((await ui.find({ type: 'Text', text: /5–60m/ }))?.text).toMatch(/<5m 0 · 5–60m 1 · >60m 0/)
+    expect((await ui.find({ type: 'Text', text: /kept by 1h/ }))?.text).toMatch(/kept by 1h 1/)
+    expect(await ui.find({ type: 'Text', text: /1h net/ })).toBeDefined()
+    expect((await ui.find({ type: 'Text', text: /^ +3 · main 2 · sub 1/ }))).toBeDefined()
+    expect((await ui.find({ type: 'Text', text: /tools/ }))?.text).toMatch(/Read 2 · Bash 1/)
+    await ui.unmount()
+  }
+
+  expect((await run($, 'reset')).text).toMatch(/cleared/)
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect(await ui.find({ type: 'Text', text: /Stats gather from the next request/ })).toBeDefined()
+  await ui.unmount()
 })

@@ -10,6 +10,8 @@ It does not read prompts, responses, tool inputs, tool results or any of your fi
 
 With the `cacheTtlSplit` setting on (it is off by default), it also reads the session's transcript files that Claude Code keeps under `~/.claude/projects/`. Those files hold the conversation, but the mod takes only the token counts of each response from them (how many cache-write tokens used the 1-hour and the 5-minute lifetime). It keeps only those counts and nothing else from the files.
 
+With the `stats` setting on (off by default), it also builds a usage profile of the session from the same metadata (costs, cache-write split, gaps between requests, durations, tool names). The profile stays in the session's plugin state and is not saved to history.
+
 ## Where it is kept
 
 The data stays on your computer. It lives in the session's plugin state and the plugin's local store inside Claude Code. Per-day history is pruned after `historyDays` days (30 by default). `/session-cost reset` deletes the current session's data.

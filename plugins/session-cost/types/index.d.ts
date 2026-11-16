@@ -80,7 +80,60 @@ export type Ledger = {
   resetUsd?: number
 }
 
-export type CostView = 'requests' | 'models' | 'history' | 'days'
+/** The pane's tab; `days` is a view an older version kept, now shown as History. */
+export type CostView = 'requests' | 'models' | 'history' | 'stats' | 'days'
+
+/** Estimated USD of one bucket of a request's tokens. */
+export type CostParts = {
+  input: number
+  output: number
+  read: number
+  write5m: number
+  write1h: number
+  /** Writes whose TTL is unknown, priced at the 5-minute rate. */
+  writeUnknown: number
+}
+
+/** One request kind's usage profile. */
+export type KindStats = Tokens & {
+  requests: number
+  write1h: number
+  write5m: number
+  writeUnknown: number
+  usd: CostParts
+}
+
+/** Main-thread gaps between request starts, against the cache TTL the previous request wrote with. */
+export type GapStats = {
+  under5m: number
+  to60m: number
+  over60m: number
+  /** Gaps of 5–60 minutes bridged by a 1-hour write. */
+  kept1h: number
+  /** Gaps over 5 minutes after a 5-minute write. */
+  expired5m: number
+  /** For kept1h gaps: what re-writing the read part at the 5-minute rate would have cost over reading it. */
+  savedUsd: number
+  /** Gaps over the TTL after which the request read under 10% of its prompt from the cache. */
+  missesSeen: number
+  /** Start of the latest main request, `$.clock.now()` ms; absent before the first. */
+  lastStart?: number
+  /** Seq and TTL of the latest main request's write: undefined when unknown or it wrote nothing. */
+  lastSeq?: number
+  lastTtl?: '1h' | '5m'
+}
+
+/** The session's usage profile, kept while the `stats` setting is on; independent of the row cap. */
+export type SessionStats = {
+  byKind: Record<RequestKind, KindStats>
+  /** Σ 1-hour writes × (1-hour − 5-minute write price). */
+  premium1hUsd: number
+  gaps: GapStats
+  /** The newest durations, at most 2000, for percentiles. */
+  durationsMs: number[]
+  byModel: Record<string, { requests: number; usd: number }>
+  tools: Record<string, number>
+}
 
 /** What one calendar day (local time) of a session spent; a request counts on the day its response ended. */
 export type DayTotals = Tokens & {
@@ -114,6 +167,7 @@ declare module 'claude-code' {
       ledger: Ledger
       view: CostView
       days: DayMap
+      stats: SessionStats
     }
   }
 }

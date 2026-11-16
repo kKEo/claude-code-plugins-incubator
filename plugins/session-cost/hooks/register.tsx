@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { CostView, DayMap, RequestKind, RequestRow, SessionSummary, Tokens } from '../types'
+import type { CostParts, CostView, DayMap, RequestKind, RequestRow, SessionSummary, Tokens } from '../types'
 import {
   addOtherToDays,
   addRowToDays,
@@ -17,7 +17,8 @@ import {
 } from './days'
 import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, ttlLabel, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, applySplit, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
-import { estimate } from './pricing'
+import { estimate, priceOf } from './pricing'
+import { addToStats, applySplitToStats, emptyStats, summarize } from './stats'
 import { findSplit, transcriptPath } from './ttl'
 import { manifestVersion } from './version'
 
@@ -37,6 +38,7 @@ const totals = atom({ plugin: 'session-cost', key: 'totals' } as const, emptyTot
 const ledger = atom({ plugin: 'session-cost', key: 'ledger' } as const, EMPTY_LEDGER)
 const view = atom({ plugin: 'session-cost', key: 'view' } as const, 'requests' as CostView)
 const days = atom({ plugin: 'session-cost', key: 'days' } as const, {} as DayMap)
+const stats = atom({ plugin: 'session-cost', key: 'stats' } as const, emptyStats())
 
 type Engine = EngineInterface
 
@@ -45,6 +47,8 @@ let isStatusLineOn = true
 let historyDays = 30
 /** Read the transcript for each request's 1-hour / 5-minute cache-write split. */
 let isTtlSplitOn = false
+/** Gather the session's usage profile and show the Stats tab. */
+let isStatsOn = false
 /** The version in this copy's plugin.json: undefined until read, null when it states none. */
 let installed: string | null | undefined
 /** Model requests whose response has not ended yet; the ledger is read when it drops to 0. */
@@ -80,6 +84,7 @@ async function record($: Engine, row: Omit<RequestRow, 'seq' | 'estUsd' | 'ledge
     await update($, totals, old => addRow(old ?? emptyTotals(), full))
     await update($, days, d => addRowToDays(d ?? {}, full))
     await update($, ledger, old => ({ ...(old ?? EMPTY_LEDGER), pending: [...(old ?? EMPTY_LEDGER).pending, full.seq] }))
+    if (isStatsOn) await update($, stats, old => addToStats(old ?? emptyStats(), full, priceOf(full.model)))
     return full.seq
   })
 }
@@ -117,6 +122,7 @@ async function patchSplit($: Engine, seq: number, cacheWrite1h: number): Promise
     if (!before || !after || after === before) return
     await update($, requests, () => applied.rows)
     await update($, totals, () => applied.totals)
+    if (isStatsOn) await update($, stats, old => applySplitToStats(old ?? emptyStats(), before, cacheWrite1h, priceOf(before.model)))
     const dEst = (after.estUsd ?? 0) - (before.estUsd ?? 0)
     const day = dayKey(after.at)
     if (dEst !== 0) {
@@ -253,6 +259,7 @@ async function reset($: Engine): Promise<void> {
     await update($, requests, () => [])
     await update($, totals, () => emptyTotals())
     await update($, days, () => ({}))
+    await update($, stats, () => emptyStats())
     await update($, ledger, () => ({ lastUsd: now, sessionUsd: now, pending: [], resetUsd: now }))
     // Drop the session's saved summary too, or its pre-reset spend would still count in History.
     try {
@@ -264,7 +271,14 @@ async function reset($: Engine): Promise<void> {
   await refreshStatus($)
 }
 
-const VIEWS: readonly CostView[] = ['requests', 'models', 'history', 'days']
+const VIEWS: readonly CostView[] = ['requests', 'models', 'history', 'stats']
+
+/** The tab to draw for a stored view: an older version's `days` is History, Stats only while it is on. */
+function shownView(v: CostView | undefined): CostView {
+  if (v === 'days') return 'history'
+  if (v === 'stats' && !isStatsOn) return 'requests'
+  return v !== undefined && VIEWS.includes(v) ? v : 'requests'
+}
 
 export const register: Register = (on, options) => {
   const autoOpen = options.autoOpen === true
@@ -273,6 +287,7 @@ export const register: Register = (on, options) => {
   isStatusLineOn = options.statusLine !== false
   historyDays = typeof options.historyDays === 'number' && options.historyDays > 0 ? options.historyDays : 30
   isTtlSplitOn = options.cacheTtlSplit === true
+  isStatsOn = options.stats === true
   inFlight = 0
   installed = undefined
 
@@ -280,7 +295,7 @@ export const register: Register = (on, options) => {
     await $.command.register({
       name: COMMAND,
       description: 'Toggle the pane listing every model request with its tokens and cost',
-      argumentHint: '[on|off|requests|models|history|days|reset]',
+      argumentHint: isStatsOn ? '[on|off|requests|models|history|stats|reset]' : '[on|off|requests|models|history|reset]',
     })
     // A session recorded before days were kept: split what its rows still show by day.
     await serial(async () => {
@@ -403,6 +418,7 @@ export const register: Register = (on, options) => {
         await update($, requests, () => [])
         await update($, totals, () => emptyTotals())
         await update($, days, () => ({}))
+        await update($, stats, () => emptyStats())
         await update($, ledger, () => EMPTY_LEDGER)
       })
       $.ui.status(undefined)
@@ -420,17 +436,21 @@ export const register: Register = (on, options) => {
       await reset($)
       return { text: 'Session cost: this session’s request list and totals were cleared.' }
     }
-    if ((VIEWS as readonly string[]).includes(arg)) {
-      await update($, view, () => arg as CostView)
+    if (arg === 'stats' && !isStatsOn) {
+      return { text: 'Session cost: stats are off; turn on the plugin’s `stats` setting in /config.' }
+    }
+    if ((VIEWS as readonly string[]).includes(arg) || arg === 'days') {
+      const target: CostView = arg === 'days' ? 'history' : (arg as CostView)
+      await update($, view, () => target)
       const opened = await $.ui.open({ id: PANE, title: TITLE })
-      return { text: opened.isPlaced ? `Session cost pane: ${arg} view.` : `Session cost pane waits for a wider terminal (${opened.reason}).` }
+      return { text: opened.isPlaced ? `Session cost pane: ${target} view.` : `Session cost pane waits for a wider terminal (${opened.reason}).` }
     }
     if (arg === 'on' || arg === 'open' || arg === 'show') {
       const opened = await $.ui.open({ id: PANE, title: TITLE })
       return { text: opened.isPlaced ? 'Session cost pane opened.' : `Session cost pane waits for a wider terminal (${opened.reason}).` }
     }
     if (arg !== '' && arg !== 'toggle') {
-      return { text: `Unknown argument "${arg}". Use: on, off, requests, models, history, days or reset.` }
+      return { text: `Unknown argument "${arg}". Use: on, off, requests, models, history${isStatsOn ? ', stats' : ''} or reset.` }
     }
     return { text: await toggle($) }
   }).catch(async () => ({ text: 'Session cost: the command failed; see the debug log.' }))
@@ -472,11 +492,11 @@ export const register: Register = (on, options) => {
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
     const { Box, Text, Button } = $.ui.resolve(e)
-    const [rows, t0, l, v, d0, version] = await Promise.all([read($, requests), read($, totals), read($, ledger), read($, view), read($, days), installedVersion($)])
+    const [rows, t0, l, v, d0, version, st] = await Promise.all([read($, requests), read($, totals), read($, ledger), read($, view), read($, days), installedVersion($), isStatsOn ? read($, stats) : undefined])
     const sessionDays = d0 ?? {}
     const t = t0 ?? emptyTotals()
-    // A view kept by an older version (the removed Version tab) falls back to Requests.
-    const mode: CostView = v !== undefined && VIEWS.includes(v) ? v : 'requests'
+    // A view kept by an older version falls back: the removed Version tab to Requests, Days to History.
+    const mode = shownView(v)
     const sessionUsd = l?.sessionUsd ?? t.ledgerUsd
     const unattributed = sessionUsd - t.ledgerUsd
 
@@ -491,9 +511,11 @@ export const register: Register = (on, options) => {
         <Button key="view:history" hotkey="h" variant={mode === 'history' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'history')}>
           History
         </Button>
-        <Button key="view:days" hotkey="d" variant={mode === 'days' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'days')}>
-          Days
-        </Button>
+        {isStatsOn ? (
+          <Button key="view:stats" hotkey="s" variant={mode === 'stats' ? 'primary' : 'secondary'} onPress={() => update($, view, () => 'stats')}>
+            Stats
+          </Button>
+        ) : null}
       </Box>
     )
 
@@ -608,6 +630,82 @@ export const register: Register = (on, options) => {
             ))}
           </Box>
         )
+    } else if (mode === 'stats') {
+      const sum = summarize(st ?? emptyStats())
+      const parts: Array<[string, keyof CostParts]> = [
+        ['input', 'input'],
+        ['output', 'output'],
+        ['cache read', 'read'],
+        ['write 5m', 'write5m'],
+        ['write 1h', 'write1h'],
+        ['write ?', 'writeUnknown'],
+      ]
+      const share = (x: number) => (sum.totalUsd > 0 ? percent(x / sum.totalUsd) : '—')
+      const g = sum.gaps
+      const kinds = (['main', 'subagent', 'compact'] as const).filter(k => sum.byKind[k] > 0)
+      body =
+        sum.requests === 0 ? (
+          <Text dimColor>No requests yet. Stats gather from the next request on.</Text>
+        ) : (
+          <Box flexDirection="column" gap={1}>
+            <Box key="stats:cost" flexDirection="column">
+              <Text weight="bold">Cost breakdown <Text dimColor>(estimate {usd(sum.totalUsd)})</Text></Text>
+              {parts
+                .filter(([, key]) => sum.usd[key] > 0)
+                .map(([label, key]) => (
+                  <Text key={`cost:${key}`} tabular>
+                    {'  '}{padEnd(label, 11)} <Text color="success">{padStart(usd(sum.usd[key]), 9)}</Text> <Text dimColor>{padStart(share(sum.usd[key]), 5)}</Text>
+                  </Text>
+                ))}
+            </Box>
+            <Box key="stats:ttl" flexDirection="column">
+              <Text weight="bold">Cache TTL</Text>
+              <Text tabular>
+                {'  '}writes 1h {count(sum.write1h)} · 5m {count(sum.write5m)}{sum.writeUnknown > 0 ? ` · ? ${count(sum.writeUnknown)}` : ''}
+              </Text>
+              <Text tabular>
+                {'  '}hit {percent(sum.hit)}
+                {kinds.map(k => ` · ${k === 'subagent' ? 'sub' : k} ${percent(sum.hitByKind[k] ?? 0)}`).join('')}
+              </Text>
+              <Text tabular>
+                {'  '}1h premium {usd(sum.premium1hUsd)}
+              </Text>
+              {!isTtlSplitOn ? <Text dimColor>  The 1h/5m split needs the cacheTtlSplit setting; writes count as unknown.</Text> : null}
+            </Box>
+            <Box key="stats:gaps" flexDirection="column">
+              <Text weight="bold">Idle gaps <Text dimColor>(main thread, start to start)</Text></Text>
+              <Text tabular>
+                {'  '}&lt;5m {g.under5m} · 5–60m {g.to60m} · &gt;60m {g.over60m}
+              </Text>
+              <Text tabular>
+                {'  '}kept by 1h {g.kept1h} <Text dimColor>(saved ~{usd(sum.savedUsd)})</Text> · expired after 5m {g.expired5m} · misses seen {g.missesSeen}
+              </Text>
+              <Text tabular>
+                {'  '}1h net <Text color={sum.net1hUsd >= 0 ? 'success' : 'error'}>{sum.net1hUsd >= 0 ? '+' : '−'}{usd(Math.abs(sum.net1hUsd))}</Text>
+                <Text dimColor> saved minus premium</Text>
+              </Text>
+            </Box>
+            <Box key="stats:requests" flexDirection="column">
+              <Text weight="bold">Requests</Text>
+              <Text tabular>
+                {'  '}{sum.requests} · {kinds.map(k => `${k === 'subagent' ? 'sub' : k} ${sum.byKind[k]}`).join(' · ')} · avg {count(sum.avgTokens)} tok
+              </Text>
+              <Text tabular>
+                {'  '}duration p50 {duration(sum.p50Ms)} · p90 {duration(sum.p90Ms)} · max {duration(sum.maxMs)}
+              </Text>
+              {sum.topModels.map(([m, x]) => (
+                <Text key={`smodel:${m}`} wrap="truncate-end" tabular>
+                  {'  '}{padEnd(shortModel(m), 14)} {padStart(String(x.requests), 4)} req <Text color="success">{padStart(usd(x.usd), 9)}</Text>
+                </Text>
+              ))}
+              {sum.topTools.length > 0 ? (
+                <Text wrap="truncate-end" dimColor>
+                  {'  '}tools {sum.topTools.map(([name, n]) => `${toolList([name])} ${n}`).join(' · ')}
+                </Text>
+              ) : null}
+            </Box>
+          </Box>
+        )
     } else {
       const now = await $.clock.now()
       const history = await loadHistory($)
@@ -625,60 +723,59 @@ export const register: Register = (on, options) => {
         }
       }
 
-      if (mode === 'history') {
-        const line = (label: string, w: { spent: number; reqs: number; toks: number; sessions: number }) => (
-          <Text key={`hist:${label}`} wrap="truncate-end" tabular>
-            {padEnd(label, 14)} <Text color="success">{padStart(usd(w.spent), 9)}</Text>  {padStart(String(w.reqs), 5)} req  {padStart(count(w.toks), 6)} tok
-            <Text dimColor>  {w.sessions} session{w.sessions === 1 ? '' : 's'}</Text>
-          </Text>
-        )
-        const recent = others.sort((a, b) => b.lastAt - a.lastAt).slice(0, 10)
-        body = (
-          <Box flexDirection="column">
-            {line('This session', { spent: l ? sessionSpend(l) : t.ledgerUsd, reqs: t.requests, toks: tokenSum(t), sessions: 1 })}
-            {line('Today', window(dayKeysBack(now, 1)))}
-            {line('Last 7 days', window(dayKeysBack(now, 7)))}
-            {line(`Last ${historyDays} days`, window(dayKeysBack(now, historyDays)))}
-            {recent.length > 0 && (
-              <Box flexDirection="column" marginTop={1}>
-                <Text weight="bold">Recent sessions</Text>
-                {recent.map(s => (
-                  <Text key={`sess:${s.id}`} wrap="truncate-end" dimColor tabular>
-                    {stamp(s.lastAt)} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
-                  </Text>
-                ))}
+      const line = (label: string, w: { spent: number; reqs: number; toks: number; sessions: number }) => (
+        <Text key={`hist:${label}`} wrap="truncate-end" tabular>
+          {padEnd(label, 14)} <Text color="success">{padStart(usd(w.spent), 9)}</Text>  {padStart(String(w.reqs), 5)} req  {padStart(count(w.toks), 6)} tok
+          <Text dimColor>  {w.sessions} session{w.sessions === 1 ? '' : 's'}</Text>
+        </Text>
+      )
+      const recent = others.sort((a, b) => b.lastAt - a.lastAt).slice(0, 10)
+      const today = dayKey(now)
+      const keys = dayKeysBack(now, historyDays).filter(k => window([k]).sessions > 0)
+      const spans = Object.values(sessionDays).filter(x => x.requests > 0).length
+      body = (
+        <Box flexDirection="column">
+          {line('This session', { spent: l ? sessionSpend(l) : t.ledgerUsd, reqs: t.requests, toks: tokenSum(t), sessions: 1 })}
+          {line('Today', window(dayKeysBack(now, 1)))}
+          {line('Last 7 days', window(dayKeysBack(now, 7)))}
+          {line(`Last ${historyDays} days`, window(dayKeysBack(now, historyDays)))}
+          <Box key="hist:days" flexDirection="column" marginTop={1}>
+            <Text weight="bold">By day</Text>
+            {keys.length === 0 ? (
+              <Text dimColor>No spend recorded in the last {historyDays} days.</Text>
+            ) : (
+              <Box flexDirection="column">
+                <Text dimColor tabular>
+                  {padEnd('Day', 12)} {padStart('this session', 18)}   {padStart('all sessions', 18)}
+                </Text>
+                {keys.map(k => {
+                  const mine = sessionDays[k]
+                  const all = window([k])
+                  const mineText = mine && (mine.requests > 0 || dayUsd(mine) !== 0) ? `${padStart(usd(dayUsd(mine)), 9)} ${padStart(String(mine.requests), 4)} req` : padStart('—', 18)
+                  return (
+                    <Text key={`day:${k}`} wrap="truncate-end" tabular>
+                      <Text weight={k === today ? 'bold' : undefined}>{padEnd(dayLabel(k), 12)}</Text> <Text color="success">{mineText}</Text>
+                      {'   '}{padStart(usd(all.spent), 9)} {padStart(String(all.sessions), 3)} sess
+                      {k === today ? <Text dimColor>  today</Text> : null}
+                    </Text>
+                  )
+                })}
+                {spans > 1 && <Text dimColor>This session spans {spans} days.</Text>}
               </Box>
             )}
           </Box>
-        )
-      } else {
-        const today = dayKey(now)
-        const keys = dayKeysBack(now, historyDays).filter(k => window([k]).sessions > 0)
-        const spans = Object.values(sessionDays).filter(x => x.requests > 0).length
-        body =
-          keys.length === 0 ? (
-            <Text dimColor>No spend recorded in the last {historyDays} days.</Text>
-          ) : (
-            <Box flexDirection="column">
-              <Text dimColor tabular>
-                {padEnd('Day', 12)} {padStart('this session', 18)}   {padStart('all sessions', 18)}
-              </Text>
-              {keys.map(k => {
-                const mine = sessionDays[k]
-                const all = window([k])
-                const mineText = mine && (mine.requests > 0 || dayUsd(mine) !== 0) ? `${padStart(usd(dayUsd(mine)), 9)} ${padStart(String(mine.requests), 4)} req` : padStart('—', 18)
-                return (
-                  <Text key={`day:${k}`} wrap="truncate-end" tabular>
-                    <Text weight={k === today ? 'bold' : undefined}>{padEnd(dayLabel(k), 12)}</Text> <Text color="success">{mineText}</Text>
-                    {'   '}{padStart(usd(all.spent), 9)} {padStart(String(all.sessions), 3)} sess
-                    {k === today ? <Text dimColor>  today</Text> : null}
-                  </Text>
-                )
-              })}
-              {spans > 1 && <Text dimColor>This session spans {spans} days.</Text>}
+          {recent.length > 0 && (
+            <Box flexDirection="column" marginTop={1}>
+              <Text weight="bold">Recent sessions</Text>
+              {recent.map(s => (
+                <Text key={`sess:${s.id}`} wrap="truncate-end" dimColor tabular>
+                  {stamp(s.lastAt)} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
+                </Text>
+              ))}
             </Box>
-          )
-      }
+          )}
+        </Box>
+      )
     }
 
     return (

@@ -1,6 +1,6 @@
 {
   "name": "session-cost",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A pane listing every model request of the session with its tokens and cost, beside the session totals and history",
   "author": {
     "name": "Krzysztof Maziarz"
@@ -53,13 +53,19 @@
     "historyDays": {
       "type": "number",
       "title": "History days",
-      "description": "How many days of per-session, per-day totals to keep for the History and Days views",
+      "description": "How many days of per-session, per-day totals to keep for the History view",
       "default": 30
     },
     "cacheTtlSplit": {
       "type": "boolean",
       "title": "Cache TTL split",
       "description": "Tell 1-hour from 5-minute cache writes per request by reading the usage numbers in the session's transcript files",
+      "default": false
+    },
+    "stats": {
+      "type": "boolean",
+      "title": "Stats tab",
+      "description": "Gather a usage profile of the session (cost breakdown, cache TTL, idle gaps, request profile) and show it in a Stats tab",
       "default": false
     }
   }
