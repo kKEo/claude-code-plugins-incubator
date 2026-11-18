@@ -15,10 +15,15 @@ This page describes every file a plugin may contain and the contract each one ha
 │   └── evals/                      # optional eval cases and fixtures
 ├── agents/<agent-name>.md          # frontmatter + system prompt
 ├── hooks/
-│   ├── hooks.json                  # event → command registration
-│   └── <script>                    # the scripts hooks.json calls
-└── commands/*.md                   # optional slash commands (none shipped here)
+│   ├── hooks.json                  # event → command registration, or a mod's module
+│   ├── <script>                    # the scripts a command hook calls
+│   └── register.tsx                # a mod's hooks module
+├── types/index.d.ts                # a mod's state contract
+├── commands/*.md                   # optional slash commands
+└── .mcp.json                       # optional MCP servers
 ```
+
+If you have not chosen between these yet, read [Ways to extend Claude Code](extension-points.md) first.
 
 ## Manifest
 
@@ -38,6 +43,14 @@ An agent file starts with a YAML frontmatter (`name`, `description` with `<examp
 
 `hooks/hooks.json` maps event names to commands. Commands are shell strings; they use `${CLAUDE_PLUGIN_ROOT}` to find scripts in the plugin directory. Scripts are extensionless on purpose so that Windows auto-detection does not prepend `bash` to the command; a polyglot wrapper `run-hook.cmd` finds a bash on either platform. See [Hooks](../config/hooks.md).
 
-## What is not here
+## Mods
 
-None of the shipped plugins has a `commands/` folder. Skills with a `name` are already callable as `/<name>` (or `/<plugin>:<name>` when the name is not unique). The two mods, plan-progress and session-cost, register their slash commands from their TypeScript module at session start (see [Hooks](../config/hooks.md)).
+In a mod, `hooks/hooks.json` holds `{ "modules": ["./register.tsx"] }` instead of a `hooks` key. The module exports `register(on, options)` and adds function hooks to engine events. A mod that keeps session state declares it in `types/index.d.ts` and names that file under `types` in its manifest. Tests live beside the module as `*.test.ts` or `*.test.tsx`. [What a mod is](../mods/what-is-a-mod.md) describes each file's contract.
+
+## Commands
+
+A `commands/<name>.md` file is a slash command: a frontmatter and a prompt. gitbook-docs-validator ships four (`structure`, `links`, `content`, `repo`), called as `/gitbook-docs-validator:<name>`. Skills with a `name` are callable as `/<name>` too (or `/<plugin>:<name>` when the name is not unique), so most plugins need no `commands/` folder. The four mods register their slash commands from their module at session start.
+
+## MCP servers
+
+`.mcp.json` at the plugin root starts MCP servers that give the model tools. memors-hooks is the only shipped plugin with one.

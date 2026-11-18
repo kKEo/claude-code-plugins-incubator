@@ -1,4 +1,4 @@
-# Part V: Operations
+# Part VI: Operations
 
 Three chapters cover day-two work.
 

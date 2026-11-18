@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 400" width="920" height="400" role="img" aria-labelledby="t d">
+<title id="t">Three places a mod can keep a value, and how long each lasts</title>
+<desc id="d">A module variable lasts until the next hot reload. A value in $.state lasts until the session ends and survives reloads. A value in $.store lasts across sessions, up to 4 MiB of JSON per mod.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="399" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">three memories</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">HOW LONG A VALUE LIVES</tspan><tspan dx="10">pick the shortest that works</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="252" rx="10"/>
+<text x="300" y="104" class="faint caps" font-size="9.5">LOADED</text>
+<text x="480" y="104" class="faint caps" font-size="9.5" text-anchor="middle">HOT RELOAD</text>
+<text x="680" y="104" class="faint caps" font-size="9.5" text-anchor="middle">SESSION ENDS</text>
+<text x="868" y="104" class="faint caps" font-size="9.5" text-anchor="end">NEXT SESSION</text>
+<path class="rule dash" d="M480 112V318"/>
+<path class="rule dash" d="M680 112V318"/>
+<text x="48" y="144" class="fg b mono" font-size="12.5">a module variable</text>
+<text x="48" y="162" class="muted mono" font-size="10.5">let tools = 0</text>
+<rect class="hot" x="300" y="130" width="180" height="26" rx="6"/>
+<text x="310" y="147.5" class="fg" font-size="11">scratch for one turn</text>
+<text x="490" y="147.5" class="faint" font-size="11">gone at the reload</text>
+<text x="48" y="212" class="fg b mono" font-size="12.5">$.state</text>
+<text x="48" y="230" class="muted mono" font-size="10.5">await update($, atom, fn)</text>
+<rect class="hot" x="300" y="198" width="380" height="26" rx="6"/>
+<text x="310" y="215.5" class="fg" font-size="11">what a drawing reads; survives a reload</text>
+<text x="690" y="215.5" class="faint" font-size="11">gone with the session</text>
+<text x="48" y="280" class="fg b mono" font-size="12.5">$.store</text>
+<text x="48" y="298" class="muted mono" font-size="10.5">await $.store.set(key, value)</text>
+<rect class="hot" x="300" y="266" width="568" height="26" rx="6"/>
+<text x="310" y="283.5" class="fg" font-size="11">what the next session needs; JSON, 4 MiB per mod</text>
+<path class="arrowa" d="M838 306L868 306" marker-end="url(#aha)"/>
+<text x="832" y="310" class="faint" font-size="11" text-anchor="end">and every session after</text>
+<rect class="softbox" x="32" y="348" width="856" height="34" rx="8"/>
+<text x="46" y="369.5" class="fg" font-size="12">State a drawing reads belongs in $.state. To keep it past the session, write it to $.store as well.</text>
+</svg>

@@ -12,9 +12,12 @@ claude-code-plugins-incubator/
 │   ├── feature-dev-documentalist/
 │   ├── gitbook-docs-validator/
 │   ├── implementation-spec/
-│   ├── memors-hooks/
+│   ├── rigorous-review/
+│   ├── memors-hooks/                 # command hooks and an MCP server
 │   ├── plan-progress/                # a mod
 │   ├── session-cost/                 # a mod
+│   ├── prompt-coach/                 # a mod
+│   ├── instances-monitor/            # a mod
 │   └── gitbook-docs-validator-workspace/   # eval workspace, not a plugin
 ├── docs/guide/                        # this documentation
 ├── scripts/docs-check                 # the documentation gate
@@ -29,10 +32,10 @@ The marketplace manifest names the registry (`km-plugin-registry`) and lists eac
 
 1. `/plugin marketplace add kKEo/claude-code-plugins-incubator` clones the repository into Claude Code's plugin cache and reads `.claude-plugin/marketplace.json`.
 2. `/plugin install <name>@km-plugin-registry` copies the plugin's `source` directory into the installed set and records it in the user's settings.
-3. On the next session or `/reload-plugins`, Claude Code scans each installed plugin for `skills/*/SKILL.md`, `agents/*.md`, `hooks/hooks.json` and `.mcp.json`.
+3. On the next session or `/reload-plugins`, Claude Code scans each installed plugin for `skills/*/SKILL.md`, `agents/*.md`, `commands/*.md`, `hooks/hooks.json` and `.mcp.json`.
 4. Skill descriptions are placed in Claude's context so it can match a prompt to a skill. Agents become available to the `Agent` tool. Hooks are registered for their events, and a mod's module is loaded. An `.mcp.json` (memors-hooks ships one) starts its MCP server; memors-hooks' server stays idle until its `mcp_server` option is on.
 
-Nothing runs at install time. A plugin has no install script and cannot execute code until a skill is invoked or a hook event fires.
+Nothing runs at install time. A plugin has no install script and cannot execute code until a skill is invoked or a hook event fires. A mod is the exception to keep in mind: once installed, its module is loaded in every session and its `session.start` hook runs before the first prompt.
 
 ## How a skill runs
 
@@ -46,7 +49,9 @@ An agent is a Markdown file with a frontmatter (model, colour, tools) and a syst
 
 A hook is a shell command registered for an event in `hooks/hooks.json`. Claude Code runs it with the event's JSON on stdin and reads JSON from stdout. The documentalist registers one `Stop` hook that may add a line of context to the conversation, and memors-hooks registers hooks on five events.
 
-A mod's `hooks/hooks.json` names a TypeScript module instead. Claude Code loads the module into the session, and it subscribes to engine events and draws panes, status lines and chips. plan-progress and session-cost are mods. See [Hooks](../config/hooks.md) for both forms.
+## How a mod runs
+
+A mod's `hooks/hooks.json` names a TypeScript module instead of commands. Claude Code compiles the module and loads it into the session, where it adds hooks to engine events and draws panes, status lines and rows above the prompt. plan-progress, session-cost, prompt-coach and instances-monitor are mods. [Part II](../mods/README.md) explains how they work and how to write one; [Hooks](../config/hooks.md) documents both forms of `hooks.json`.
 
 ## Where things are on disk
 
@@ -54,4 +59,5 @@ A mod's `hooks/hooks.json` names a TypeScript module instead. Claude Code loads 
 |---|---|
 | Marketplace clone | Claude Code's plugin cache under `~/.claude/` |
 | Installed plugin | A copy of the plugin directory in the same cache; `${CLAUDE_PLUGIN_ROOT}` points at it while a hook runs |
-| Local development link | `~/.claude/plugins/<name>` as a symlink to your checkout (see [Local development](../install/local-dev.md)) |
+| A plugin under development | Read from your checkout, with `claude --plugin-dir` or a folder marketplace (see [Local development](../install/local-dev.md)) |
+| A mod's saved values | Claude Code's own store for the plugin, reached through `$.store`; not a file in the project |

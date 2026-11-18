@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 413" width="920" height="413" role="img" aria-labelledby="t d">
+<title id="t">How the repo-brief example mod works</title>
+<desc id="d">Steady text: prompt.compose, Read house-rules.md, Append a section. Changing text: prompt.submit, Ask git for the branch, Attach context. The model: Knows the rules, Knows the branch. Note: Steady text belongs in the system prompt. Text that changes belongs beside the prompt, at the end of the thread.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="412" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">repo-brief</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">EXAMPLE 4</tspan><tspan dx="10">prompt.compose · prompt.submit · $.fs · $.process</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="81" rx="10"/>
+<text x="46" y="117.5" class="faint caps" font-size="9.5">STEADY</text>
+<text x="46" y="130.5" class="faint caps" font-size="9.5">TEXT</text>
+<rect class="tile" x="135" y="88" width="233.667" height="65" rx="8"/>
+<text x="147" y="108" class="fg b mono" font-size="12">prompt.compose</text>
+<text x="147" y="124" class="muted" font-size="11">Raised when a thread renders its system</text>
+<text x="147" y="137.5" class="muted" font-size="11">prompt.</text>
+<path class="arrow" d="M371.667 120.5L387.667 120.5" marker-end="url(#ah)"/>
+<rect class="tile" x="390.667" y="88" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="108" class="fg b" font-size="12.5">Read house-rules.md</text>
+<text x="402.667" y="124" class="muted" font-size="11">$.fs.read on a file in the project.</text>
+<path class="arrow" d="M627.333 120.5L643.333 120.5" marker-end="url(#ah)"/>
+<rect class="tile" x="646.333" y="88" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="108" class="fg b" font-size="12.5">Append a section</text>
+<text x="658.333" y="124" class="muted" font-size="11">id repo-brief:rules, scope session. Sent</text>
+<text x="658.333" y="137.5" class="muted" font-size="11">once and then fixed for the thread.</text>
+<rect class="card" x="32" y="177" width="856" height="81" rx="10"/>
+<text x="46" y="214.5" class="faint caps" font-size="9.5">CHANGING</text>
+<text x="46" y="227.5" class="faint caps" font-size="9.5">TEXT</text>
+<rect class="tile" x="135" y="185" width="233.667" height="65" rx="8"/>
+<text x="147" y="205" class="fg b mono" font-size="12">prompt.submit</text>
+<text x="147" y="221" class="muted" font-size="11">Raised for every prompt you type.</text>
+<path class="arrow" d="M371.667 217.5L387.667 217.5" marker-end="url(#ah)"/>
+<rect class="tile" x="390.667" y="185" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="205" class="fg b" font-size="12.5">Ask git for the branch</text>
+<text x="402.667" y="221" class="muted" font-size="11">$.process.run with an argv, three</text>
+<text x="402.667" y="234.5" class="muted" font-size="11">seconds at most.</text>
+<path class="arrow" d="M627.333 217.5L643.333 217.5" marker-end="url(#ah)"/>
+<rect class="tile" x="646.333" y="185" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="205" class="fg b" font-size="12.5">Attach context</text>
+<text x="658.333" y="221" class="muted" font-size="11">next({ ...e, context }). The model reads it,</text>
+<text x="658.333" y="234.5" class="muted" font-size="11">you never see it.</text>
+<rect class="card" x="32" y="274" width="856" height="81" rx="10"/>
+<text x="46" y="311.5" class="faint caps" font-size="9.5">THE</text>
+<text x="46" y="324.5" class="faint caps" font-size="9.5">MODEL</text>
+<rect class="tile" x="135" y="282" width="361.5" height="65" rx="8"/>
+<text x="147" y="302" class="fg b" font-size="12.5">Knows the rules</text>
+<text x="147" y="318" class="muted" font-size="11">They sit in the system prompt, where the prompt cache keeps</text>
+<text x="147" y="331.5" class="muted" font-size="11">them cheap.</text>
+<rect class="tile" x="518.5" y="282" width="361.5" height="65" rx="8"/>
+<text x="530.5" y="302" class="fg b" font-size="12.5">Knows the branch</text>
+<text x="530.5" y="318" class="muted" font-size="11">Fresh with each prompt, as a new row at the end.</text>
+<rect class="softbox" x="32" y="371" width="856" height="34" rx="8"/>
+<text x="46" y="392.5" class="fg" font-size="12">Steady text belongs in the system prompt. Text that changes belongs beside the prompt, at the end of the thread.</text>
+</svg>

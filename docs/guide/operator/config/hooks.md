@@ -1,6 +1,6 @@
 # Hooks
 
-This page documents `hooks/hooks.json` in its two forms: the shell-command hooks that feature-dev-documentalist and memors-hooks ship, and the TypeScript modules that mods use. It also covers the script wrapper and the environment they run in.
+This page documents `hooks/hooks.json` in its two forms: the shell-command hooks that feature-dev-documentalist and memors-hooks ship, and the TypeScript modules that the four mods use. It also covers the script wrapper and the environment command hooks run in.
 
 ## hooks.json
 
@@ -36,12 +36,28 @@ memors-hooks uses the same form with five events: `SessionStart` (`orient`), `Us
 
 ## Hooks modules (mods)
 
-`plan-progress` and `session-cost` ship a different kind of `hooks/hooks.json`: `{ "modules": ["./register.tsx"] }`. Instead of shell commands keyed by event, each names one TypeScript module exporting `register(on, options)`, where `options` holds the plugin's `/config` values. The module subscribes to engine events and draws into the interface.
+The four mods ship a different kind of `hooks/hooks.json`:
 
-- plan-progress subscribes to `session.start`, `command.run`, `tool.call`, `prompt.attachment` and `ui.render`, and draws a pane. It registers a tool of its own, `mcp__plan-progress__mark_step`, which the model calls to mark plan steps done.
-- session-cost subscribes to `session.start`, `turn.step` (every model request), `session.compact`, `turn.complete`, `session.end`, `command.run` and `ui.render`. It reads the `/cost` ledger through `$.session.usage()`, keeps per-session totals across sessions in `$.store`, and borrows an engine keybinding action (`toggleAction`) for its chip's button, so a user's chord can toggle the pane. While the band is collapsed (`isCollapsed`), the chip skips its state reads and draws only that button, because the chord works only while the button is mounted. Its Version view reads its own manifest with `$.fs.read`, the Claude Code version with `$.session.version()`, and the published manifest with `$.http.fetch`, only when the view opens with a stale check or on **Check now**. It registers no tool.
+```json
+{ "modules": ["./register.tsx"] }
+```
 
-Such a module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. Each is validated with `claude plugin validate plugins/<name>` and tested with `claude plugin test plugins/<name>`; `claude --plugin-dir plugins/<name>` runs it with hot reload while developing.
+| Field | Meaning |
+|---|---|
+| `modules` | A list with one path, relative to `hooks.json`, to a TypeScript or JavaScript module that exports `register(on, options)` |
+
+Instead of shell commands keyed by event, the module adds function hooks to engine events with `on(event, matcher?, hook)`, and `options` holds the plugin's `/config` values. [Part II](../mods/README.md) explains the model; this section records what each shipped mod hooks and calls.
+
+| Mod | Events hooked | Engine calls | Registers |
+|---|---|---|---|
+| plan-progress | `session.start`, `command.run`, `tool.call` (seven matchers, among them `ExitPlanMode`, `TaskCreate`, `TaskUpdate` and its own tool), `prompt.attachment`, `ui.render` | `$.fs` to read the plan file, `$.env`, `$.ui.open`, `$.ui.status` | `/plan-progress`; the tool `mcp__plan-progress__mark_step`, which the model calls to mark plan steps |
+| session-cost | `session.start`, `turn.step`, `session.compact`, `turn.complete`, `session.end`, `command.run`, `ui.render` (pane and band) | `$.session.usage` for the `/cost` ledger, `$.store` for history, `$.fs.read` for its own manifest and, with `cacheTtlSplit`, the transcript files, `$.ui.status` | `/session-cost`. No tool |
+| prompt-coach | `session.start`, `prompt.submit`, `command.run`, `ui.render` | `$.model.complete` to check a prompt's language, `$.store` for the corpus, `$.clock.after`, `$.ui.toast` | `/prompt-coach`. No tool |
+| instances-monitor | `session.start`, `command.run`, `ui.render` | `$.clock.every`, `$.fs.list` and `$.fs.read` on `~/.claude/sessions`, `$.process.run` for `ps`, `$.ui.log` | `/instances`. No tool |
+
+Two details of session-cost are worth copying. Its band button borrows an engine keybinding action (the `toggleAction` option), so a user's chord can toggle the pane. While the band is collapsed (`isCollapsed`), the band's hook skips its state reads and draws only that button, because the chord works only while the button is mounted.
+
+A hooks module has no `hooks` key, so the reconciliation in `scripts/docs-check` skips it. Each mod is checked with `claude plugin validate plugins/<name>`, which lists the events it hooks and the `$` calls it makes, and tested with `claude plugin test plugins/<name>`; `claude --plugin-dir plugins/<name>` runs it with hot reload while developing.
 
 ## The script wrapper
 

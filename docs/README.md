@@ -8,7 +8,7 @@ Everything published about this marketplace lives under `docs/guide/` as one lan
 |---|---|---|
 | Landing page | [docs/guide/index.html](guide/index.html) | Everyone; the marketplace overview picture (`guide/images/plugins-overview.svg`) above one card per book |
 | User guide | [docs/guide/user/](guide/user/README.md) | People who install and use the plugins |
-| Plugin author guide | [docs/guide/operator/](guide/operator/README.md) | People who author, configure, publish and operate plugins |
+| Plugin author guide | [docs/guide/operator/](guide/operator/README.md) | People who author, configure, publish and operate plugins. Part II is an introduction to writing mods, with drawings under `guide/operator/images/` and five worked examples |
 | Tester guide | [docs/guide/tester/](guide/tester/README.md) | People who check a change before merge |
 
 Each book is a GitBook space (`.gitbook.yaml`) that mdBook also builds (`book.toml`). The site is built by `.github/workflows/docs.yml` into `site/` with the landing page at the root.

@@ -1,6 +1,6 @@
 # Health checks
 
-This page is a three-minute checklist for confirming that a plugin is installed and every component registered.
+This page is a five-minute checklist for confirming that a plugin is installed and every component registered.
 
 ## 1. The plugin is installed
 
@@ -12,11 +12,11 @@ This page is a three-minute checklist for confirming that a plugin is installed 
 
 ## 2. Skills registered
 
-Type the first letters of a skill as a slash command (`/docu`) and check the completion offers it, or ask Claude "which skills do you have?" and look for the three names: `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`.
+Type the first letters of a skill as a slash command (`/docu`) and check the completion offers it, or ask Claude "which skills do you have?" and look for the skill's name. The six shipped skills are `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `write-implementation-spec`, `rigorous-review` and `memors-mcp`.
 
 ## 3. Agents registered
 
-Ask Claude "list the agent types you can launch". The documentalist contributes `feature-dev-documentalist:spec-documenter` and four siblings; the scaffold contributes `frontend-scaffold:frontend-validator`.
+Ask Claude "list the agent types you can launch". The documentalist contributes `feature-dev-documentalist:spec-documenter` and four siblings; the scaffold contributes `frontend-scaffold:frontend-validator`; implementation-spec contributes `implementation-spec:spec-context-explorer` and `implementation-spec:spec-readiness-reviewer`.
 
 ## 4. Hook bound
 
@@ -35,6 +35,23 @@ python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/val
 ```
 
 Exit 0 on this repository's own documentation.
+
+## 6. A mod loaded
+
+```bash
+claude plugin validate plugins/session-cost
+```
+
+Its `hooks:` line lists the events the module will hook, and the command's last line reads `Validation passed`, with or without warnings. Then, in a session:
+
+| Check | Expected |
+|---|---|
+| Type the first letters of the mod's command (`/sess`, `/plan`, `/prom`, `/inst`) | The completion offers it. The command is registered in `session.start`, so this proves the module loaded and that hook ran |
+| Run the command | The pane opens, or the command answers with a line of text |
+| `claude --debug`, then search the log for the mod's name | No `hook skipped` and no `did not load` line |
+| `claude plugin test plugins/<name>` | Every test passes. instances-monitor has none |
+
+A mod whose command is missing did not load. [Troubleshooting](../operations/troubleshooting.md#a-mod-does-not-load) has the causes.
 
 ## What there is no check for
 

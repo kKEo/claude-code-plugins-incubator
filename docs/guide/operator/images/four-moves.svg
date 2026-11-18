@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 520" width="920" height="520" role="img" aria-labelledby="t d">
+<title id="t">The four things a hook can do: pass, rewrite, answer, react</title>
+<desc id="d">Pass: return next(e), the call goes on unchanged. Rewrite: return next with a changed input, so everything beneath sees your version. Answer: return a result or a deny without calling next, so nothing beneath runs. React: await next(e), act on the result, then return it.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="519" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">four moves</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">EVERY HOOK IS ($, e, next)</tspan><tspan dx="10">what you do with next decides</tspan></text>
+<rect class="card" x="32" y="80" width="420" height="196" rx="10"/>
+<text x="48" y="108" class="fg b" font-size="15">Pass</text>
+<text x="436" y="107" class="faint caps" font-size="9.5" text-anchor="end">OBSERVE</text>
+<rect class="tile" x="48" y="124" width="96" height="40" rx="8"/>
+<text x="96" y="148.5" class="muted" font-size="11.5" text-anchor="middle">above</text>
+<rect class="hot" x="178" y="124" width="128" height="40" rx="8"/>
+<text x="242" y="148.5" class="fg b" font-size="12" text-anchor="middle">your hook</text>
+<rect class="tile" x="340" y="124" width="96" height="40" rx="8"/>
+<text x="388" y="148.5" class="muted" font-size="11.5" text-anchor="middle">beneath</text>
+<path class="arrow" d="M147 137L175 137" marker-end="url(#ah)"/>
+<path class="arrow" d="M309 137L337 137" marker-end="url(#ah)"/>
+<path class="arrow" d="M337 152L309 152" marker-end="url(#ah)"/>
+<path class="arrow" d="M175 152L147 152" marker-end="url(#ah)"/>
+<rect class="softbox" x="48" y="180" width="388" height="28" rx="6"/>
+<text x="60" y="198.5" class="fg mono" font-size="11.5">return next(e)</text>
+<text x="48" y="232" class="muted" font-size="12">Count, log, time. The call goes on exactly as it came.</text>
+<rect class="card" x="468" y="80" width="420" height="196" rx="10"/>
+<text x="484" y="108" class="fg b" font-size="15">Rewrite</text>
+<text x="872" y="107" class="faint caps" font-size="9.5" text-anchor="end">CHANGE THE INPUT</text>
+<rect class="tile" x="484" y="124" width="96" height="40" rx="8"/>
+<text x="532" y="148.5" class="muted" font-size="11.5" text-anchor="middle">above</text>
+<rect class="hot" x="614" y="124" width="128" height="40" rx="8"/>
+<text x="678" y="148.5" class="fg b" font-size="12" text-anchor="middle">your hook</text>
+<rect class="tile" x="776" y="124" width="96" height="40" rx="8"/>
+<text x="824" y="148.5" class="muted" font-size="11.5" text-anchor="middle">beneath</text>
+<path class="arrow" d="M583 137L611 137" marker-end="url(#ah)"/>
+<path class="arrowa" d="M745 137L773 137" marker-end="url(#aha)"/>
+<path class="arrow" d="M773 152L745 152" marker-end="url(#ah)"/>
+<path class="arrow" d="M611 152L583 152" marker-end="url(#ah)"/>
+<rect class="softbox" x="484" y="180" width="388" height="28" rx="6"/>
+<text x="496" y="198.5" class="fg mono" font-size="11.5">return next({ ...e, command: safer })</text>
+<text x="484" y="232" class="muted" font-size="12">Everything beneath sees your version, the permission prompt</text>
+<text x="484" y="247.5" class="muted" font-size="12">included.</text>
+<rect class="card" x="32" y="292" width="420" height="196" rx="10"/>
+<text x="48" y="320" class="fg b" font-size="15">Answer</text>
+<text x="436" y="319" class="faint caps" font-size="9.5" text-anchor="end">REFUSE OR REPLACE</text>
+<rect class="tile" x="48" y="336" width="96" height="40" rx="8"/>
+<text x="96" y="360.5" class="muted" font-size="11.5" text-anchor="middle">above</text>
+<rect class="hot" x="178" y="336" width="128" height="40" rx="8"/>
+<text x="242" y="360.5" class="fg b" font-size="12" text-anchor="middle">your hook</text>
+<rect class="tile" x="340" y="336" width="96" height="40" rx="8" stroke-dasharray="4 4"/>
+<text x="388" y="360.5" class="faint" font-size="11.5" text-anchor="middle">never runs</text>
+<path class="arrow" d="M147 349L175 349" marker-end="url(#ah)"/>
+<path class="arrowa" d="M175 364L147 364" marker-end="url(#aha)"/>
+<rect class="softbox" x="48" y="392" width="388" height="28" rx="6"/>
+<text x="60" y="410.5" class="fg mono" font-size="11.5">return { deny: &#x27;that file is protected&#x27; }</text>
+<text x="48" y="444" class="muted" font-size="12">Nothing beneath runs. A hook may also return a result of its own in</text>
+<text x="48" y="459.5" class="muted" font-size="12">the tool&#x27;s place.</text>
+<rect class="card" x="468" y="292" width="420" height="196" rx="10"/>
+<text x="484" y="320" class="fg b" font-size="15">React</text>
+<text x="872" y="319" class="faint caps" font-size="9.5" text-anchor="end">USE THE RESULT</text>
+<rect class="tile" x="484" y="336" width="96" height="40" rx="8"/>
+<text x="532" y="360.5" class="muted" font-size="11.5" text-anchor="middle">above</text>
+<rect class="hot" x="614" y="336" width="128" height="40" rx="8"/>
+<text x="678" y="360.5" class="fg b" font-size="12" text-anchor="middle">your hook</text>
+<rect class="tile" x="776" y="336" width="96" height="40" rx="8"/>
+<text x="824" y="360.5" class="muted" font-size="11.5" text-anchor="middle">beneath</text>
+<path class="arrow" d="M583 349L611 349" marker-end="url(#ah)"/>
+<path class="arrow" d="M745 349L773 349" marker-end="url(#ah)"/>
+<path class="arrowa" d="M773 364L745 364" marker-end="url(#aha)"/>
+<path class="arrow" d="M611 364L583 364" marker-end="url(#ah)"/>
+<rect class="softbox" x="484" y="392" width="388" height="28" rx="6"/>
+<text x="496" y="410.5" class="fg mono" font-size="11.5">const ran = await next(e); ...; return ran</text>
+<text x="484" y="444" class="muted" font-size="12">Let it happen, then act on what came back: update a pane, pin a</text>
+<text x="484" y="459.5" class="muted" font-size="12">status line.</text>
+</svg>

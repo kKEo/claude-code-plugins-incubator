@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 368" width="920" height="368" role="img" aria-labelledby="t d">
+<title id="t">How the path-guard example mod works</title>
+<desc id="d">The model: Edit .env.local, Bash: git push --force. The mod: Match by tool, Protected path: deny, Forced push: rewrite. The result: The edit is refused, The softer push runs, If the guard breaks.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="367" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">path-guard</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">EXAMPLE 1</tspan><tspan dx="10">tool.call · deny · rewrite · .catch</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="78" rx="10"/>
+<text x="46" y="116" class="faint caps" font-size="9.5">THE</text>
+<text x="46" y="129" class="faint caps" font-size="9.5">MODEL</text>
+<rect class="tile" x="135" y="88" width="361.5" height="62" rx="8"/>
+<text x="147" y="108" class="fg b" font-size="12.5">Edit .env.local</text>
+<text x="147" y="124" class="muted" font-size="11">A call to Edit or Write with a file_path.</text>
+<rect class="tile" x="518.5" y="88" width="361.5" height="62" rx="8"/>
+<text x="530.5" y="108" class="fg b" font-size="12.5">Bash: git push --force</text>
+<text x="530.5" y="124" class="muted" font-size="11">A call to Bash with a command.</text>
+<rect class="card" x="32" y="174" width="856" height="81" rx="10"/>
+<text x="46" y="211.5" class="faint caps" font-size="9.5">THE</text>
+<text x="46" y="224.5" class="faint caps" font-size="9.5">MOD</text>
+<rect class="tile" x="135" y="182" width="233.667" height="65" rx="8"/>
+<text x="147" y="202" class="fg b" font-size="12.5">Match by tool</text>
+<text x="147" y="218" class="muted" font-size="11">One tool.call hook each for Edit, Write</text>
+<text x="147" y="231.5" class="muted" font-size="11">and Bash.</text>
+<rect class="hot" x="390.667" y="182" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="202" class="fg b" font-size="12.5">Protected path: deny</text>
+<text x="402.667" y="218" class="muted" font-size="11">{ deny } returned without next, so nothing</text>
+<text x="402.667" y="231.5" class="muted" font-size="11">beneath runs.</text>
+<rect class="hot" x="646.333" y="182" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="202" class="fg b" font-size="12.5">Forced push: rewrite</text>
+<text x="658.333" y="218" class="muted" font-size="11">next({ ...e, command }) with</text>
+<text x="658.333" y="231.5" class="muted" font-size="11">--force-with-lease.</text>
+<rect class="card" x="32" y="271" width="856" height="81" rx="10"/>
+<text x="46" y="308.5" class="faint caps" font-size="9.5">THE</text>
+<text x="46" y="321.5" class="faint caps" font-size="9.5">RESULT</text>
+<rect class="tile" x="135" y="279" width="233.667" height="65" rx="8"/>
+<text x="147" y="299" class="fg b" font-size="12.5">The edit is refused</text>
+<text x="147" y="315" class="muted" font-size="11">The model reads the reason as the tool&#x27;s</text>
+<text x="147" y="328.5" class="muted" font-size="11">error and asks you.</text>
+<rect class="tile" x="390.667" y="279" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="299" class="fg b" font-size="12.5">The softer push runs</text>
+<text x="402.667" y="315" class="muted" font-size="11">Permission prompt and tool both see the</text>
+<text x="402.667" y="328.5" class="muted" font-size="11">rewritten command.</text>
+<rect class="tile" x="646.333" y="279" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="299" class="fg b" font-size="12.5">If the guard breaks</text>
+<text x="658.333" y="315" class="muted" font-size="11">Its .catch refuses the edit, so the guard</text>
+<text x="658.333" y="328.5" class="muted" font-size="11">fails closed.</text>
+</svg>

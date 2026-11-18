@@ -1,4 +1,4 @@
-# Part IV: Monitoring and logs
+# Part V: Monitoring and logs
 
 Two chapters cover what you can observe about a running plugin.
 

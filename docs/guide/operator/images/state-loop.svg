@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 450" width="920" height="450" role="img" aria-labelledby="t d">
+<title id="t">How a write to session state redraws the interface</title>
+<desc id="d">Something happens, a handler writes with update, the host stores the value and bumps its version, and every ui.render hook that read the value while drawing runs again. A button in the new drawing can start the loop again.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="449" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">state drives the drawing</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">THE REDRAW LOOP</tspan><tspan dx="10">write once, readers follow</tspan></text>
+<rect class="tile" x="48" y="96" width="250" height="84" rx="8"/>
+<text x="60" y="116" class="fg b" font-size="12.5">1  Something happens</text>
+<text x="60" y="132" class="muted" font-size="11">A tool call, a timer, the end of a turn,</text>
+<text x="60" y="145.5" class="muted" font-size="11">or a press on a Button you drew.</text>
+<rect class="hot" x="622" y="96" width="250" height="84" rx="8"/>
+<text x="634" y="116" class="fg b" font-size="12.5">2  A handler writes</text>
+<text x="634" y="132" class="accent mono" font-size="10.5">await update($, calls, fn)</text>
+<text x="634" y="145.5" class="muted" font-size="11">Never from inside a ui.render hook.</text>
+<rect class="tile" x="622" y="286" width="250" height="84" rx="8"/>
+<text x="634" y="306" class="fg b" font-size="12.5">3  The host stores it</text>
+<text x="634" y="322" class="muted" font-size="11">The value gets a new version, and the host</text>
+<text x="634" y="335.5" class="muted" font-size="11">looks up the sites that read it.</text>
+<rect class="hot" x="48" y="286" width="250" height="84" rx="8"/>
+<text x="60" y="306" class="fg b" font-size="12.5">4  Those sites draw again</text>
+<text x="60" y="322" class="accent mono" font-size="10.5">const list = await read($, calls)</text>
+<text x="60" y="335.5" class="muted" font-size="11">The read subscribes the site once more.</text>
+<path class="arrow" d="M301 138L619 138" marker-end="url(#ah)"/>
+<path class="arrow" d="M747 183L747 283" marker-end="url(#ah)"/>
+<path class="arrow" d="M619 328L301 328" marker-end="url(#ah)"/>
+<path class="arrow dash" d="M173 283L173 183" marker-end="url(#ah)"/>
+<text x="184" y="237" class="faint" font-size="11">a Button&#x27;s onPress</text>
+<rect class="softbox" x="334" y="176" width="252" height="114" rx="10"/>
+<text x="460" y="204" class="fg b mono" font-size="15" text-anchor="middle">$.state</text>
+<text x="460" y="228" class="muted" font-size="11.5" text-anchor="middle">Named values the host keeps for the</text>
+<text x="460" y="244" class="muted" font-size="11.5" text-anchor="middle">session, each with a version. A read</text>
+<text x="460" y="260" class="muted" font-size="11.5" text-anchor="middle">made while drawing is a subscription.</text>
+<rect class="softbox" x="32" y="396" width="856" height="34" rx="8"/>
+<text x="46" y="417.5" class="fg" font-size="12">Nobody calls $.ui.invalidate for state. Declare each value in types/index.d.ts, and the validator checks every read and write.</text>
+</svg>

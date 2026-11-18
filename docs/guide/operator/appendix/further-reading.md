@@ -10,6 +10,13 @@ This page points at the documents this guide summarises.
 - Subagents: <https://docs.claude.com/en/docs/claude-code/sub-agents>
 - Hooks reference: <https://docs.claude.com/en/docs/claude-code/hooks>
 
+## Mods
+
+- The API declarations: `<mod>/.claude-plugin/types/claude-code/index.d.ts`, written by Claude Code beside a mod it loads from a watched folder. Every event, every `$` call and every element, with doc comments and examples, for exactly the build you run.
+- The `plugin-authoring` skill bundled with Claude Code: ask Claude to make or change a mod and it loads the skill, with a long-form reference and complete example modules.
+- `claude plugin validate --help` and `claude plugin test --help`.
+- The shipped mods, shortest first: [instances-monitor](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/instances-monitor/hooks/register.tsx), [plan-progress](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/plan-progress/hooks/register.tsx), [prompt-coach](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/prompt-coach/hooks/register.tsx), [session-cost](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/session-cost/hooks/register.tsx).
+
 ## In this repository
 
 - [CONTRIBUTING.md](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/CONTRIBUTING.md): submission rules. Note that its clone-based install flow predates the marketplace manifest.

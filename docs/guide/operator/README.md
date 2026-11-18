@@ -1,18 +1,19 @@
 # Plugin author guide
 
-This guide is for people who author, maintain or publish plugins in the `km-plugin-registry` marketplace. It assumes you can use git, run commands in a shell, and have used Claude Code as a user. It explains how the marketplace and its plugins are wired, how to develop and release one, and every field of every manifest.
+This guide is for people who author, maintain or publish plugins in the `km-plugin-registry` marketplace. It assumes you can use git, run commands in a shell, and have used Claude Code as a user. It explains how the marketplace and its plugins are wired, how to write a mod, how to develop and release a plugin, and every field of every manifest.
 
-The marketplace is one git repository. The manifest `.claude-plugin/marketplace.json` lists plugins by a relative `source` path; each plugin is a directory under `plugins/` with its own manifest, skills, agents and hooks. There is no build step, no package registry and no server: Claude Code reads the files straight from the clone.
+The marketplace is one git repository. The manifest `.claude-plugin/marketplace.json` lists plugins by a relative `source` path; each plugin is a directory under `plugins/` with its own manifest, skills, agents and hooks. Four of the ten plugins are mods: TypeScript modules that Claude Code loads into the session. There is no build step, no package registry and no server: Claude Code reads the files straight from the clone.
 
 ## What you will find here
 
 | Part | Read it when you need to… |
 |---|---|
-| [I. How it works](intro/README.md) | Understand how Claude Code discovers a marketplace, loads a plugin and runs its skills, agents and hooks |
-| [II. Install and deploy](install/README.md) | Develop a plugin locally, install from the marketplace, publish a new plugin, cut a release |
-| [III. Configuration reference](config/README.md) | Look up a field of `marketplace.json`, `plugin.json`, a skill or agent frontmatter, `hooks.json`, or a command flag |
-| [IV. Monitoring and logs](monitoring/README.md) | See what a plugin is doing, read hook output, confirm a plugin loaded |
-| [V. Operations](operations/README.md) | Upgrade, troubleshoot a plugin that does not fire, retire a plugin |
+| [I. How it works](intro/README.md) | Choose between a skill, an agent, a hook and a mod; understand how Claude Code discovers a marketplace, loads a plugin and runs its parts |
+| [II. Writing mods](mods/README.md) | Learn what a mod is, build a first one in ten minutes, understand hooks, drawing, state and the limits, and read five worked examples |
+| [III. Install and deploy](install/README.md) | Develop a plugin locally, install from the marketplace, publish a new plugin, cut a release |
+| [IV. Configuration reference](config/README.md) | Look up a field of `marketplace.json`, `plugin.json`, a skill or agent frontmatter, `hooks.json`, or a command flag |
+| [V. Monitoring and logs](monitoring/README.md) | See what a plugin is doing, read hook output, confirm a plugin loaded |
+| [VI. Operations](operations/README.md) | Upgrade, troubleshoot a plugin that does not fire, retire a plugin |
 | [Appendix](appendix/README.md) | Glossary and further reading |
 
 ## Conventions
@@ -20,6 +21,8 @@ The marketplace is one git repository. The manifest `.claude-plugin/marketplace.
 - Paths are relative to the repository root unless they start with `~` or `/`.
 - Slash commands are shown as typed in Claude Code: `/plugin install <name>@km-plugin-registry`.
 - `${CLAUDE_PLUGIN_ROOT}` is the environment variable Claude Code sets to the installed plugin's directory; hook commands use it to find their scripts.
+- In a mod, `$` is the engine interface every hook receives, `e` the event's input and `next` the rest of the hook chain. [The hook chain](mods/hook-chain.md) defines all three.
+- Statements about the mod API were checked against Claude Code 2.1.326. That API is early access; the declaration file the engine writes beside a mod is the authority.
 - Defaults quoted here are the values in the repository at the time of writing. The manifests themselves are the source of truth; when in doubt, read the file.
 
 ## Deeper references

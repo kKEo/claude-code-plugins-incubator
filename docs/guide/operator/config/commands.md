@@ -14,8 +14,10 @@ This page lists every slash command the plugins answer to and every flag of the 
 | `/gitbook-docs-validator:content [path]` | gitbook-docs-validator | optional docs root | Runs `pages`, `readme` and `roles`, then reviews the worklist pages for audience and drift |
 | `/gitbook-docs-validator:repo [path] [--repo-root DIR]` | gitbook-docs-validator | optional docs root and repo root (defaults to the git top level) | Runs only the `repo` validator |
 | `/implementation-spec:write-implementation-spec [request]` | implementation-spec | the feature request, in a sentence or two | Explores the codebase, asks at most four questions, writes `docs/specs/<date>-<slug>.md` and runs a readiness review |
-| `/session-cost [on\|off\|requests\|models\|history\|days\|version\|reset]` | session-cost | optional switch or view; `open` and `show` mean `on`, `close` and `hide` mean `off`, `toggle` is the same as no argument | Toggles the cost pane, opens it on a view, or clears this session's totals |
+| `/rigorous-review [target] [--focus <area>]` | rigorous-review | optional PR number, branch or path, defaulting to the current diff; optional focus areas | Reviews the diff and reports findings; changes no file |
+| `/session-cost [on\|off\|requests\|models\|history\|stats\|reset]` | session-cost | optional switch or view; `open` and `show` mean `on`, `close` and `hide` mean `off`, `toggle` is the same as no argument, `days` means `history`; `stats` needs the `stats` option | Toggles the cost pane, opens it on a view, or clears this session's totals |
 | `/prompt-coach [on\|off\|prompts\|practice\|recheck\|clear]` | prompt-coach | optional switch, tab or action; `open` and `show` mean `on`, `close` and `hide` mean `off`, `list` means `prompts`, `game` means `practice`, `toggle` is the same as no argument | Toggles the prompt pane, opens it on a tab, rechecks failed prompts, or removes the collected prompts |
+| `/instances` | instances-monitor | none | Opens the pane listing the Claude Code instances running on this machine |
 | `/plan-progress [on\|off\|plan\|progress\|<path>]` | plan-progress | optional switch, view or plan file; `open`, `show` and `toggle` mean `on`, `close` and `hide` mean `off`; any other argument is read as a plan path | Toggles the plan pane, switches its view, or loads a plan file |
 
 Plugin management commands, built into Claude Code:
@@ -29,6 +31,20 @@ Plugin management commands, built into Claude Code:
 | `/plugin uninstall <name>` | Remove it |
 | `/plugin` | List marketplaces and installed plugins |
 | `/reload-plugins` | Rescan installed plugins in the current session |
+
+## Mod development commands
+
+These run from a shell, outside a session. `<dir>` is a plugin folder such as `plugins/session-cost`.
+
+| Command | Effect |
+|---|---|
+| `claude plugin validate <dir>` | Reads the manifest and the hooks module as the engine will, type-checks them, and lists the events hooked, the `$` calls made, the state keys read and written, and every gating hook with or without a `.catch`. Then prints the plugin directory's checks (README, LICENSE, icon) |
+| `claude plugin validate <dir> --profile directory` | The same, failing on problems the plugin directory would refuse a submission for |
+| `claude plugin test <dir>` | Runs the plugin's `*.test.ts` and `*.test.tsx` files against the engine |
+| `claude --plugin-dir <dir>` | Starts a session with the plugin loaded from that folder, for that session only; repeat the flag for several. In an interactive session the folder is watched and a saved file reloads the module |
+| `claude --debug` | Writes a line for every skipped hook and every result the engine refused; see [Logs and debug output](../monitoring/logs.md) |
+
+The environment variable `CLAUDE_CODE_PLUGIN_DIRS` names the same folders where no flag can be given, for example a session the desktop app starts: absolute paths separated by the platform's path-list separator.
 
 ## validate_docs.py
 

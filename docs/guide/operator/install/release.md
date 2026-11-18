@@ -8,9 +8,10 @@ Each plugin has its own semantic version in `plugin.json`. The marketplace has n
 
 | Change | Bump |
 |---|---|
-| Fix in a skill body, agent prompt or hook script with the same behaviour | patch |
+| Fix in a skill body, agent prompt, hook script or hooks module with the same behaviour | patch |
 | New trigger phrases, new reference file, new optional behaviour | minor |
 | Renamed skill or agent, changed output file names or locations, removed component | major |
+| A mod's stored value changes shape | minor at least; change the atom's `shape` tag and guard what `$.store` returns, see [State, lifecycle and reloads](../mods/state-lifecycle.md) |
 
 Current versions at the time of writing: `frontend-scaffold` 0.1.1, `feature-dev-documentalist` 0.1.6, `gitbook-docs-validator` 0.3.0, `implementation-spec` 0.1.1, `instances-monitor` 0.1.1, `memors-hooks` 0.3.0, `plan-progress` 0.2.0, `prompt-coach` 0.1.0, `rigorous-review` 0.1.1, `session-cost` 0.6.0. Each plugin's `plugin.json` is the authority.
 
@@ -18,7 +19,7 @@ Current versions at the time of writing: `frontend-scaffold` 0.1.1, `feature-dev
 
 1. Edit `plugins/<name>/.claude-plugin/plugin.json` and bump `version`.
 2. If the change affects what users type or what files appear, update the plugin README and the [user guide](../../user/everyday-use.md).
-3. Run the checks in the [tester guide](../../tester/start/running.md).
+3. Run the checks in the [tester guide](../../tester/start/running.md). For a mod, `claude plugin validate` and `claude plugin test` on the Claude Code version you release against.
 4. Commit with a message that starts with the plugin name, for example `feature-dev-documentalist: 0.1.4, reuse existing feature folder`.
 5. Tag the commit `<name>-v<version>` so a user can find the exact tree that shipped:
 

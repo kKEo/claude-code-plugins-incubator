@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 372" width="920" height="372" role="img" aria-labelledby="t d">
+<title id="t">What a thread has already sent is fixed; new context goes at the end</title>
+<desc id="d">The system prompt, the tool descriptions and the earlier messages of a thread have been sent and stay as they are. A mod adds new context as a new row at the end. A changed section or description waits for a new thread or a compaction.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="371" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">what a thread sent is fixed</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">THE MAIN LIMIT ON CONTEXT</tspan><tspan dx="10">add at the end</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="118" rx="10"/>
+<text x="48" y="106" class="faint caps" font-size="9.5">ALREADY SENT, FIXED FOR THIS THREAD</text>
+<text x="872" y="106" class="accent caps" font-size="9.5" text-anchor="end">APPEND HERE</text>
+<rect class="tile" x="48" y="120" width="176" height="58" rx="8"/>
+<text x="136" y="153.5" class="muted sb" font-size="12.5" text-anchor="middle">system prompt</text>
+<rect class="tile" x="240" y="120" width="176" height="58" rx="8"/>
+<text x="328" y="153.5" class="muted sb" font-size="12.5" text-anchor="middle">tool descriptions</text>
+<rect class="tile" x="432" y="120" width="248" height="58" rx="8"/>
+<text x="556" y="153.5" class="muted sb" font-size="12.5" text-anchor="middle">earlier messages</text>
+<rect class="hot" x="696" y="120" width="176" height="58" rx="8"/>
+<text x="784" y="153.5" class="fg b" font-size="12.5" text-anchor="middle">a new row</text>
+<rect class="card" x="32" y="214" width="274.667" height="126" rx="10"/>
+<text x="46" y="238" class="fg b" font-size="12.5">Why it is fixed</text>
+<text x="46" y="258" class="muted" font-size="11.5">The prompt cache is keyed on the prefix.</text>
+<text x="46" y="273" class="muted" font-size="11.5">Change it and every later request pays full</text>
+<text x="46" y="288" class="muted" font-size="11.5">price. On some models the thinking after the</text>
+<text x="46" y="303" class="muted" font-size="11.5">change is lost too.</text>
+<rect class="card" x="322.667" y="214" width="274.667" height="126" rx="10"/>
+<text x="336.667" y="238" class="fg b" font-size="12.5">What has to wait</text>
+<text x="336.667" y="258" class="muted" font-size="11.5">A changed prompt.compose section or</text>
+<text x="336.667" y="273" class="muted" font-size="11.5">tool.describe answer is held until a new</text>
+<text x="336.667" y="288" class="muted" font-size="11.5">thread starts or a compaction rebuilds the</text>
+<text x="336.667" y="303" class="muted" font-size="11.5">prefix.</text>
+<rect class="hot" x="613.333" y="214" width="274.667" height="126" rx="10"/>
+<text x="627.333" y="238" class="fg b" font-size="12.5">What works now</text>
+<text x="627.333" y="258" class="muted" font-size="11.5">$.session.append with type user, context on</text>
+<text x="627.333" y="273" class="muted" font-size="11.5">prompt.submit, context on a tool result. Each</text>
+<text x="627.333" y="288" class="muted" font-size="11.5">adds a row at the end and leaves the rest as</text>
+<text x="627.333" y="303" class="muted" font-size="11.5">sent.</text>
+</svg>

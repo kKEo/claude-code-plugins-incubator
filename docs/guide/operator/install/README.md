@@ -1,4 +1,4 @@
-# Part II: Install and deploy
+# Part III: Install and deploy
 
 Four chapters cover the life of a plugin from a local checkout to a published release.
 

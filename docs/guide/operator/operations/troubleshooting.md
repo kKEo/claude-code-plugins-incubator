@@ -1,6 +1,6 @@
 # Troubleshooting runbook
 
-This page lists every failure seen so far as symptom, cause and fix. Start with the symptom closest to yours.
+This page lists every failure seen so far as symptom, cause and fix. Start with the symptom closest to yours. The first sections are about skills and command hooks, the middle ones about mods, the rest about single plugins.
 
 ## Skill does not trigger
 
@@ -28,6 +28,60 @@ This page lists every failure seen so far as symptom, cause and fix. Start with 
 **Symptom.** A red hook error after each turn.
 
 **Cause.** The script exited non-zero. `set -euo pipefail` turns any unguarded failing command into an exit. **Fix.** Guard the command with `|| true` or an explicit `exit 0`, as the shipped script does for every git call.
+
+## A mod does not load
+
+**Symptom.** The mod's slash command does not complete, and no pane, band or status line appears.
+
+**Causes and fixes.**
+
+1. The module does not compile or type-check. Run `claude plugin validate plugins/<name>`; it reports the file, the line and the reason.
+2. `hooks/hooks.json` names a file that is not there, or lists more than one. It takes one path, relative to that file.
+3. The module uses something the sandbox does not have: `require`, a Node built-in, dynamic `import()`. Reach the outside through `$`; see [Behaviour and limitations](../mods/limits.md).
+4. A helper that is handed `$` is declared inside `register`. Move it to the top level of the module.
+5. The session was started with `--safe-mode` or `--bare`, or managed settings allow managed hooks only. A person's own mods are off there by design.
+6. The copy is older than your edit. A plugin installed from a git marketplace runs the copy made at install time: `/plugin update <name>`, then `/reload-plugins`.
+
+Start a session with `claude --debug` and search the log for the plugin's name to see which of these it is.
+
+## A mod's hook is skipped
+
+**Symptom.** One feature of a mod stops working while the rest carries on; the debug log has `<plugin>: <event> hook skipped`.
+
+**Causes and fixes.**
+
+1. The hook threw. Read the reason on the line, and guard the failing call: a missing file, a command that is not installed, JSON that did not parse.
+2. It returned a shape the event refuses, most often a `ui.render` tree with an element or prop the surface does not have. The line says which. Build the tree from `$.ui.resolve(e)` and check `e.surface` before using an element only one surface draws.
+3. It ran out of time. A hook has ten seconds of its own code per dispatch. Move long work to a timer started in `session.start`.
+4. It wrote state while drawing. `$.state.set` inside a `ui.render` hook is denied; write from an event or from a handler such as `onPress`.
+
+## A guard mod let the call through
+
+**Symptom.** A mod that should refuse a tool call did not.
+
+**Causes and fixes.**
+
+1. The guard failed and had no `.catch`, so it was skipped and the call went on. Add `.catch(($, e, next) => next.called ? next(e) : { deny: '…' })`. `claude plugin validate` lists it under `gating hook without .catch`.
+2. The matcher names the wrong tool. A tool another mod or an MCP server provides is `mcp__<server>__<name>`.
+3. The path or command was spelled a way the guard does not recognise: a symbolic link, `..`, a shell redirect. Resolve the path with `$.fs.stat(path, { resolve: true })` and allow-list on `realPath`.
+
+## A pane does not open
+
+**Symptom.** A mod's pane is missing at session start, but its command works.
+
+**Cause.** A pane a mod opens by itself is seated only in a wide terminal, and waits below that width. A pane the user asks for with the command is seated at any width. **Fix.** Run the command, or widen the terminal. In a headless run (`claude -p`) no pane is ever placed.
+
+## A mod shows stale or broken data after an update
+
+**Symptom.** After a new version, a pane draws nothing, or draws old values wrongly.
+
+**Cause.** `$.state` outlives a reload and `$.store` outlives the session, so new code read values the old code wrote. **Fix.** Change the atom's `shape` tag when a state value's fields change, and pass what `$.store.get` returns through a type guard. session-cost falls back to its Requests view when it finds a view name an older version stored.
+
+## A mod's change to the system prompt does not arrive
+
+**Symptom.** A `prompt.compose` or `tool.describe` hook returns new text, and the model still acts on the old.
+
+**Cause.** What a conversation has already sent is fixed; a changed section or description waits for a new thread or a compaction. **Fix.** Start a new session to see the change. For context that changes during a conversation, attach it on `prompt.submit` instead; see [Behaviour and limitations](../mods/limits.md).
 
 ## Phase detection asks every time
 

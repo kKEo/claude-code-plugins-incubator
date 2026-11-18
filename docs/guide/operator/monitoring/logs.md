@@ -17,6 +17,23 @@ CLAUDE_PLUGIN_ROOT=/path/to/plugins/feature-dev-documentalist \
 
 An empty output with `exit 0` means one of the four nudge conditions failed; see [Hooks](../config/hooks.md).
 
+## Mods
+
+A mod has four ways to say something, and the engine has two ways to say something about a mod.
+
+| Where | What appears | Who writes it |
+|---|---|---|
+| Transcript, one dim line | `<plugin>: <event> hook skipped: <reason>`, or a module that did not load | The engine, but only while the mod loads from a watched folder (`--plugin-dir`, or a mod Claude wrote in the session) |
+| Debug log, `claude --debug` | The same line for every occurrence, every result the engine refused, and `bypassed by <plugin>` when a mod further out continued past a hook | The engine, in every session |
+| Status line, toast, notification | `$.ui.status`, `$.ui.toast`, `$.ui.notify` | The mod |
+| Debug log | `$.ui.log(text, { to: 'debug' })`, as instances-monitor does for a failed scan | The mod |
+
+For an installed mod, which is not watched, the debug log is the only place a skipped hook is reported. A mod that seems to do nothing has usually been told why there.
+
+A skipped hook's line in the debug log carries the error's name and the length of its message, not its text. The text of the first failure is on the transcript line.
+
+What a mod spends on model calls is counted in the session's cost total, and `/usage` says how much of the total came from mods.
+
 ## Start-up
 
 ```bash

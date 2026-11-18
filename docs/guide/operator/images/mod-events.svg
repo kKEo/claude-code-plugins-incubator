@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 634" width="920" height="634" role="img" aria-labelledby="t d">
+<title id="t">The events a mod can hook, in the order a session raises them</title>
+<desc id="d">Session starts: register(on, options), session.start. You send a prompt: prompt.submit, prompt.compose, turn.start. The model works: turn.step, tool.call, tool.check, tool.run. The turn ends: session.append, turn.complete, session.end. Any time: ui.render, ui.press  ui.input, command.run, clock.every. Note: Fifty-odd events exist; these are the ones most mods need. The declaration file lists every one with its input and result.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="633" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">events</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">WHERE A MOD CAN HOOK</tspan><tspan dx="10">one session, one turn</tspan></text>
+<rect class="card" x="32" y="80" width="856" height="81" rx="10"/>
+<text x="46" y="117.5" class="faint caps" font-size="9.5">SESSION</text>
+<text x="46" y="130.5" class="faint caps" font-size="9.5">STARTS</text>
+<rect class="tile" x="135" y="88" width="361.5" height="65" rx="8"/>
+<text x="147" y="108" class="fg b mono" font-size="12">register(on, options)</text>
+<text x="147" y="124" class="muted" font-size="11">Your module runs once per load. Every on(...) adds a hook.</text>
+<path class="arrow" d="M499.5 120.5L515.5 120.5" marker-end="url(#ah)"/>
+<rect class="tile" x="518.5" y="88" width="361.5" height="65" rx="8"/>
+<text x="530.5" y="108" class="fg b mono" font-size="12">session.start</text>
+<text x="530.5" y="124" class="muted" font-size="11">Awaited before the first prompt. Register commands and tools,</text>
+<text x="530.5" y="137.5" class="muted" font-size="11">start timers.</text>
+<rect class="card" x="32" y="177" width="856" height="81" rx="10"/>
+<text x="46" y="214.5" class="faint caps" font-size="9.5">YOU SEND</text>
+<text x="46" y="227.5" class="faint caps" font-size="9.5">A PROMPT</text>
+<rect class="tile" x="135" y="185" width="233.667" height="65" rx="8"/>
+<text x="147" y="205" class="fg b mono" font-size="12">prompt.submit</text>
+<text x="147" y="221" class="muted" font-size="11">Rewrite the text, attach context the</text>
+<text x="147" y="234.5" class="muted" font-size="11">model reads, or drop it.</text>
+<path class="arrow" d="M371.667 217.5L387.667 217.5" marker-end="url(#ah)"/>
+<rect class="tile" x="390.667" y="185" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="205" class="fg b mono" font-size="12">prompt.compose</text>
+<text x="402.667" y="221" class="muted" font-size="11">The system prompt&#x27;s sections, when a</text>
+<text x="402.667" y="234.5" class="muted" font-size="11">thread renders them.</text>
+<path class="arrow" d="M627.333 217.5L643.333 217.5" marker-end="url(#ah)"/>
+<rect class="tile" x="646.333" y="185" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="205" class="fg b mono" font-size="12">turn.start</text>
+<text x="658.333" y="221" class="muted" font-size="11">A turn begins, the main one or a</text>
+<text x="658.333" y="234.5" class="muted" font-size="11">subagent&#x27;s.</text>
+<rect class="card" x="32" y="274" width="856" height="94.5" rx="10"/>
+<text x="46" y="318.25" class="faint caps" font-size="9.5">THE MODEL</text>
+<text x="46" y="331.25" class="faint caps" font-size="9.5">WORKS</text>
+<rect class="tile" x="135" y="282" width="169.75" height="78.5" rx="8"/>
+<text x="147" y="302" class="fg b mono" font-size="12">turn.step</text>
+<text x="147" y="318" class="muted" font-size="11">One model request. It</text>
+<text x="147" y="331.5" class="muted" font-size="11">streams, so the hook is an</text>
+<text x="147" y="345" class="muted" font-size="11">async generator.</text>
+<path class="arrow" d="M307.75 321.25L323.75 321.25" marker-end="url(#ah)"/>
+<rect class="tile" x="326.75" y="282" width="169.75" height="78.5" rx="8"/>
+<text x="338.75" y="302" class="fg b mono" font-size="12">tool.call</text>
+<text x="338.75" y="318" class="muted" font-size="11">Before a tool runs: deny,</text>
+<text x="338.75" y="331.5" class="muted" font-size="11">rewrite the input, or wait for</text>
+<text x="338.75" y="345" class="muted" font-size="11">the result.</text>
+<path class="arrow" d="M499.5 321.25L515.5 321.25" marker-end="url(#ah)"/>
+<rect class="tile" x="518.5" y="282" width="169.75" height="78.5" rx="8"/>
+<text x="530.5" y="302" class="fg b mono" font-size="12">tool.check</text>
+<text x="530.5" y="318" class="muted" font-size="11">The permission verdict:</text>
+<text x="530.5" y="331.5" class="muted" font-size="11">allow, ask or deny.</text>
+<path class="arrow" d="M691.25 321.25L707.25 321.25" marker-end="url(#ah)"/>
+<rect class="tile" x="710.25" y="282" width="169.75" height="78.5" rx="8"/>
+<text x="722.25" y="302" class="fg b mono" font-size="12">tool.run</text>
+<text x="722.25" y="318" class="muted" font-size="11">The call is allowed and</text>
+<text x="722.25" y="331.5" class="muted" font-size="11">about to run. Serve your</text>
+<text x="722.25" y="345" class="muted" font-size="11">own tool here.</text>
+<rect class="card" x="32" y="384.5" width="856" height="81" rx="10"/>
+<text x="46" y="422" class="faint caps" font-size="9.5">THE TURN</text>
+<text x="46" y="435" class="faint caps" font-size="9.5">ENDS</text>
+<rect class="tile" x="135" y="392.5" width="233.667" height="65" rx="8"/>
+<text x="147" y="412.5" class="fg b mono" font-size="12">session.append</text>
+<text x="147" y="428.5" class="muted" font-size="11">Every row the conversation keeps</text>
+<text x="147" y="442" class="muted" font-size="11">passes here before it is stored.</text>
+<path class="arrow" d="M371.667 425L387.667 425" marker-end="url(#ah)"/>
+<rect class="tile" x="390.667" y="392.5" width="233.667" height="65" rx="8"/>
+<text x="402.667" y="412.5" class="fg b mono" font-size="12">turn.complete</text>
+<text x="402.667" y="428.5" class="muted" font-size="11">The answer, its duration and usage.</text>
+<text x="402.667" y="442" class="muted" font-size="11">Notify, record, add a line.</text>
+<path class="arrow" d="M627.333 425L643.333 425" marker-end="url(#ah)"/>
+<rect class="tile" x="646.333" y="392.5" width="233.667" height="65" rx="8"/>
+<text x="658.333" y="412.5" class="fg b mono" font-size="12">session.end</text>
+<text x="658.333" y="428.5" class="muted" font-size="11">A short last chance to save. Also raised</text>
+<text x="658.333" y="442" class="muted" font-size="11">by /clear.</text>
+<rect class="card" x="32" y="481.5" width="856" height="94.5" rx="10"/>
+<text x="46" y="525.75" class="faint caps" font-size="9.5">ANY</text>
+<text x="46" y="538.75" class="faint caps" font-size="9.5">TIME</text>
+<rect class="tile" x="135" y="489.5" width="169.75" height="78.5" rx="8"/>
+<text x="147" y="509.5" class="fg b mono" font-size="12">ui.render</text>
+<text x="147" y="525.5" class="muted" font-size="11">The interface asks what to</text>
+<text x="147" y="539" class="muted" font-size="11">draw at a site: pane, band,</text>
+<text x="147" y="552.5" class="muted" font-size="11">tool row.</text>
+<rect class="tile" x="326.75" y="489.5" width="169.75" height="78.5" rx="8"/>
+<text x="338.75" y="509.5" class="fg b mono" font-size="12">ui.press  ui.input</text>
+<text x="338.75" y="525.5" class="muted" font-size="11">A button or a field of your</text>
+<text x="338.75" y="539" class="muted" font-size="11">own drawing was used.</text>
+<rect class="tile" x="518.5" y="489.5" width="169.75" height="78.5" rx="8"/>
+<text x="530.5" y="509.5" class="fg b mono" font-size="12">command.run</text>
+<text x="530.5" y="525.5" class="muted" font-size="11">Someone typed a slash</text>
+<text x="530.5" y="539" class="muted" font-size="11">command you registered.</text>
+<rect class="tile" x="710.25" y="489.5" width="169.75" height="78.5" rx="8"/>
+<text x="722.25" y="509.5" class="fg b mono" font-size="12">clock.every</text>
+<text x="722.25" y="525.5" class="muted" font-size="11">A timer you started fires. No</text>
+<text x="722.25" y="539" class="muted" font-size="11">event started it.</text>
+<rect class="softbox" x="32" y="592" width="856" height="34" rx="8"/>
+<text x="46" y="613.5" class="fg" font-size="12">Fifty-odd events exist; these are the ones most mods need. The declaration file lists every one with its input and result.</text>
+</svg>
