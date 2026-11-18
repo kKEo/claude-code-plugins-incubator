@@ -37,7 +37,12 @@ const BAND = {
 function engine(on: On, store: Record<string, unknown> = {}) {
   const state = { usd: 0.5, open: false, id: 'sess-1', stepMs: [] as number[], stepTools: [] as string[][], stepCache: [] as { read: number; write: number }[], now: 1_800_000_000_000 }
   const clock = mock.clock(on, { now: 1_800_000_000_000 })
-  mock.store(on, store)
+  // The plugin's store in memory, which a test reads back as the engine would keep it.
+  const saved: Record<string, unknown> = structuredClone(store)
+  on('store.get', (_, e) => ({ value: saved[e.key] }))
+  on('store.set', (_, e) => { saved[e.key] = structuredClone(e.value); return { value: undefined } })
+  on('store.delete', (_, e) => { delete saved[e.key]; return { value: undefined } })
+  on('store.keys', () => ({ value: Object.keys(saved) }))
   on('command.register', () => ({ value: { command: 'session-cost' } }))
   on('ui.open', () => { state.open = true; return { value: { isPlaced: true } } })
   on('ui.close', () => { state.open = false; return { value: undefined } })
@@ -49,6 +54,9 @@ function engine(on: On, store: Record<string, unknown> = {}) {
   on('session.usage', () => ({ value: { startedAt: 0, rateLimits: [], cost: { usd: state.usd } } as never }))
   on('turn.complete', (_, e) => ({ text: e.answer }))
   on('prompt.submit', (_, e) => ({ text: e.text }))
+  // A spawned subagent's id names its type, so a test can step as it: `agent-explore-1`.
+  let spawned = 0
+  on('agent.spawn', (_, e) => ({ model: 'claude-haiku-5-5', agentId: `agent-${e.subagentType.toLowerCase()}-${++spawned}` }))
   // The engine's own band beneath the plugin: empty.
   on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
     const { Box } = $.ui.resolve(e)
@@ -73,7 +81,7 @@ function engine(on: On, store: Record<string, unknown> = {}) {
       usage: { model: e.agentId ? 'claude-haiku-5-5' : 'claude-opus-5-5', input_tokens: 1200, output_tokens: 300, cache_read_input_tokens: cache.read, cache_creation_input_tokens: cache.write },
     }
   })
-  return { state, clock }
+  return { state, clock, store: saved }
 }
 
 async function step($: Engine, index: number, agentId?: string, effort?: 'low' | 'medium' | 'high' | 'xhigh' | 'max' | number) {
@@ -469,4 +477,207 @@ test('every tab shows the installed version in its header', async ($, on) => {
     }
     await ui.unmount()
   }
+})
+
+/** Dollars to a tenth of a cent, so sums of ledger shares compare exactly. */
+const cents = (x: number) => Math.round(x * 1000) / 1000
+
+/** Starts a subagent of `type` the way the model's Agent call would, and answers its id. */
+async function spawn($: Engine, type: string): Promise<string> {
+  const r = await $.agent.spawn({
+    prompt: 'go',
+    description: 'task',
+    subagentType: type,
+    tool_use_id: 'toolu_1',
+    provider: { plugin: 'engine', tier: 'core' },
+    parentModel: 'claude-opus-5-5',
+    background: false,
+    fork: false,
+  })
+  return r.agentId ?? ''
+}
+
+test('a session keeps a rollup in its saved history: by kind, by model and by subagent with its type', async ($, on) => {
+  const { state, store } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  state.stepMs.push(1000, 2000, 3000)
+  await step($, 0)
+  const explore = await spawn($, 'Explore')
+  await step($, 1, explore)
+  await step($, 2)
+  await done($)
+
+  const saved = store['session:sess-1'] as Record<string, any>
+  const r = saved.rollup
+  expect(r.byKind.main.requests).toBe(2)
+  expect(r.byKind.subagent.requests).toBe(1)
+  expect(r.byKind.compact.requests).toBe(0)
+  expect(cents(r.byKind.main.ledgerUsd)).toBe(0.04)
+  expect(cents(r.byKind.subagent.ledgerUsd)).toBe(0.004)
+  expect(r.byModel['claude-haiku-5-5'].requests).toBe(1)
+  expect(r.byModel['claude-opus-5-5'].output).toBe(600)
+  expect(r.byAgent[explore]).toMatchObject({ type: 'Explore', requests: 1, input: 1200, durationMs: 2000 })
+  expect(cents(r.byAgent[explore].ledgerUsd)).toBe(0.004)
+  // Wall clock runs from the first request's start to the last one's end; request time is their sum.
+  expect(r.lastAt - r.firstAt).toBe(6000)
+  expect(r.durationMs).toBe(6000)
+  // No per-request rows are stored.
+  expect(JSON.stringify(saved)).not.toContain('turnId')
+})
+
+const NOW = 1_800_000_000_000
+const bucket = (requests: number, usd: number, input = 1000 * requests, durationMs = 2000 * requests) => ({
+  input,
+  output: 100 * requests,
+  cacheRead: 0,
+  cacheWrite: 0,
+  requests,
+  estUsd: usd,
+  ledgerUsd: usd,
+  durationMs,
+})
+const NONE = bucket(0, 0)
+
+/** One agent doing the whole task on Opus: 4 main requests, $1.00, 10 minutes. */
+const SOLO = {
+  startedAt: NOW - 3_600_000, lastAt: NOW - 3_000_000, ledgerUsd: 1, estUsd: 1, requests: 4, input: 4000, output: 400, cacheRead: 4000, cacheWrite: 4000, name: 'solo opus run',
+  rollup: {
+    firstAt: NOW - 3_600_000, lastAt: NOW - 3_000_000, durationMs: 8000,
+    byKind: { main: bucket(4, 1), subagent: NONE, compact: NONE },
+    byModel: { 'claude-opus-5-5': bucket(4, 1) },
+    byAgent: {},
+  },
+}
+
+/** The same task split across subagents: 2 main, 2 Explore and 1 Plan requests, $0.50, 5 minutes. */
+const TEAM = {
+  startedAt: NOW - 2_000_000, lastAt: NOW - 1_700_000, ledgerUsd: 0.5, estUsd: 0.5, requests: 5, input: 5000, output: 500, cacheRead: 16000, cacheWrite: 4000, name: 'team sonnet run',
+  rollup: {
+    firstAt: NOW - 2_000_000, lastAt: NOW - 1_700_000, durationMs: 10000,
+    byKind: { main: bucket(2, 0.3), subagent: bucket(3, 0.2), compact: NONE },
+    byModel: { 'claude-sonnet-5-5': bucket(2, 0.3), 'claude-haiku-5-5': bucket(3, 0.2) },
+    byAgent: {
+      'agent-e1': { ...bucket(1, 0.05), type: 'Explore' },
+      'agent-e2': { ...bucket(1, 0.05), type: 'Explore' },
+      'agent-p1': { ...bucket(1, 0.1), type: 'Plan' },
+    },
+  },
+}
+
+const runCommand = ($: Engine, args: string) =>
+  $.command.run({ command: 'session-cost', args, origin: { kind: 'unclassified' }, presentation: { isFullscreen: true, columns: 160 } })
+
+type Mounted = { find: (q: { type: 'Text'; text?: RegExp }) => Promise<{ text?: string; children: unknown[] } | undefined> }
+
+/** A metric row of the Compare view, by its label: its whole text and the color of its B−A and % cells. */
+async function metric(ui: Mounted, label: string) {
+  const row = await ui.find({ type: 'Text', text: new RegExp(`^${label.replace(/[$/.]/g, '\\$&')}\\s`) })
+  const cells = (row?.children ?? []).filter((c): c is Node => typeof c === 'object' && c !== null)
+  return { text: row?.text, color: cells.at(-1)?.props?.color }
+}
+
+test('the compare command sets two saved sessions side by side by name, with B−A and % on every metric', async ($, on) => {
+  const { state } = engine(on, { 'session:aaaa1111': SOLO, 'session:bbbb2222': TEAM })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  expect((await runCommand($, 'compare solo "team sonnet run"')).text).toMatch(/compare view/)
+  expect(state.open).toBe(true)
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    expect((await ui.find({ type: 'Text', text: /^A / }))?.text).toMatch(/aaaa1111.*solo opus run/)
+    expect((await ui.find({ type: 'Text', text: /^B / }))?.text).toMatch(/bbbb2222.*team sonnet run/)
+    // Cheaper is better: green.
+    expect(await metric(ui, '/cost')).toEqual({ text: expect.stringMatching(/\$1\.000\s+\$0\.500\s+-\$0\.500\s+-50%$/), color: 'success' })
+    // More requests is worse: red.
+    expect(await metric(ui, 'requests')).toEqual({ text: expect.stringMatching(/4\s+5\s+\+1\s+\+25%$/), color: 'error' })
+    // A higher cache hit rate is better: 4000/12000 → 16000/25000.
+    expect(await metric(ui, 'cache hit rate')).toEqual({ text: expect.stringMatching(/33%\s+64%\s+\+31pp\s+\+92%$/), color: 'success' })
+    expect(await metric(ui, 'wall clock')).toEqual({ text: expect.stringMatching(/10m 00s\s+5m 00s\s+-5m 00s\s+-50%$/), color: 'success' })
+    expect((await metric(ui, 'request time')).text).toMatch(/8\.0s\s+10\.0s\s+\+2\.0s\s+\+25%$/)
+    // The single-agent run has no subagent side at all.
+    expect((await metric(ui, 'sub req')).text).toMatch(/^sub\s.*\s0\s+3\s+\+3\s+—$/)
+    expect((await metric(ui, 'main $')).text).toMatch(/\$1\.000\s+\$0\.300\s+-\$0\.700\s+-70%$/)
+    expect((await metric(ui, 'opus-5-5 req')).text).toMatch(/opus-5-5.*\s4\s+0\s+-4\s+-100%$/)
+    expect((await metric(ui, 'haiku-5-5 req')).text).toMatch(/haiku-5-5.*\s0\s+3\s+\+3\s+—$/)
+    // Subagents by type.
+    expect((await metric(ui, 'sub:Explore req')).text).toMatch(/^sub:Explore.*\s0\s+2\s+\+2\s+—$/)
+    expect((await metric(ui, 'sub:Plan $')).text).toMatch(/^sub:Plan.*\$0\s+\$0\.100\s+\+\$0\.100\s+—$/)
+    await ui.unmount()
+  }
+})
+
+test('marking a Recent sessions row A and then another B opens the comparison, and swap flips baseline and deltas', async ($, on) => {
+  engine(on, { 'session:aaaa1111': SOLO, 'session:bbbb2222': TEAM })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+
+  const empty = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  await empty.press({ key: 'view:compare' })
+  expect(await empty.find({ type: 'Text', text: /^—$/ })).toBeDefined()
+  await empty.unmount()
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    // Marking A starts a new pair, whatever was compared before.
+    await ui.press({ key: 'view:history' })
+    await ui.press({ key: 'pick:aaaa1111' })
+    expect((await ui.find({ type: 'Button', key: 'pick:aaaa1111' }))?.text).toBe('A')
+    expect(await ui.find({ type: 'Text', text: /^Recent sessions/ })).toBeDefined()
+    await ui.press({ key: 'pick:bbbb2222' })
+    expect((await ui.find({ type: 'Text', text: /^A / }))?.text).toMatch(/aaaa1111/)
+    expect((await ui.find({ type: 'Text', text: /^B / }))?.text).toMatch(/bbbb2222/)
+
+    await ui.press({ key: 'compare:swap' })
+    expect((await ui.find({ type: 'Text', text: /^A / }))?.text).toMatch(/bbbb2222/)
+    expect(await metric(ui, '/cost')).toEqual({ text: expect.stringMatching(/\$0\.500\s+\$1\.000\s+\+\$0\.500\s+\+100%$/), color: 'error' })
+    expect((await metric(ui, 'sub req')).text).toMatch(/3\s+0\s+-3\s+-100%$/)
+    await ui.unmount()
+  }
+})
+
+test('a session saved before rollups compares on totals, with n/a breakdowns and a note', async ($, on) => {
+  const { rollup: _, ...legacy } = SOLO
+  engine(on, { 'session:aaaa1111': legacy, 'session:bbbb2222': TEAM })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await runCommand($, 'compare aaaa bbbb')
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...PANE, surface })
+    expect((await metric(ui, '/cost')).text).toMatch(/\$1\.000\s+\$0\.500\s+-\$0\.500\s+-50%$/)
+    expect(await metric(ui, 'wall clock')).toEqual({ text: expect.stringMatching(/n\/a\s+5m 00s\s+n\/a\s+n\/a$/), color: undefined })
+    expect((await metric(ui, 'sub req')).text).toMatch(/n\/a\s+3\s+n\/a\s+n\/a$/)
+    expect((await metric(ui, 'sub:Explore req')).text).toMatch(/n\/a\s+2\s+n\/a\s+n\/a$/)
+    expect(await ui.find({ type: 'Text', text: /n\/a for A: saved before session-cost 0\.6\.0/ })).toBeDefined()
+    await ui.unmount()
+  }
+})
+
+test('the compare command says which name it could not place, and compares this session live', async ($, on) => {
+  engine(on, { 'session:aaaa1111': SOLO, 'session:aaaa2222': { ...TEAM, name: 'another solo run' } })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  expect((await runCommand($, 'compare nothing-like-it aaaa1111')).text).toMatch(/no saved session matches "nothing-like-it"/)
+  expect((await runCommand($, 'compare aaaa aaaa1111')).text).toMatch(/"aaaa" matches 2 sessions/)
+  expect((await runCommand($, 'compare solo')).text).toMatch(/Usage: \/session-cost compare <A> <B>/)
+
+  await $.prompt.submit(typed('the live one'))
+  await step($, 0)
+  expect((await runCommand($, 'compare "solo opus run" sess-1')).text).toMatch(/compare view/)
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  expect((await ui.find({ type: 'Text', text: /^B / }))?.text).toMatch(/sess-1.*the live one/)
+  expect((await metric(ui, 'requests')).text).toMatch(/4\s+1\s+-3\s+-75%$/)
+  // This session can be marked in History too.
+  await ui.press({ key: 'view:history' })
+  await ui.press({ key: 'pick:sess-1' })
+  await ui.press({ key: 'pick:aaaa1111' })
+  expect((await ui.find({ type: 'Text', text: /^A / }))?.text).toMatch(/sess-1/)
+  await ui.unmount()
+})
+
+test('rollups are pruned with the per-day history they belong to', async ($, on) => {
+  const day = 24 * 60 * 60 * 1000
+  const old = { ...SOLO, lastAt: NOW - 40 * day, days: { '2020-01-01': { input: 1, output: 1, cacheRead: 1, cacheWrite: 1, requests: 4, estUsd: 1, ledgerUsd: 1, otherUsd: 0 } } }
+  const { store } = engine(on, { 'session:aaaa1111': old, 'session:bbbb2222': TEAM })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await done($)
+  expect(store['session:aaaa1111']).toBeUndefined()
+  expect((store['session:bbbb2222'] as typeof TEAM).rollup.byKind.subagent.requests).toBe(3)
 })

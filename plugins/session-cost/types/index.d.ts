@@ -70,7 +70,7 @@ export type Ledger = {
   resetUsd?: number
 }
 
-export type CostView = 'requests' | 'models' | 'history' | 'days'
+export type CostView = 'requests' | 'models' | 'history' | 'days' | 'compare'
 
 /** What one calendar day (local time) of a session spent; a request counts on the day its response ended. */
 export type DayTotals = Tokens & {
@@ -96,6 +96,46 @@ export type SessionSummary = Tokens & {
   days?: DayMap
   /** What Recent sessions calls it: its title, else its first prompt; absent when it had neither, or was saved before 0.5.0. */
   name?: string
+  /** The session's breakdowns; absent on summaries saved before 0.6.0, or when its rows no longer add up to its totals. */
+  rollup?: SessionRollup
+}
+
+/** One slice of a session's requests, summed. */
+export type RollupBucket = Tokens & {
+  requests: number
+  /** Price-table estimate in USD (requests of unpriced models count 0). */
+  estUsd: number
+  /** Ledger shares of its requests in USD. */
+  ledgerUsd: number
+  /** Summed request time. */
+  durationMs: number
+}
+
+/** One subagent's requests, with what it was spawned as. */
+export type AgentRollup = RollupBucket & {
+  /** Its agent type (`Explore`, `Plan`, ...); `subagent` when the mod did not see it spawned. */
+  type: string
+  /** The agent that spawned it; absent when the main loop did. */
+  parentId?: string
+}
+
+/** A session's aggregates, kept for comparing and drilling into it after it ends; no per-request rows. */
+export type SessionRollup = {
+  /** When its first request started and its last one ended, in `$.clock.now()` milliseconds. */
+  firstAt: number
+  lastAt: number
+  /** Summed request time. */
+  durationMs: number
+  byKind: Record<RequestKind, RollupBucket>
+  byModel: Record<string, RollupBucket>
+  /** Keyed by the agent id its loop's events carry. */
+  byAgent: Record<string, AgentRollup>
+}
+
+/** The two sessions the Compare view sets side by side, by id; A is the baseline. */
+export type CompareSelection = {
+  a?: string
+  b?: string
 }
 
 /** What the session is called, as far as the mod has seen. */
@@ -119,6 +159,8 @@ declare module 'claude-code' {
       view: CostView
       days: DayMap
       names: SessionNames
+      rollup: SessionRollup
+      compare: CompareSelection
     }
   }
 }
