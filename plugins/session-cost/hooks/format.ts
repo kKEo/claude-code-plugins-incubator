@@ -101,3 +101,9 @@ export function padEnd(s: string, n: number): string {
 export function padStart(s: string, n: number): string {
   return s.length >= n ? s : ' '.repeat(n - s.length) + s
 }
+
+/** Text on one line, whitespace runs collapsed, cut to `max` characters with an ellipsis. */
+export function oneLine(text: string, max: number): string {
+  const flat = text.replace(/\s+/g, ' ').trim()
+  return flat.length <= max ? flat : `${flat.slice(0, Math.max(0, max - 1)).trimEnd()}…`
+}

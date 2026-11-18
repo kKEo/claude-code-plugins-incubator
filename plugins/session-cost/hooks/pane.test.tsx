@@ -48,6 +48,7 @@ function engine(on: On, store: Record<string, unknown> = {}) {
   on('session.model', () => ({ value: 'claude-opus-5-5' }))
   on('session.usage', () => ({ value: { startedAt: 0, rateLimits: [], cost: { usd: state.usd } } as never }))
   on('turn.complete', (_, e) => ({ text: e.answer }))
+  on('prompt.submit', (_, e) => ({ text: e.text }))
   // The engine's own band beneath the plugin: empty.
   on('ui.render', { component: 'AbovePrompt' }, ($, e) => {
     const { Box } = $.ui.resolve(e)
@@ -220,6 +221,120 @@ test('a reset with no request after it leaves nothing in history', async ($, on)
   expect(await ui.find({ type: 'Text', text: /This session/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /sess-1/ })).toBe(undefined)
   await ui.unmount()
+})
+
+const typed = (text: string) => ({ text, wait: false, origin: { kind: 'composer' } as const })
+const done = ($: Engine) => $.turn.complete({ turnId: 'turn-1', answer: 'done', durationMs: 10, isAborted: false, reason: 'answer' })
+
+/** The Recent sessions row of a saved session, as a later session's History tab shows it. */
+async function recentRow($: Engine, id: string) {
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  await ui.press({ key: 'view:history' })
+  const found = await ui.find({ type: 'Text', text: new RegExp(id) })
+  await ui.unmount()
+  return found?.text
+}
+
+test('a session without a title is named in Recent sessions by its first prompt', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await $.prompt.submit(typed('Clone   the incubator\nrepo please'))
+  await step($, 0)
+  await done($)
+  await $.prompt.submit(typed('and now something else'))
+  await step($, 1)
+  await done($)
+
+  state.id = 'sess-2'
+  expect(await recentRow($, 'sess-1')).toMatch(/2 req sess-1\s+Clone the incubator repo please$/)
+})
+
+/** A transcript the test writes to, read by the mod as the engine's file system would. */
+function transcript(on: On) {
+  const file = { path: '/home/u/.claude/projects/p/sess-1.jsonl', text: '' }
+  on('session.info', () => ({ value: { transcriptPath: file.path } }))
+  on('fs.stat', (_, e) => (e.path === file.path ? { value: { kind: 'file', size: file.text.length, mtimeMs: 0, isLink: false } } : { deny: 'ENOENT' }))
+  on('fs.read', (_, e) => {
+    if (e.path !== file.path) return { deny: 'ENOENT' }
+    const from = e.offset ?? 0
+    return { value: file.text.slice(from, e.length === undefined ? undefined : from + e.length) }
+  })
+  const append = (row: object) => {
+    file.text += JSON.stringify(row) + '\n'
+  }
+  return { file, append }
+}
+
+test('names in Recent sessions start in one column, a long one cut short, and a session with none shows its id alone', async ($, on) => {
+  const saved = { startedAt: 0, ledgerUsd: 1, estUsd: 1, requests: 5, input: 1, output: 1, cacheRead: 1, cacheWrite: 1 }
+  const now = 1_800_000_000_000
+  engine(on, {
+    'session:a': { ...saved, lastAt: now - 3000, name: 'Short' },
+    'session:0123456789abcdef': { ...saved, lastAt: now - 2000 },
+    'session:old-one': { ...saved, lastAt: now - 1000 },
+  })
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...PANE, surface: 'terminal' })
+  await ui.press({ key: 'view:history' })
+  // The id takes 8 cells, padded or cut, then two spaces before the name.
+  expect((await ui.find({ type: 'Text', text: /Short$/ }))?.text).toMatch(/5 req a {9}Short$/)
+  expect((await ui.find({ type: 'Text', text: /old-one/ }))?.text).toMatch(/5 req old-one$/)
+  expect((await ui.find({ type: 'Text', text: /01234567/ }))?.text).toMatch(/5 req 01234567$/)
+  await ui.unmount()
+})
+
+test('after /clear the next conversation is named by its own first prompt, and only the person\'s prompts name one', async ($, on) => {
+  const { state } = engine(on)
+  on('session.end', (_, e) => ({ sessionId: e.sessionId }))
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await $.prompt.submit({ text: 'a message from a peer', wait: false, origin: { kind: 'peer', from: 'x' } as never })
+  await $.prompt.submit(typed('First conversation'))
+  await step($, 0)
+  await done($)
+  await $.session.end({ reason: 'clear', sessionId: 'sess-1', resume: { id: 'sess-1' } })
+
+  state.id = 'sess-2'
+  await $.prompt.submit(typed('Second conversation'))
+  await step($, 1)
+  await done($)
+
+  state.id = 'sess-3'
+  expect(await recentRow($, 'sess-1')).toMatch(/sess-1\s+First conversation$/)
+  expect(await recentRow($, 'sess-2')).toMatch(/sess-2\s+Second conversation$/)
+})
+
+test('a long first prompt is kept cut short, ending in an ellipsis', async ($, on) => {
+  const { state } = engine(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  await $.prompt.submit(typed(`Explain ${'very '.repeat(30)}carefully`))
+  await step($, 0)
+  await done($)
+  state.id = 'sess-2'
+  const name = (await recentRow($, 'sess-1'))?.replace(/^.*? req sess-1\s+/, '') ?? ''
+  expect(name).toMatch(/^Explain very very .*…$/)
+  expect(name.length).toBe(60)
+})
+
+test('a title from the transcript names the session over its first prompt, a custom one over an AI one', async ($, on) => {
+  const { state } = engine(on)
+  const { append } = transcript(on)
+  await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
+  append({ type: 'user', message: { role: 'user', content: 'Clone the incubator repo' }, sessionId: 'sess-1' })
+  await $.prompt.submit(typed('Clone the incubator repo'))
+  await step($, 0)
+  append({ type: 'ai-title', aiTitle: 'Cloning the incubator', sessionId: 'sess-1' })
+  await done($)
+  state.id = 'sess-2'
+  expect(await recentRow($, 'sess-1')).toMatch(/sess-1\s+Cloning the incubator$/)
+
+  state.id = 'sess-1'
+  append({ type: 'custom-title', customTitle: 'incubator', sessionId: 'sess-1' })
+  append({ type: 'ai-title', aiTitle: 'Cloning and testing the incubator', sessionId: 'sess-1' })
+  await step($, 1)
+  await done($)
+  state.id = 'sess-2'
+  expect(await recentRow($, 'sess-1')).toMatch(/sess-1\s+incubator$/)
 })
 
 /** Local time on a January 2027 day, after the mocked clock's start in any time zone. */

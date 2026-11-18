@@ -94,6 +94,20 @@ export type SessionSummary = Tokens & {
   requests: number
   /** The session split by day; absent on summaries saved before days were kept. */
   days?: DayMap
+  /** What Recent sessions calls it: its title, else its first prompt; absent when it had neither, or was saved before 0.5.0. */
+  name?: string
+}
+
+/** What the session is called, as far as the mod has seen. */
+export type SessionNames = {
+  /** The first prompt the person sent, on one line and cut short. */
+  prompt?: string
+  /** The last title set with `/rename`, as the transcript has it. */
+  custom?: string
+  /** The last title Claude Code generated for the session, as the transcript has it. */
+  ai?: string
+  /** How many bytes of the transcript have been scanned for titles. */
+  scanned?: number
 }
 
 declare module 'claude-code' {
@@ -104,6 +118,7 @@ declare module 'claude-code' {
       ledger: Ledger
       view: CostView
       days: DayMap
+      names: SessionNames
     }
   }
 }

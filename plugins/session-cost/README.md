@@ -7,7 +7,7 @@ A Claude Code mod that records every model request the session sends and shows i
 - **Header**: the session's cost as `/cost` reports it, the price-table estimate, the request count, token totals (input, output, cache read, cache write), the cache hit rate, requests by kind (main, subagent, compaction) and the installed version (`v<version>`, dim, from this copy's `plugin.json`). The header is the same on every view.
 - **Requests view** (`r`): one entry per request, newest first; the newest 300 are drawn and the totals count all. It shows the time, model, the effort the request asked for (dim, after the model, e.g. `opus-5-5 high`; absent for models without effort and for compactions), `main` / `sub:<agent>` / `compact`, duration written flush right on a 7-cell bar with a background track, filled in proportion to the slowest request drawn (the slowest one is highlighted), stop reason (a request that called tools shows them instead of `tool_use`, e.g. `→ Read ×3, Bash`; MCP tools by their short name), the four token counts (`cr` in green and `cw` in red, each in five steps from light to vivid by its share of the request's prompt tokens; a zero count is dim), and two costs: the request's share of the `/cost` ledger and the estimate (`$0.020 / est $0.029`).
 - **Models view** (`m`): requests, tokens, cache hit rate and both costs per model.
-- **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. The windows are calendar days and count only the part of each session spent in them.
+- **History view** (`h`): this session, today, the last 7 days and the last `historyDays` days, plus the 10 most recent sessions. Each recent session shows its time, cost, requests, short id and name: its `/rename` title, else the title Claude Code generated for it, else its first prompt (on one line, cut to 60 characters, and cut further to fit the row). A session with none of these, or saved before 0.5.0, shows its id alone. The windows are calendar days and count only the part of each session spent in them.
 - **Days view** (`d`): one row per day with spend in the last `historyDays` days, newest first: this session's cost and requests beside the cost of all sessions and how many had spend that day. A session open across several days says how many it spans.
 - In the Requests view, a dim `── Sat 07 Nov ──` row marks where the day changes.
 - A status-line entry under the prompt: `$0.544 · 3 req · 130k tok`.
@@ -22,8 +22,8 @@ The **estimate** prices the token counts with a built-in table of Anthropic firs
 ### What it fetches and runs
 
 - **Network**: none. The mod fetches nothing and sends nothing; it makes no network calls of any kind.
-- **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read prompts, responses, tool inputs or tool results. The metadata stays in the session's plugin state and the plugin's local store.
-- **Reads from disk**: only its own `.claude-plugin/plugin.json` (under the plugin's install folder), to show the installed version in the pane's header.
+- **Reads from the conversation**: its `turn.step` hook passes every model request through unchanged and, after the response, records only metadata: the token counts, model, effort, start and end time, stop reason, the names of the tools called, and whether a subagent made it. It does not read responses, tool inputs or tool results. Its `prompt.submit` hook passes every prompt through unchanged and keeps the first one you send (typed, from a phone or from the SDK; not a slash command or a peer's message) as the session's name, on one line and cut to 60 characters. This data stays in the session's plugin state and the plugin's local store.
+- **Reads from disk**: its own `.claude-plugin/plugin.json` (under the plugin's install folder), to show the installed version in the pane's header, and the session's transcript, for the session's title only. At the end of each turn it reads what the transcript gained since the last read (at most its last 1 MiB) and keeps only the `custom-title` (`/rename`) and `ai-title` rows' text; every other row is skipped unparsed.
 - **Runs**: nothing. The mod starts no processes, runs no shell commands, calls no tools, agents or models, and hooks no tool calls.
 - **Its `command.run` hook** answers only its own `/session-cost` slash command. It reads the argument against a fixed list (`on`, `off`, `requests`, `models`, `history`, `days`, `reset`, `toggle`), opens, closes or switches the pane or clears the session's data, and returns a one-line reply. Any other argument gets an "Unknown argument" reply and does nothing.
 
@@ -78,7 +78,8 @@ These appear in `/config` under the plugin and are stored in `pluginConfigs["ses
 
 - The request list (the newest 1000), the running totals and the day split live in the session's plugin state, so they survive `/reload-plugins` and a change of settings. Totals keep counting past 1000 requests.
 - Per-session totals, split by day, are kept across sessions in the plugin's store. Days older than `historyDays` are pruned, and a session is removed once it has none left.
-- `/clear` saves the ending session's totals to history and starts the list over.
+- Each saved session also keeps its name (title or first prompt, up to 60 characters). Sessions saved before 0.5.0 have none.
+- `/clear` saves the ending session's totals and name to history and starts the list over; the next conversation is named by its own title or first prompt.
 - `/session-cost reset` deletes the session's saved entry. From then on its history counts only spend since the reset, while the header, chip and status line keep showing the full `/cost` total. The header lists the pre-reset part as `unattributed`.
 
 ## Install
@@ -110,7 +111,8 @@ claude --plugin-dir plugins/session-cost
 - `hooks/days.ts`: day keys, the per-day buckets, backfill and history windows.
 - `hooks/pricing.ts`: the price table and the estimate.
 - `hooks/version.ts`: reads the `version` out of a `plugin.json`.
-- `hooks/format.ts`: number, dollar, time and model-name formatting.
-- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`).
+- `hooks/names.ts`: reads titles out of transcript rows and picks a session's name.
+- `hooks/format.ts`: number, dollar, time, model-name and one-line text formatting.
+- `types/index.d.ts`: the state contract (`requests`, `totals`, `ledger`, `view`, `days`, `names`).
 - `hooks/*.test.ts(x)`: run with `claude plugin test plugins/session-cost`.
 - `PRIVACY.md`: the privacy policy (`privacyPolicyUrl` in `plugin.json`).

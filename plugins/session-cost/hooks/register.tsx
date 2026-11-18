@@ -1,7 +1,7 @@
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-import type { CostView, DayMap, RequestKind, RequestRow, SessionSummary, Tokens } from '../types'
+import type { CostView, DayMap, RequestKind, RequestRow, SessionNames, SessionSummary, Tokens } from '../types'
 import {
   addOtherToDays,
   addRowToDays,
@@ -15,9 +15,10 @@ import {
   summaryDays,
   sumDays,
 } from './days'
-import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
+import { CACHE_READ_RAMP, CACHE_WRITE_RAMP, clockTime, count, duration, durationBar, heatColor, heatLevel, oneLine, padEnd, padStart, percent, shortModel, stamp, toolList, usd } from './format'
 import { EMPTY_LEDGER, addRow, appendRow, applyLedger, cacheHit, emptyTotals, sessionSpend, tokenSum } from './ledger'
 import { estimate } from './pricing'
+import { sessionName, titlesIn } from './names'
 import { manifestVersion } from './version'
 
 const PLUGIN = 'session-cost'
@@ -28,12 +29,17 @@ const STORE_PREFIX = 'session:'
 const DAY_MS = 24 * 60 * 60 * 1000
 /** Rows drawn in the Requests view; older ones stay counted in the totals. */
 const DRAWN_ROWS = 300
+/** The most characters of a session's name kept in history; the row cuts it shorter to fit. */
+const NAME_CHARS = 60
+/** The most of the transcript's tail read for titles at once; the first scan of a long session starts this far back. */
+const TITLE_SCAN_BYTES = 1024 * 1024
 
 const requests = atom({ plugin: 'session-cost', key: 'requests' } as const, [] as RequestRow[])
 const totals = atom({ plugin: 'session-cost', key: 'totals' } as const, emptyTotals())
 const ledger = atom({ plugin: 'session-cost', key: 'ledger' } as const, EMPTY_LEDGER)
 const view = atom({ plugin: 'session-cost', key: 'view' } as const, 'requests' as CostView)
 const days = atom({ plugin: 'session-cost', key: 'days' } as const, {} as DayMap)
+const names = atom({ plugin: 'session-cost', key: 'names' } as const, {} as SessionNames)
 
 type Engine = EngineInterface
 
@@ -117,6 +123,7 @@ async function saveSummary($: Engine, sessionId?: string): Promise<void> {
     await serial(async () => {
       const [t, l, d] = await Promise.all([read($, totals), read($, ledger), read($, days)])
       if (!t || t.requests === 0) return
+      const name = sessionName(await scanTitles($))
       const id = sessionId ?? (await $.session.id())
       const usage = await $.session.usage()
       const summary: SessionSummary = {
@@ -130,11 +137,31 @@ async function saveSummary($: Engine, sessionId?: string): Promise<void> {
         output: t.output,
         cacheRead: t.cacheRead,
         cacheWrite: t.cacheWrite,
+        ...(name === undefined ? {} : { name: oneLine(name, NAME_CHARS) }),
       }
       await $.store.set(STORE_PREFIX + id, summary)
     })
   } catch {
     // History is a convenience; never fail a turn over it.
+  }
+}
+
+/** Reads what the transcript added since the last scan for the session's titles; reads nothing else of it. */
+async function scanTitles($: Engine): Promise<SessionNames> {
+  const n = (await read($, names)) ?? {}
+  try {
+    const path = (await $.session.info()).transcriptPath
+    if (path === '') return n
+    const { size } = await $.fs.stat(path)
+    const from = Math.max(n.scanned !== undefined && n.scanned <= size ? n.scanned : 0, size - TITLE_SCAN_BYTES)
+    if (from >= size) return n
+    const found = titlesIn(await $.fs.read(path, { offset: from, length: size - from }))
+    const next = { ...n, ...found, scanned: size }
+    await update($, names, () => next)
+    return next
+  } catch {
+    // No transcript, or none the mod may read: the first prompt names the session.
+    return n
   }
 }
 
@@ -212,6 +239,11 @@ async function reset($: Engine): Promise<void> {
     }
   })
   await refreshStatus($)
+}
+
+/** Prompts the person wrote, not ones a peer, a schedule or a plugin sent. */
+function isPersonsPrompt(kind: string): boolean {
+  return kind === 'composer' || kind === 'bridge' || kind === 'sdk'
 }
 
 const VIEWS: readonly CostView[] = ['requests', 'models', 'history', 'days']
@@ -327,6 +359,20 @@ export const register: Register = (on, options) => {
     return ran
    }).catch(($, e, next) => next(e))
 
+  // The first prompt the person sends names the session until a title does.
+  on('prompt.submit', async ($, e, next) => {
+    const sent = await next(e)
+    try {
+      if (sent.drop === undefined && !e.command && !e.isMeta && isPersonsPrompt(e.origin.kind)) {
+        const prompt = oneLine(e.text, NAME_CHARS)
+        if (prompt !== '') await update($, names, n => (n?.prompt ? n : { ...(n ?? {}), prompt }))
+      }
+    } catch {
+      // A name is a convenience; never hold up a prompt over it.
+    }
+    return sent
+  })
+
   // A turn's end: settle anything the ledger added late, and keep history current.
   on('turn.complete', async ($, e, next) => {
     const ran = await next(e)
@@ -343,6 +389,7 @@ export const register: Register = (on, options) => {
         await update($, totals, () => emptyTotals())
         await update($, days, () => ({}))
         await update($, ledger, () => EMPTY_LEDGER)
+        await update($, names, () => ({}))
       })
       $.ui.status(undefined)
     }
@@ -580,7 +627,7 @@ export const register: Register = (on, options) => {
                 <Text weight="bold">Recent sessions</Text>
                 {recent.map(s => (
                   <Text key={`sess:${s.id}`} wrap="truncate-end" dimColor tabular>
-                    {stamp(s.lastAt)} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.id.slice(0, 8)}
+                    {stamp(s.lastAt)} {padStart(usd(s.ledgerUsd), 9)} {padStart(String(s.requests), 5)} req {s.name ? `${padEnd(s.id.slice(0, 8), 8)}  ${s.name}` : s.id.slice(0, 8)}
                   </Text>
                 ))}
               </Box>
