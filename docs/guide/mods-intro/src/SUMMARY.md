@@ -6,7 +6,7 @@
 
 - [Before and after](01-before-after.md)
 - [Why mods](02-why.md)
-- [Three kinds of extension](03-three-kinds.md)
+- [Six kinds of extension](03-six-kinds.md)
 
 # What mods can do
 
