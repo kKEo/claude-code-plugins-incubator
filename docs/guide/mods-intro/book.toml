@@ -1,0 +1,17 @@
+[book]
+title = "Meet mods: a first look"
+description = "A high-level introduction to Claude Code mods for complete beginners: what a mod is, what mods can do, and four you can install today."
+authors = ["Krzysztof Maziarz"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "../../../site/mods-intro"
+create-missing = false
+
+[output.html]
+site-url = "/claude-code-plugins-incubator/mods-intro/"
+git-repository-url = "https://github.com/kKEo/claude-code-plugins-incubator"
+no-section-label = true
+additional-css = ["slides.css"]
+additional-js = ["slides.js"]

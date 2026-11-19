@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" width="920" height="460" role="img" aria-labelledby="t d">
+<title id="t">Four places where a mod shows information</title>
+<desc id="d">One, a panel beside the conversation, for anything that should stay in view. Two, a row above the prompt, for a line of facts with a button or two. Three, a status line under the prompt, for one short fact. Four, a pop-up note for something that just happened.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="459" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">on your screen</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">FOUR PLACES</tspan><tspan dx="10">from large to small</tspan></text>
+<rect class="card" x="32" y="84" width="560" height="346" rx="12"/>
+<circle class="rule" cx="50" cy="100" r="4"/>
+<circle class="rule" cx="64" cy="100" r="4"/>
+<circle class="rule" cx="78" cy="100" r="4"/>
+<rect class="tile" x="52" y="126" width="250" height="10" rx="5"/>
+<rect class="tile" x="52" y="147" width="300" height="10" rx="5"/>
+<rect class="tile" x="52" y="168" width="190" height="10" rx="5"/>
+<rect class="tile" x="52" y="189" width="280" height="10" rx="5"/>
+<rect class="tile" x="52" y="210" width="230" height="10" rx="5"/>
+<rect class="tile" x="52" y="231" width="160" height="10" rx="5"/>
+<rect class="tile" x="52" y="252" width="270" height="10" rx="5"/>
+<rect class="tile" x="52" y="273" width="200" height="10" rx="5"/>
+<rect class="hot" x="388" y="118" width="188" height="200" rx="8"/>
+<text x="402" y="144" class="fg b" font-size="14.5">Costs</text>
+<text x="402" y="174" class="muted" font-size="12.5">Request 12</text>
+<text x="562" y="174" class="fg" font-size="12.5" text-anchor="end">$0.04</text>
+<text x="402" y="200" class="muted" font-size="12.5">Request 11</text>
+<text x="562" y="200" class="fg" font-size="12.5" text-anchor="end">$0.11</text>
+<text x="402" y="226" class="muted" font-size="12.5">Request 10</text>
+<text x="562" y="226" class="fg" font-size="12.5" text-anchor="end">$0.02</text>
+<text x="402" y="252" class="fg sb" font-size="12.5">Today</text>
+<text x="562" y="252" class="fg sb" font-size="12.5" text-anchor="end">$1.87</text>
+<rect class="hot" x="212" y="92" width="164" height="28" rx="6"/>
+<text x="224" y="111" class="fg" font-size="12.5">Correction ready</text>
+<rect class="hot" x="52" y="304" width="324" height="28" rx="6"/>
+<text x="64" y="323" class="fg" font-size="12.5">Last turn: 42 s · 7 tool calls</text>
+<rect class="tile" x="52" y="342" width="524" height="36" rx="8"/>
+<text x="66" y="365" class="faint" font-size="13.5">&gt;</text>
+<text x="52" y="404" class="accent sb" font-size="12.5">CI: passing · $0.42 this session</text>
+<circle class="dot" cx="576" cy="118" r="12"/>
+<text x="576" y="122.5" class="onaccent b" font-size="12.5" text-anchor="middle">1</text>
+<circle class="dot" cx="376" cy="304" r="12"/>
+<text x="376" y="308.5" class="onaccent b" font-size="12.5" text-anchor="middle">2</text>
+<circle class="dot" cx="300" cy="400" r="12"/>
+<text x="300" y="404.5" class="onaccent b" font-size="12.5" text-anchor="middle">3</text>
+<circle class="dot" cx="376" cy="92" r="12"/>
+<text x="376" y="96.5" class="onaccent b" font-size="12.5" text-anchor="middle">4</text>
+<rect class="card" x="612" y="84" width="276" height="80" rx="10"/>
+<circle class="dot" cx="636" cy="110" r="12"/>
+<text x="636" y="114.5" class="onaccent b" font-size="12.5" text-anchor="middle">1</text>
+<text x="658" y="115" class="fg b" font-size="15.5">A panel</text>
+<text x="628" y="138" class="muted" font-size="12.5">Beside the conversation. For anything</text>
+<text x="628" y="154" class="muted" font-size="12.5">that should stay in view.</text>
+<rect class="card" x="612" y="172" width="276" height="80" rx="10"/>
+<circle class="dot" cx="636" cy="198" r="12"/>
+<text x="636" y="202.5" class="onaccent b" font-size="12.5" text-anchor="middle">2</text>
+<text x="658" y="203" class="fg b" font-size="15.5">A row</text>
+<text x="628" y="226" class="muted" font-size="12.5">Above the prompt. A line of facts, with</text>
+<text x="628" y="242" class="muted" font-size="12.5">a button or two.</text>
+<rect class="card" x="612" y="260" width="276" height="80" rx="10"/>
+<circle class="dot" cx="636" cy="286" r="12"/>
+<text x="636" y="290.5" class="onaccent b" font-size="12.5" text-anchor="middle">3</text>
+<text x="658" y="291" class="fg b" font-size="15.5">A status line</text>
+<text x="628" y="314" class="muted" font-size="12.5">Under the prompt. One short fact, always</text>
+<text x="628" y="330" class="muted" font-size="12.5">there.</text>
+<rect class="card" x="612" y="348" width="276" height="80" rx="10"/>
+<circle class="dot" cx="636" cy="374" r="12"/>
+<text x="636" y="378.5" class="onaccent b" font-size="12.5" text-anchor="middle">4</text>
+<text x="658" y="379" class="fg b" font-size="15.5">A pop-up note</text>
+<text x="628" y="402" class="muted" font-size="12.5">For something that just happened. It</text>
+<text x="628" y="418" class="muted" font-size="12.5">fades by itself.</text>
+</svg>

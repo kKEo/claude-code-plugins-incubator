@@ -1,9 +1,9 @@
 # Documentation targets. The books live in docs/guide/<book>/; see docs/README.md.
 
 BOOKS := user operator tester
-# The slide decks are extra mdBook books, built into site/slides/ and site/mods-deck/. Their pages
+# The slide decks are extra mdBook books, built into site/slides/, site/mods-deck/ and site/mods-intro/. Their pages
 # are in a src/ subfolder so that the three-book template check does not count them as books.
-SLIDES := docs/guide/slides docs/guide/mods-deck
+SLIDES := docs/guide/slides docs/guide/mods-deck docs/guide/mods-intro
 BOOK  ?= user
 MDBOOK ?= mdbook
 PORT   ?= 8000

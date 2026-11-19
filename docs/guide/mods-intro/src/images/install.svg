@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 370" width="920" height="370" role="img" aria-labelledby="t d">
+<title id="t">Installing a mod in three steps</title>
+<desc id="d">One: add the marketplace, once, with slash plugin marketplace add kKEo/claude-code-plugins-incubator. Two: install a mod with slash plugin install session-cost at km-plugin-registry. Three: reload with slash reload-plugins and open the mod with its command, slash session-cost.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="369" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">three steps</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">TYPED INTO CLAUDE CODE</tspan><tspan dx="10">about a minute</tspan></text>
+<rect class="card" x="32" y="84" width="856" height="76" rx="10"/>
+<circle class="dot" cx="62" cy="122" r="12"/>
+<text x="62" y="126.5" class="onaccent b" font-size="12.5" text-anchor="middle">1</text>
+<text x="88" y="118" class="fg b" font-size="17">Add the marketplace</text>
+<text x="88" y="140" class="muted" font-size="13.5">once</text>
+<rect class="tile" x="330" y="102" width="538" height="40" rx="8"/>
+<text x="346" y="127" class="fg mono" font-size="13.5">/plugin marketplace add kKEo/claude-code-plugins-incubator</text>
+<rect class="card" x="32" y="174" width="856" height="76" rx="10"/>
+<circle class="dot" cx="62" cy="212" r="12"/>
+<text x="62" y="216.5" class="onaccent b" font-size="12.5" text-anchor="middle">2</text>
+<text x="88" y="208" class="fg b" font-size="17">Install a mod</text>
+<text x="88" y="230" class="muted" font-size="13.5">pick any of the four</text>
+<rect class="tile" x="330" y="192" width="538" height="40" rx="8"/>
+<text x="346" y="217" class="fg mono" font-size="13.5">/plugin install session-cost@km-plugin-registry</text>
+<rect class="hot" x="32" y="264" width="856" height="76" rx="10"/>
+<circle class="dot" cx="62" cy="302" r="12"/>
+<text x="62" y="306.5" class="onaccent b" font-size="12.5" text-anchor="middle">3</text>
+<text x="88" y="298" class="fg b" font-size="17">Reload, then open it</text>
+<text x="88" y="320" class="muted" font-size="13.5">with its own command</text>
+<rect class="tile" x="330" y="282" width="538" height="40" rx="8"/>
+<text x="346" y="307" class="fg mono" font-size="13.5" xml:space="preserve">/reload-plugins      /session-cost</text>
+</svg>

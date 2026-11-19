@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 370" width="920" height="370" role="img" aria-labelledby="t d">
+<title id="t">A mod can work in the background</title>
+<desc id="d">Every minute, with no prompt from you, the mod checks something, for example whether your build passed. While it passes, a quiet line under the prompt says so. When it fails, you get a notification and Claude can be asked to look.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="369" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">in the background</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">NO PROMPT NEEDED</tspan><tspan dx="10">it keeps watch while you work</tspan></text>
+<rect class="card" x="32" y="112" width="220" height="180" rx="10"/>
+<circle class="ic" cx="142" cy="170" r="26"/><path class="ic" d="M142 154v17l11 8"/>
+<text x="142" y="232" class="fg b" font-size="17" text-anchor="middle">Every minute</text>
+<text x="142" y="258" class="muted" font-size="14" text-anchor="middle">on a timer</text>
+<rect class="hot" x="296" y="112" width="240" height="180" rx="10"/>
+<text x="416" y="170" class="fg b" font-size="17" text-anchor="middle">The mod checks</text>
+<text x="416" y="200.0" class="muted" font-size="14" text-anchor="middle">your build, a deploy, a</text>
+<text x="416" y="219.9" class="muted" font-size="14" text-anchor="middle">queue, anything it can ask</text>
+<text x="416" y="239.8" class="muted" font-size="14" text-anchor="middle">about</text>
+<rect class="tile" x="580" y="84" width="308" height="104" rx="10"/>
+<text x="600" y="122" class="fg b" font-size="16.5">All well</text>
+<text x="600" y="148.0" class="muted" font-size="13.5">A quiet line under the prompt: “CI:</text>
+<text x="600" y="167.2" class="muted" font-size="13.5">passing”.</text>
+<rect class="tile" x="580" y="216" width="308" height="104" rx="10"/>
+<text x="600" y="254" class="fg b" font-size="16.5">Something broke</text>
+<text x="600" y="280.0" class="muted" font-size="13.5">A notification, and Claude can be asked</text>
+<text x="600" y="299.2" class="muted" font-size="13.5">to look.</text>
+<path class="arrow" d="M255 202L293 202" marker-end="url(#ah)"/>
+<path class="arrow" d="M539 180L577 140" marker-end="url(#ah)"/>
+<path class="arrowa" d="M539 224L577 264" marker-end="url(#aha)"/>
+</svg>

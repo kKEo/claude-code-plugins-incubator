@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 340" width="920" height="340" role="img" aria-labelledby="t d">
+<title id="t">A mod can remember between sessions</title>
+<desc id="d">What a mod learns on Monday, such as decisions, totals and history, is kept in the mod own storage and is still there in Tuesday session.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="339" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">memory</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">FROM ONE DAY TO THE NEXT</tspan><tspan dx="10">a session ends, the notes stay</tspan></text>
+<rect class="card" x="32" y="96" width="240" height="170" rx="10"/>
+<text x="152" y="140" class="fg b" font-size="18" text-anchor="middle">Monday</text>
+<text x="152" y="172.0" class="muted" font-size="14" text-anchor="middle">You and Claude decide</text>
+<text x="152" y="191.9" class="muted" font-size="14" text-anchor="middle">things. Costs add up.</text>
+<rect class="hot" x="340" y="84" width="240" height="194" rx="10"/>
+<text x="460" y="128" class="fg b" font-size="18" text-anchor="middle">The mod’s storage</text>
+<rect class="softbox" x="372" y="146" width="176" height="30" rx="6"/>
+<text x="384" y="165.86" class="fg mono" font-size="13.5">decisions</text>
+<rect class="softbox" x="372" y="184" width="176" height="30" rx="6"/>
+<text x="384" y="203.86" class="fg mono" font-size="13.5">totals per day</text>
+<rect class="softbox" x="372" y="222" width="176" height="30" rx="6"/>
+<text x="384" y="241.86" class="fg mono" font-size="13.5">your corrections</text>
+<rect class="card" x="648" y="96" width="240" height="170" rx="10"/>
+<text x="768" y="140" class="fg b" font-size="18" text-anchor="middle">Tuesday</text>
+<text x="768" y="172.0" class="muted" font-size="14" text-anchor="middle">A new session opens, and it</text>
+<text x="768" y="191.9" class="muted" font-size="14" text-anchor="middle">is all still there.</text>
+<path class="arrow" d="M275 181L337 181" marker-end="url(#ah)"/>
+<path class="arrowa" d="M583 181L645 181" marker-end="url(#aha)"/>
+</svg>

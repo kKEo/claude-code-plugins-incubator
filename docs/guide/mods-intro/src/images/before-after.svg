@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 450" width="920" height="450" role="img" aria-labelledby="t d">
+<title id="t">Claude Code without and with mods</title>
+<desc id="d">On the left, Claude Code as it ships: a conversation and a prompt box. On the right, the same session with mods: a panel beside the conversation showing a plan, a row of facts above the prompt, and a status line under the prompt showing the cost so far.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="449" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">before and after</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">SAME APP, YOUR ADDITIONS</tspan><tspan dx="10">nothing else changes</tspan></text>
+<text x="230" y="100" class="fg b" font-size="17" text-anchor="middle">Claude Code as it ships</text>
+<text x="690" y="100" class="fg b" font-size="17" text-anchor="middle">The same session, with mods</text>
+<rect class="card" x="32" y="116" width="396" height="300" rx="12"/>
+<circle class="rule" cx="50" cy="132" r="4"/>
+<circle class="rule" cx="64" cy="132" r="4"/>
+<circle class="rule" cx="78" cy="132" r="4"/>
+<rect class="tile" x="52" y="156" width="240" height="10" rx="5"/>
+<rect class="tile" x="52" y="176" width="300" height="10" rx="5"/>
+<rect class="tile" x="52" y="196" width="180" height="10" rx="5"/>
+<rect class="tile" x="52" y="216" width="280" height="10" rx="5"/>
+<rect class="tile" x="52" y="236" width="220" height="10" rx="5"/>
+<rect class="tile" x="52" y="256" width="150" height="10" rx="5"/>
+<rect class="tile" x="52" y="276" width="260" height="10" rx="5"/>
+<rect class="tile" x="52" y="356" width="356" height="38" rx="8"/>
+<text x="66" y="380" class="faint" font-size="13.5" xml:space="preserve">&gt;  ask Claude anything</text>
+<path class="arrowa" d="M436 266L484 266" marker-end="url(#aha)"/>
+<rect class="card" x="492" y="116" width="396" height="300" rx="12"/>
+<circle class="rule" cx="510" cy="132" r="4"/>
+<circle class="rule" cx="524" cy="132" r="4"/>
+<circle class="rule" cx="538" cy="132" r="4"/>
+<rect class="tile" x="512" y="156" width="180" height="10" rx="5"/>
+<rect class="tile" x="512" y="176" width="200" height="10" rx="5"/>
+<rect class="tile" x="512" y="196" width="140" height="10" rx="5"/>
+<rect class="tile" x="512" y="216" width="190" height="10" rx="5"/>
+<rect class="tile" x="512" y="236" width="160" height="10" rx="5"/>
+<rect class="tile" x="512" y="256" width="120" height="10" rx="5"/>
+<rect class="hot" x="728" y="148" width="144" height="150" rx="8"/>
+<text x="742" y="172" class="fg b" font-size="14">Plan</text>
+<text x="858" y="171" class="accent caps" font-size="8.5" text-anchor="end">PANEL</text>
+<text x="742" y="198" class="accent b" font-size="13">✓</text>
+<text x="760" y="198" class="fg" font-size="12.5">Read the code</text>
+<text x="742" y="222" class="accent b" font-size="13">✓</text>
+<text x="760" y="222" class="fg" font-size="12.5">Write the test</text>
+<text x="742" y="246" class="accent b" font-size="13">▸</text>
+<text x="760" y="246" class="fg" font-size="12.5">Fix the bug</text>
+<text x="742" y="270" class="accent b" font-size="13">·</text>
+<text x="760" y="270" class="muted" font-size="12.5">Open the PR</text>
+<rect class="hot" x="512" y="310" width="360" height="28" rx="6"/>
+<text x="524" y="329" class="fg" font-size="12.5">Last turn: 42 s · 7 tool calls</text>
+<text x="860" y="328" class="accent caps" font-size="8.5" text-anchor="end">ROW</text>
+<rect class="tile" x="512" y="346" width="360" height="34" rx="8"/>
+<text x="526" y="368" class="faint" font-size="13.5">&gt;</text>
+<text x="512" y="402" class="accent sb" font-size="12.5">$0.42 this session</text>
+<text x="872" y="402" class="accent caps" font-size="8.5" text-anchor="end">STATUS LINE</text>
+</svg>
