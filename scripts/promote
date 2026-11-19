@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# Promote one plugin at one tagged version from this incubator into the public
+# marketplace repository. The plugin tree is exported from the git tag
+# <plugin>-v<version>, pointed at the target (repository and marketplace names),
+# checked, copied over the target's plugins/<plugin>/ and listed in the target's
+# marketplace.json. The target is left staged; committing,
+# tagging and pushing stay manual.
+#
+# Usage: scripts/promote <plugin> [--version X.Y.Z] [--target DIR] [--dry-run]
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+usage() {
+  sed -n 's/^# Usage: /usage: /p' "$0" >&2
+  exit 2
+}
+die() { echo "promote: $*" >&2; exit 1; }
+
+plugin="" version="" dry=0
+target="${PROMOTE_TARGET:-$ROOT/../claude-code-plugins}"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --version) [ $# -ge 2 ] || usage; version="$2"; shift 2 ;;
+    --target)  [ $# -ge 2 ] || usage; target="$2"; shift 2 ;;
+    --dry-run) dry=1; shift ;;
+    -h|--help) usage ;;
+    -*) echo "promote: unknown option $1" >&2; usage ;;
+    *) [ -z "$plugin" ] || usage; plugin="$1"; shift ;;
+  esac
+done
+[ -n "$plugin" ] || usage
+case "$plugin" in *[!a-z0-9-]*) die "'$plugin' is not a plugin name" ;; esac
+
+command -v jq >/dev/null || die "jq not found"
+src="plugins/$plugin"
+[ -f "$src/.claude-plugin/plugin.json" ] || die "$src/.claude-plugin/plugin.json not found"
+[ -n "$version" ] || version=$(jq -r '.version // empty' "$src/.claude-plugin/plugin.json")
+[ -n "$version" ] || die "$src has no version"
+tag="$plugin-v$version"
+
+git rev-parse -q --verify "refs/tags/$tag" >/dev/null \
+  || die "tag $tag does not exist; release first: git tag $tag && git push origin $tag"
+
+[ -d "$target" ] || die "target $target not found"
+target="$(cd "$target" && pwd)"
+tmanifest="$target/.claude-plugin/marketplace.json"
+git -C "$target" rev-parse --git-dir >/dev/null 2>&1 || die "$target is not a git repository"
+[ -f "$tmanifest" ] || die "$tmanifest not found"
+
+entry=$(jq -c --arg n "$plugin" '.plugins[] | select(.name == $n)' .claude-plugin/marketplace.json)
+[ -n "$entry" ] || die "$plugin has no entry in .claude-plugin/marketplace.json"
+
+# Export the tagged tree, so what ships is what was tagged, not the working copy.
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
+git archive "$tag" "$src" | tar -x -C "$work"
+export_dir="$work/$src"
+rm -rf "$export_dir/.claude-plugin/types"
+
+tagged=$(jq -r '.version // empty' "$export_dir/.claude-plugin/plugin.json")
+[ "$tagged" = "$version" ] || die "tag $tag holds version '$tagged' in plugin.json, expected $version"
+if ! git diff --quiet "$tag" -- "$src" || [ -n "$(git status --porcelain -- "$src")" ]; then
+  echo "note: the working copy of $src differs from $tag; the tag is what gets promoted"
+fi
+
+# Plugin files name this repository and its marketplace (install lines, manifest
+# URLs). In the published copy they must name the target instead.
+slug() { git -C "$1" remote get-url origin 2>/dev/null | sed -E 's#^(git@|https://)github\.com[:/]##; s#\.git$##'; }
+rewrite() {
+  local from="$1" to="$2" f
+  [ -n "$from" ] && [ -n "$to" ] && [ "$from" != "$to" ] || return 0
+  { grep -rIlF -- "$from" "$export_dir" || true; } | while read -r f; do
+    FROM="$from" TO="$to" perl -pi -e 's/\Q$ENV{FROM}\E/$ENV{TO}/g' "$f"
+    echo "rewrote $from -> $to in ${f#"$work"/}"
+  done
+}
+rewrite "$(slug "$ROOT")" "$(slug "$target")"
+rewrite "$(jq -r '.name' .claude-plugin/marketplace.json)" "$(jq -r '.name' "$tmanifest")"
+
+echo "== gate: $tag"
+if grep -rIlE -e '-----BEGIN [A-Z ]*PRIVATE KEY-----|sk-ant-[A-Za-z0-9_-]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|AKIA[0-9A-Z]{16}' "$export_dir"; then
+  die "the files above look like they hold a secret"
+fi
+command -v claude >/dev/null || die "claude not found; the gate needs 'claude plugin validate'"
+claude plugin validate "$export_dir" --profile directory || die "validation failed"
+if ls "$export_dir"/hooks/*.test.ts >/dev/null 2>&1; then
+  claude plugin test "$export_dir" || die "tests failed"
+fi
+
+new_entry=$(echo "$entry" | jq -c --arg s "./$src" '{name, description, source: $s, category}')
+new_manifest=$(jq --argjson e "$new_entry" '
+  if any(.plugins[]; .name == $e.name)
+  then .plugins |= map(if .name == $e.name then $e else . end)
+  else .plugins += [$e] end' "$tmanifest")
+
+dest="$target/$src"
+if [ "$dry" -eq 1 ]; then
+  echo "== dry run: nothing is written to $target"
+  if [ -d "$dest" ]; then
+    diff -rq "$dest" "$export_dir" | sed "s|$work/||; s|$target/||g" || true
+  else
+    (cd "$work" && find "$src" -type f | sort | sed 's/^/new: /')
+  fi
+  echo "$new_manifest" | diff "$tmanifest" - | sed 's/^/marketplace.json: /' || true
+  exit 0
+fi
+
+rm -rf "$dest"
+mkdir -p "$(dirname "$dest")"
+cp -R "$export_dir" "$dest"
+echo "$new_manifest" > "$tmanifest"
+[ -x "$target/scripts/check-marketplace" ] && "$target/scripts/check-marketplace"
+
+git -C "$target" add -A -- "$src" .claude-plugin/marketplace.json
+if git -C "$target" rev-parse -q --verify HEAD >/dev/null \
+   && git -C "$target" diff --cached --quiet -- "$src" .claude-plugin/marketplace.json; then
+  echo "== $plugin $version is already published in $target; nothing to do"
+  exit 0
+fi
+
+echo "== staged in $target"
+git -C "$target" diff --cached --stat -- "$src" .claude-plugin/marketplace.json | tail -n 20
+branch=$(git -C "$target" symbolic-ref --short HEAD)
+echo
+echo "Review the staged change, then publish:"
+echo "  cd $target"
+echo "  git commit -m \"$plugin: $version\""
+if git -C "$target" rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+  echo "  git push origin $branch        # tag $tag already exists there (re-promotion)"
+else
+  echo "  git tag $tag"
+  echo "  git push origin $branch $tag"
+fi

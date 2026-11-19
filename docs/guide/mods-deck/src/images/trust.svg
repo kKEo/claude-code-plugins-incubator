@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 400" width="920" height="400" role="img" aria-labelledby="t d">
+<title id="t">What to know before you install a mod</title>
+<desc id="d">Read: claude plugin validate prints the events a mod hooks and every part of the engine interface it calls. Know: a mod is code that runs with your permissions; it is not sandboxed and not a security boundary. Control: the flags safe-mode and bare, and the managed settings allowManagedModsOnly and disableAllHooks, keep user mods out; an organization places its own mods around yours.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="399" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">trust</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">A MOD IS CODE</tspan><tspan dx="10">it runs with your permissions</tspan></text>
+<rect class="card" x="32" y="80" width="276" height="290" rx="10"/>
+<circle class="dot" cx="60" cy="106" r="12"/>
+<text x="60" y="110.5" class="onaccent b" font-size="12.5" text-anchor="middle">1</text>
+<text x="82" y="111" class="fg b" font-size="16">Read</text>
+<text x="292" y="110" class="faint caps" font-size="9.5" text-anchor="end">WHAT IT TOUCHES</text>
+<rect class="hot" x="322" y="80" width="276" height="290" rx="10"/>
+<circle class="dot" cx="350" cy="106" r="12"/>
+<text x="350" y="110.5" class="onaccent b" font-size="12.5" text-anchor="middle">2</text>
+<text x="372" y="111" class="fg b" font-size="16">Know</text>
+<text x="582" y="110" class="accent caps" font-size="9.5" text-anchor="end">WHAT IT IS</text>
+<rect class="card" x="612" y="80" width="276" height="290" rx="10"/>
+<circle class="dot" cx="640" cy="106" r="12"/>
+<text x="640" y="110.5" class="onaccent b" font-size="12.5" text-anchor="middle">3</text>
+<text x="662" y="111" class="fg b" font-size="16">Control</text>
+<text x="872" y="110" class="faint caps" font-size="9.5" text-anchor="end">WHO CAN KEEP IT OUT</text>
+<rect class="softbox" x="48" y="136" width="244" height="28" rx="6"/>
+<text x="60" y="154.32" class="fg mono" font-size="12">claude plugin validate ./mod</text>
+<rect class="tile" x="48" y="176" width="244" height="76" rx="8"/>
+<text x="60" y="200" class="fg mono" font-size="12.5">hooks: tool.call</text>
+<text x="60" y="219" class="fg mono" font-size="12.5">calls: $.ui.status</text>
+<text x="60" y="238" class="fg mono" font-size="12.5" xml:space="preserve">       $.process.run</text>
+<text x="48" y="280.0" class="muted" font-size="13">The events it hooks and every</text>
+<text x="48" y="297.9" class="muted" font-size="13">part of $ it calls. A reviewer</text>
+<text x="48" y="315.8" class="muted" font-size="13">reads these two lines first.</text>
+<text x="338" y="150" class="fg sb" font-size="15">Not sandboxed.</text>
+<text x="338" y="174" class="fg sb" font-size="15">Not a security boundary.</text>
+<text x="338" y="216.0" class="muted" font-size="13">Through $ a mod reads files, runs</text>
+<text x="338" y="233.9" class="muted" font-size="13">commands, fetches URLs and calls</text>
+<text x="338" y="251.8" class="muted" font-size="13">models, all as you.</text>
+<rect class="tile" x="338" y="290" width="244" height="60" rx="8"/>
+<text x="350" y="314.0" class="fg" font-size="13">Install only mods you would</text>
+<text x="350" y="331.9" class="fg" font-size="13">be willing to read.</text>
+<rect class="softbox" x="628" y="136" width="244" height="28" rx="6"/>
+<text x="640" y="154.32" class="fg mono" font-size="12" xml:space="preserve">--safe-mode   --bare</text>
+<rect class="softbox" x="628" y="172" width="244" height="28" rx="6"/>
+<text x="640" y="190.32" class="fg mono" font-size="12">allowManagedModsOnly</text>
+<rect class="softbox" x="628" y="208" width="244" height="28" rx="6"/>
+<text x="640" y="226.32" class="fg mono" font-size="12">disableAllHooks</text>
+<text x="628" y="268.0" class="muted" font-size="13">Flags and managed settings turn</text>
+<text x="628" y="285.9" class="muted" font-size="13">off what a person installed. An</text>
+<text x="628" y="303.8" class="muted" font-size="13">organization’s mods sit around</text>
+<text x="628" y="321.7" class="muted" font-size="13">yours: prepend and append.</text>
+</svg>

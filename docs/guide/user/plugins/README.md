@@ -44,6 +44,12 @@ Lists every model request with its tokens and cost in a pane beside the chat, wi
 
 [More about session-cost](session-cost.md)
 
+## session-cost-installer
+
+One skill that installs or updates the session-cost mod for you, adding the marketplace first when it is missing.
+
+[More about session-cost-installer](session-cost-installer.md)
+
 ## prompt-coach
 
 Collects the prompts you type, shows a language correction for each in a pane beside the chat, and has a practice game built from your own mistakes. A mod.

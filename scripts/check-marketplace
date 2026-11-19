@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Marketplace gate: the manifest is valid JSON and every entry points at a
+# plugin folder that has a manifest with the same name, a README and a LICENSE.
+# Exit 1 on any failure. Run from anywhere; paths are resolved from this script.
+set -uo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+MANIFEST=.claude-plugin/marketplace.json
+fail=0
+
+err() { echo "error: $*"; fail=1; }
+
+jq empty "$MANIFEST" || { echo "check-marketplace: FAIL ($MANIFEST is not valid JSON)"; exit 1; }
+
+[ -n "$(jq -r '.name // empty' "$MANIFEST")" ] || err "marketplace has no name"
+
+dupes=$(jq -r '.plugins[].name' "$MANIFEST" | sort | uniq -d)
+[ -z "$dupes" ] || err "duplicate entries: $dupes"
+
+while IFS=$'\t' read -r name source description; do
+  [ -n "$name" ] || { err "an entry has no name"; continue; }
+  [ -n "$description" ] || err "$name: no description"
+  case "$source" in
+    ./*) ;;
+    *) err "$name: source '$source' is not a relative path starting with ./"; continue ;;
+  esac
+  dir="${source#./}"
+  if [ ! -f "$dir/.claude-plugin/plugin.json" ]; then
+    err "$name: $dir/.claude-plugin/plugin.json not found"
+    continue
+  fi
+  jq empty "$dir/.claude-plugin/plugin.json" || { err "$name: plugin.json is not valid JSON"; continue; }
+  pname=$(jq -r '.name // empty' "$dir/.claude-plugin/plugin.json")
+  [ "$pname" = "$name" ] || err "$name: plugin.json name is '$pname'"
+  [ -n "$(jq -r '.version // empty' "$dir/.claude-plugin/plugin.json")" ] || err "$name: plugin.json has no version"
+  [ -f "$dir/README.md" ] || err "$name: no README.md"
+  [ -f "$dir/LICENSE" ] || err "$name: no LICENSE"
+done < <(jq -r '.plugins[] | [.name // "", .source // "", .description // ""] | @tsv' "$MANIFEST")
+
+# Every plugin folder with a manifest is listed, so nothing ships unlisted.
+for m in plugins/*/.claude-plugin/plugin.json; do
+  [ -f "$m" ] || continue
+  dir="$(dirname "$(dirname "$m")")"
+  jq -e --arg s "./$dir" 'any(.plugins[]; .source == $s)' "$MANIFEST" >/dev/null || err "$dir is not listed in $MANIFEST"
+done
+
+if [ "$fail" -ne 0 ]; then
+  echo "check-marketplace: FAIL"
+  exit 1
+fi
+echo "check-marketplace: OK ($(jq '.plugins | length' "$MANIFEST") plugins)"

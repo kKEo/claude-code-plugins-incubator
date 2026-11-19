@@ -64,6 +64,14 @@ The output is one flat file per feature, `docs/specs/<YYYY-MM-DD>-<slug>.md`. A 
 
 The plugin is one skill and nothing else. An optional `--focus <area>` narrows the review.
 
+## session-cost-installer
+
+| Component | File | Role |
+|---|---|---|
+| Skill `install-session-cost` | `skills/install-session-cost/SKILL.md` | Adds or refreshes the marketplace `km-plugin-registry`, installs or updates `session-cost@km-plugin-registry` into the scope given as argument, verifies it and reports. It has no `allowed-tools`, so each `claude plugin` command asks for permission |
+
+The plugin is one skill and nothing else. It stops when `km-plugin-registry` points at another source or when `session-cost@km-plugins` is enabled. It names the incubator on purpose and is not promoted: `scripts/promote` would rewrite those names.
+
 ## memors-hooks
 
 | Component | File | Role |

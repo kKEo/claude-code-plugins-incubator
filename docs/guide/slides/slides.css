@@ -1,0 +1,30 @@
+/* Turns each mdBook page into one slide: large type, vertically centred, no scrolling on a laptop screen. */
+:root { --content-max-width: 1040px; }
+.content main {
+  /* Type scales with the window height, so a slide fits a laptop window as well as a projector. */
+  font-size: clamp(1.5rem, 2.45vh, 2.6rem);
+  line-height: 1.4;
+  min-height: calc(100vh - 150px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.content main h1 { font-size: 1.9em; line-height: 1.15; margin: 0 0 0.45em; letter-spacing: -0.01em; }
+.content main p { margin: 0.45em 0; }
+.content main ul, .content main ol { margin: 0.4em 0; }
+.content { padding-top: 0; }
+.content main h2 { font-size: 1.2em; margin: 0.8em 0 0.3em; }
+.content main li { margin: 0.15em 0; }
+.content main pre { margin: 0.45em 0; }
+.content main pre > code { font-size: 0.78em; line-height: 1.35; }
+.content main table { margin: 0.45em 0; font-size: 0.86em; }
+.content main table td, .content main table th { padding: 0.2em 0.7em; }
+.content main blockquote { margin: 0.6em 0; padding: 0.4em 1em; }
+.content main img { display: block; max-height: 27vh; width: auto; max-width: 100%; margin: 0.4em auto; }
+.content main small { display: block; margin-top: 0.8em; font-size: 0.6em; opacity: 0.7; }
+.content main .big { font-size: 1.25em; }
+#slide-counter { font-size: 1.5rem; line-height: var(--menu-bar-height); padding: 0 12px; opacity: 0.7; font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) {
+  .content main { font-size: 1.7rem; min-height: 0; display: block; }
+}
+@media print { .content main { min-height: 0; display: block; } }

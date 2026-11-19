@@ -55,6 +55,12 @@
       "category": "Development"
     },
     {
+      "name": "session-cost-installer",
+      "description": "A skill that installs or updates the session-cost mod from the kKEo/claude-code-plugins-incubator marketplace, adding the marketplace first when it is missing",
+      "source": "./plugins/session-cost-installer",
+      "category": "Development"
+    },
+    {
       "name": "prompt-coach",
       "description": "A pane beside the chat that collects the prompts you type, shows a language correction for each, and has a practice game built from your own mistakes",
       "source": "./plugins/prompt-coach",

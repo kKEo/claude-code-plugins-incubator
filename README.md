@@ -1,6 +1,8 @@
-# Claude Code Plugins Marketplace
+# Claude Code Plugins Incubator
 
 A small registry of Claude Code plugins (`km-plugin-registry`). Add the marketplace once, then install any plugin with a slash command.
+
+> **This is the incubator.** Plugins are developed here, and `master` is what the marketplace serves, so a plugin can change or break between two updates. Released versions are copied to [kKEo/claude-code-plugins](https://github.com/kKEo/claude-code-plugins) (`km-plugins`); install from there unless you want the newest work. See [Promoting to the public marketplace](docs/guide/operator/install/promote.md).
 
 ## What is this?
 
@@ -24,7 +26,7 @@ The landing page is `docs/guide/index.html`; `docs/README.md` indexes everything
 /reload-plugins
 ```
 
-Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs-validator`, `implementation-spec`, `instances-monitor`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review` or `session-cost` as needed.
+Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs-validator`, `implementation-spec`, `instances-monitor`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review`, `session-cost` or `session-cost-installer` as needed.
 
 ## Browse Plugins
 

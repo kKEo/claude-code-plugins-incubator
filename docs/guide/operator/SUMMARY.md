@@ -26,6 +26,7 @@
   - [Installing from the marketplace](install/marketplace.md)
   - [Publishing a plugin](install/publish.md)
   - [Releasing a new version](install/release.md)
+  - [Promoting to the public marketplace](install/promote.md)
 - [Part IV: Configuration reference](config/README.md)
   - [marketplace.json](config/marketplace-json.md)
   - [plugin.json](config/plugin-json.md)

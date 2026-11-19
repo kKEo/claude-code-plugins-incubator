@@ -13,7 +13,7 @@ Each plugin has its own semantic version in `plugin.json`. The marketplace has n
 | Renamed skill or agent, changed output file names or locations, removed component | major |
 | A mod's stored value changes shape | minor at least; change the atom's `shape` tag and guard what `$.store` returns, see [State, lifecycle and reloads](../mods/state-lifecycle.md) |
 
-Current versions at the time of writing: `frontend-scaffold` 0.1.1, `feature-dev-documentalist` 0.1.6, `gitbook-docs-validator` 0.3.0, `implementation-spec` 0.1.1, `instances-monitor` 0.1.1, `memors-hooks` 0.3.0, `plan-progress` 0.2.0, `prompt-coach` 0.1.0, `rigorous-review` 0.1.1, `session-cost` 0.6.0. Each plugin's `plugin.json` is the authority.
+Current versions at the time of writing: `frontend-scaffold` 0.1.1, `feature-dev-documentalist` 0.1.6, `gitbook-docs-validator` 0.3.0, `implementation-spec` 0.1.1, `instances-monitor` 0.1.1, `memors-hooks` 0.3.0, `plan-progress` 0.2.0, `prompt-coach` 0.1.0, `rigorous-review` 0.1.1, `session-cost` 0.6.0, `session-cost-installer` 0.1.0. Each plugin's `plugin.json` is the authority.
 
 ## Procedure
 
@@ -28,7 +28,9 @@ git tag feature-dev-documentalist-v0.1.4
 git push origin master --tags
 ```
 
-Users pick the change up with `/plugin marketplace update` followed by `/plugin update <name>`.
+Users of this incubator marketplace pick the change up with `/plugin marketplace update` followed by `/plugin update <name>`.
+
+6. If the plugin is published, or this version is the one to publish, copy it to the public marketplace: `scripts/promote <name>`. See [Promoting to the public marketplace](promote.md).
 
 ## Rolling back
 

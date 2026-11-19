@@ -1,0 +1,12 @@
+{
+  "name": "session-cost-installer",
+  "version": "0.1.0",
+  "description": "A skill that installs or updates the session-cost mod from the kKEo/claude-code-plugins-incubator marketplace, adding the marketplace first when it is missing",
+  "author": {
+    "name": "Krzysztof Maziarz"
+  },
+  "homepage": "https://github.com/kKEo/claude-code-plugins-incubator/tree/master/plugins/session-cost-installer",
+  "repository": "https://github.com/kKEo/claude-code-plugins-incubator",
+  "license": "MIT",
+  "keywords": ["install", "session-cost", "marketplace", "setup"]
+}

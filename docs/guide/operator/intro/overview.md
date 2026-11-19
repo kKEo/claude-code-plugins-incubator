@@ -16,6 +16,7 @@ claude-code-plugins-incubator/
 │   ├── memors-hooks/                 # command hooks and an MCP server
 │   ├── plan-progress/                # a mod
 │   ├── session-cost/                 # a mod
+│   ├── session-cost-installer/       # a skill that installs session-cost
 │   ├── prompt-coach/                 # a mod
 │   ├── instances-monitor/            # a mod
 │   └── gitbook-docs-validator-workspace/   # eval workspace, not a plugin

@@ -11,6 +11,7 @@
   - [rigorous-review](plugins/rigorous-review.md)
   - [plan-progress](plugins/plan-progress.md)
   - [session-cost](plugins/session-cost.md)
+  - [session-cost-installer](plugins/session-cost-installer.md)
   - [prompt-coach](plugins/prompt-coach.md)
   - [instances-monitor](plugins/instances-monitor.md)
   - [memors-hooks](plugins/memors-hooks.md)

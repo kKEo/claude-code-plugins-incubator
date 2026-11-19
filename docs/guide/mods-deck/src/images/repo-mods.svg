@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 464" width="920" height="464" role="img" aria-labelledby="t d">
+<title id="t">The four mods of this repository and the mechanisms each uses</title>
+<desc id="d">instances-monitor: a timer every three seconds runs ps and reads the session files, and a pane shows the result. plan-progress: hooks on the plan and task tools and a tool of its own, mark_step; it draws a pane and a status line. prompt-coach: a prompt.submit hook collects prompts, a small model proofreads them in the background, a pane and a toast show corrections, and the store keeps them. session-cost: a streaming turn.step hook records every model request; it draws a pane, a band and a status line, and the store keeps history.</desc>
+<style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.hot{fill:var(--soft);stroke:var(--accent)}.softbox{fill:var(--soft);stroke:none}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.arrowa{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.dash{stroke-dasharray:4 4}.ah{fill:var(--faint)}.aha{fill:var(--accent)}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.dot{fill:var(--accent)}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0 1L9 5L0 9z"/></marker><marker id="aha" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="aha" d="M0 1L9 5L0 9z"/></marker></defs>
+<rect class="panel" x=".5" y=".5" width="919" height="463" rx="14"/>
+<rect class="tile" x="32" y="20" width="36" height="36" rx="8"/>
+<g transform="translate(38 26)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
+<text x="82" y="44" class="fg b mono" font-size="17">four mods in this repo</text>
+<text x="888" y="43" text-anchor="end" font-size="12" class="muted"><tspan class="faint caps" font-size="10">km-plugin-registry</tspan><tspan dx="10">each opens with its slash command</tspan></text>
+<rect class="card" x="32" y="80" width="420" height="170" rx="10"/>
+<text x="48" y="110" class="fg b mono" font-size="16">instances-monitor</text>
+<rect class="softbox" x="338" y="92" width="98" height="26" rx="6"/>
+<text x="350" y="109.5" class="fg mono" font-size="12.5">/instances</text>
+<text x="48" y="142" class="faint caps" font-size="9.5">HOOKS</text>
+<text x="108" y="142" class="fg mono" font-size="12">session.start, command.run</text>
+<text x="48" y="172" class="faint caps" font-size="9.5">CALLS</text>
+<text x="108" y="172" class="fg mono" font-size="12">$.clock.every(3 s), $.process.run, $.fs</text>
+<text x="48" y="202" class="faint caps" font-size="9.5">DRAWS</text>
+<text x="108" y="202" class="fg" font-size="13">a pane</text>
+<text x="48" y="232" class="faint caps" font-size="9.5">KEEPS</text>
+<text x="108" y="232" class="fg" font-size="13">Nothing on disk</text>
+<rect class="card" x="468" y="80" width="420" height="170" rx="10"/>
+<text x="484" y="110" class="fg b mono" font-size="16">plan-progress</text>
+<rect class="softbox" x="744" y="92" width="128" height="26" rx="6"/>
+<text x="756" y="109.5" class="fg mono" font-size="12.5">/plan-progress</text>
+<text x="484" y="142" class="faint caps" font-size="9.5">HOOKS</text>
+<text x="544" y="142" class="fg mono" font-size="12">tool.call on plan, task and todo tools</text>
+<text x="484" y="172" class="faint caps" font-size="9.5">CALLS</text>
+<text x="544" y="172" class="fg mono" font-size="12">$.tool.register: mark_step</text>
+<text x="484" y="202" class="faint caps" font-size="9.5">DRAWS</text>
+<text x="544" y="202" class="fg" font-size="13">a pane and a status line</text>
+<text x="484" y="232" class="faint caps" font-size="9.5">KEEPS</text>
+<text x="544" y="232" class="fg" font-size="13">Nothing on disk</text>
+<rect class="card" x="32" y="264" width="420" height="170" rx="10"/>
+<text x="48" y="294" class="fg b mono" font-size="16">prompt-coach</text>
+<rect class="softbox" x="315" y="276" width="121" height="26" rx="6"/>
+<text x="327" y="293.5" class="fg mono" font-size="12.5">/prompt-coach</text>
+<text x="48" y="326" class="faint caps" font-size="9.5">HOOKS</text>
+<text x="108" y="326" class="fg mono" font-size="12">prompt.submit</text>
+<text x="48" y="356" class="faint caps" font-size="9.5">CALLS</text>
+<text x="108" y="356" class="fg mono" font-size="12">$.model.complete, after the turn starts</text>
+<text x="48" y="386" class="faint caps" font-size="9.5">DRAWS</text>
+<text x="108" y="386" class="fg" font-size="13">a pane and a toast</text>
+<text x="48" y="416" class="faint caps" font-size="9.5">KEEPS</text>
+<text x="108" y="416" class="fg" font-size="13">$.store: prompts and corrections</text>
+<rect class="card" x="468" y="264" width="420" height="170" rx="10"/>
+<text x="484" y="294" class="fg b mono" font-size="16">session-cost</text>
+<rect class="softbox" x="751" y="276" width="121" height="26" rx="6"/>
+<text x="763" y="293.5" class="fg mono" font-size="12.5">/session-cost</text>
+<text x="484" y="326" class="faint caps" font-size="9.5">HOOKS</text>
+<text x="544" y="326" class="fg mono" font-size="12">turn.step (a stream), turn.complete</text>
+<text x="484" y="356" class="faint caps" font-size="9.5">CALLS</text>
+<text x="544" y="356" class="fg mono" font-size="12">$.session.usage, $.fs.read</text>
+<text x="484" y="386" class="faint caps" font-size="9.5">DRAWS</text>
+<text x="544" y="386" class="fg" font-size="13">a pane, a band and a status line</text>
+<text x="484" y="416" class="faint caps" font-size="9.5">KEEPS</text>
+<text x="544" y="416" class="fg" font-size="13">$.store: totals per session and day</text>
+</svg>

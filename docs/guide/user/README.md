@@ -4,7 +4,7 @@ This guide is for anyone who wants to use the plugins in this marketplace inside
 
 [What is in the marketplace](plugins/README.md) describes every plugin.
 
-The marketplace is called `km-plugin-registry`. It currently holds nine plugins:
+The marketplace is called `km-plugin-registry`. It currently holds eleven plugins:
 
 - [**frontend-scaffold**](plugins/frontend-scaffold.md) builds a complete Vue 3 web application from a one-line description.
 - [**feature-dev-documentalist**](plugins/feature-dev-documentalist.md) writes a short document for each phase of a feature you are building, by looking at what changed in git.
@@ -13,7 +13,9 @@ The marketplace is called `km-plugin-registry`. It currently holds nine plugins:
 - [**rigorous-review**](plugins/rigorous-review.md) does a strict review of a change before it is merged, looking for bugs, security holes and performance traps.
 - [**plan-progress**](plugins/plan-progress.md) shows the current plan and how far Claude has got with it in a pane beside the chat.
 - [**session-cost**](plugins/session-cost.md) lists every model request with its tokens and cost in a pane beside the chat, with totals by model and by day.
+- [**session-cost-installer**](plugins/session-cost-installer.md) installs or updates session-cost for you, adding the marketplace first when it is missing.
 - [**prompt-coach**](plugins/prompt-coach.md) collects the prompts you type, shows a language correction for each in a pane beside the chat, and has a practice game built from your own mistakes.
+- [**instances-monitor**](plugins/instances-monitor.md) lists every Claude Code instance running on your machine in a pane beside the chat.
 - [**memors-hooks**](plugins/memors-hooks.md) connects Claude to a local memors-mcp knowledge base and reminds it to search before re-fetching and to record what it learns.
 
 ## If you want to…

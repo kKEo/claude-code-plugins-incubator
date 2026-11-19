@@ -16,6 +16,7 @@ This directory contains all plugins available in the Claude Plugins Marketplace.
 - **[rigorous-review](rigorous-review/)** - A strict, pre-merge code review skill that reports bugs, concurrency issues, security holes, performance traps and over-engineering, each with a minimal fix
 - **[plan-progress](plan-progress/)** - A pane beside the chat showing the current plan and its progress (a mod: a hooks module drawing into the interface)
 - **[session-cost](session-cost/)** - A pane beside the chat listing every model request with its tokens and cost, with session totals and history (a mod)
+- **[session-cost-installer](session-cost-installer/)** - A skill that installs or updates the session-cost mod from the incubator marketplace, adding the marketplace first when it is missing
 - **[instances-monitor](instances-monitor/)** - A pane beside the chat listing every Claude Code instance running on this machine, with status, CPU, memory and uptime (a mod)
 
 ### Productivity
