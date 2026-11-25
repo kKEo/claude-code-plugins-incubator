@@ -1,0 +1,8 @@
+[book]
+title = "csvjoin User Guide"
+description = "How to join two CSV files with csvjoin."
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/example/csvjoin"

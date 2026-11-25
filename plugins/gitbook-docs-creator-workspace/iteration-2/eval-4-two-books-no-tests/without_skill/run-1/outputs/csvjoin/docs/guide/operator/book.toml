@@ -1,0 +1,8 @@
+[book]
+title = "csvjoin Operator Guide"
+description = "How to deploy csvjoin and run it unattended."
+language = "en"
+src = "src"
+
+[output.html]
+git-repository-url = "https://github.com/example/csvjoin"

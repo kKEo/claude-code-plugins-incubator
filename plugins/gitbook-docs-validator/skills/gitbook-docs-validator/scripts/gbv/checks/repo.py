@@ -38,8 +38,8 @@ def run(ctx: Context) -> None:
         for role, folder in books.items():
             if rel_root and f"{rel_root}/{folder}" not in txt:
                 rep.warn("repo", f"root README.md does not link the {role} book ({rel_root}/{folder})", readme)
-        if re.search(r"\bboth guides\b", txt, re.I) and len(books) == 3:
-            rep.warn("repo", "root README.md says 'both guides' but there are three books", readme)
+        if re.search(r"\bboth guides\b", txt, re.I) and len(books) > 2:
+            rep.warn("repo", f"root README.md says 'both guides' but there are {len(books)} books", readme)
     else:
         rep.info("repo", "no root README.md")
     docs_index = root.parent / "README.md"

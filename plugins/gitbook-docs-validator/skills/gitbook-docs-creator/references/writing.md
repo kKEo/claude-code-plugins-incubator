@@ -1,19 +1,22 @@
-# Writing the three books
+# Writing the books
 
 How to turn the scaffold into documentation that is true and that each reader can use.
 
-Contents: 1 Gather the facts · 2 Three voices · 3 Page types · 4 README pages and the landing
+Contents: 1 Gather the facts · 2 Four voices · 3 Page types · 4 README pages and the landing
 page · 5 Growing past the minimum · 6 Pictures · 7 Migrating existing documentation
 
 ## 1. Gather the facts
 
-Collect the facts once, before the first page, so the three books agree with each other and
+Collect the facts once, before the first page, so the books agree with each other and
 with the code. Read these sources; do not rely on the old README or on what such projects
 usually do.
 
 | Fact | Where to read it | Used in |
 |---|---|---|
-| How it is built, installed and started | build files, package manifest, Dockerfile, release configuration, install script | operator install, user quick start |
+| How it is built, installed and started | build files, package manifest, Dockerfile, release configuration, install script | operator install, user quick start, developer setup |
+| How the code is organised | the source tree, imports, the entry points | developer architecture |
+| Rules for a change | linter and formatter configuration, CONTRIBUTING, CI, recent history | developer conventions |
+| How a version is released | release workflow, packaging configuration, tags | developer release |
 | Commands and flags | the argument parser, or the `--help` output if you can run it | operator commands, tester running, user everyday use |
 | Settings and their defaults | every place the code reads an environment variable or a configuration key | operator configuration |
 | What it stores and where | file paths, database code, migrations | operator overview and operations, user trust |
@@ -33,9 +36,9 @@ printed. If you cannot, quote the code and do not describe output you did not se
 When a fact cannot be found, the page keeps its `> Draft.` line and names the gap in one
 sentence. Do not fill the gap with what is plausible.
 
-## 2. Three voices
+## 2. Four voices
 
-The same fact reads differently in each book. Here is one setting three ways.
+The same fact reads differently in each book. Here is one setting four ways.
 
 **User book**: names things by what they do, defines every project word, no internals.
 
@@ -54,6 +57,12 @@ The same fact reads differently in each book. Here is one setting three ways.
 > `WIDGET_HOME` is covered by `tests/config_test.py::test_home_override`. Run it alone with
 > `make test T=config_test`.
 
+**Developer book**: names the package, file and function, and says why the code is shaped so.
+
+> `WIDGET_HOME` is read once, in `config.load()` (`widget/config.py`), and passed down as
+> `Config.home`. Nothing else reads the environment, so a new setting is one field in
+> `Config` and one line in `load()`.
+
 Rules that follow from this:
 
 - User book: short sentences, "you", one idea per paragraph. A word the reader has not met
@@ -63,6 +72,20 @@ Rules that follow from this:
   in backticks, spelled exactly as in the code. State defaults and limits as values.
 - Tester book: every claim about a check is followed by the command that reproduces it
   locally and the file that implements it.
+- Developer book: paths, packages and functions in backticks, spelled as in the code. Explain
+  the reason for a structure when it is not obvious; a developer can read what the code
+  does, but not why.
+
+**Operator or developer?** The operator book has the runtime view: what runs, what it
+stores, which settings and signals it has. The developer book has the code view: where the
+code for each of those lives and how to change it. A fact about a file in the source tree
+belongs to the developer; a fact about a file on the installed machine belongs to the
+operator. Without a developer book, a short build-from-source chapter may stay with the
+operator.
+
+**Tests without a tester book.** With a developer book, put how to run the tests and which
+test a change needs into its contributing part. With neither book, mention the test command
+in the operator install page only if an operator would run it to verify an installation.
 
 ## 3. Page types
 
@@ -152,7 +175,7 @@ connect, how a request flows, what state follows what. One per concept page is p
 ## 7. Migrating existing documentation
 
 Existing text is usually right about the product and wrong about the reader: one README
-serves all three. Sort it by who needs it.
+serves all of them. Sort it by who needs it.
 
 | Existing text | Goes to |
 |---|---|
@@ -161,8 +184,9 @@ serves all three. Sort it by who needs it.
 | Known problems, "if you see this error" | user: FAQ, or operator: troubleshooting when the fix needs a terminal |
 | Architecture, design notes | operator: how it works. A long design document stays where it is and is linked by absolute URL |
 | Install options, environment variables, flags | operator: install, configuration reference |
+| CONTRIBUTING, code structure notes, build from source, coding rules, release notes for maintainers | developer: architecture, setup, contributing, release (when the project has a developer book; otherwise build from source goes to operator install and the rest stays where it is, linked by absolute URL) |
 | Deployment, backup, upgrade notes | operator: install, operations |
-| How to run tests, CONTRIBUTING test rules, CI description | tester: running, gates, adding tests |
+| How to run tests, CONTRIBUTING test rules, CI description | tester: running, gates, adding tests (without a tester book: developer contributing) |
 
 How to move it:
 

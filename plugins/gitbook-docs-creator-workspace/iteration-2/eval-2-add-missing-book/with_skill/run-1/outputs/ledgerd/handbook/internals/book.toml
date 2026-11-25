@@ -1,0 +1,7 @@
+[book]
+title = "ledgerd internals"
+src = "."
+
+[build]
+build-dir = "../../site/internals"
+create-missing = false

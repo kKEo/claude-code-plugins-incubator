@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": false,
+      "evidence": "exit 1; summary: 7 error(s), 7 warning(s), 0 note(s); first: ERROR books              no book (directory with SUMMARY.md) under /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-creator-workspace/iterati"
+    },
+    {
+      "text": "All four books exist and map to user, operator, tester and developer",
+      "passed": true,
+      "evidence": "mapped: developer, operator, tester, user"
+    },
+    {
+      "text": "Landing page has four book cards/links",
+      "passed": true,
+      "evidence": "links to: developer, operator, tester, user"
+    },
+    {
+      "text": "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+      "passed": true,
+      "evidence": "pip install -e: True; lint: True"
+    },
+    {
+      "text": "The release page is a draft or says no release process exists (the repository shows none)",
+      "passed": true,
+      "evidence": "no release page written"
+    },
+    {
+      "text": "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "Operator book still names all six PINGBOARD_* environment variables",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 1,
+    "total": 9,
+    "pass_rate": 0.89
+  }
+}

@@ -16,7 +16,7 @@ Writes a short document for each phase of a feature you are building, by looking
 
 ## gitbook-docs-validator
 
-Checks a documentation folder against a fixed three-book layout and reports what is missing or deviates. Its second skill creates such documentation: it lays out the books and writes the pages from your code.
+Checks a documentation folder against a fixed layout of one book per kind of reader and reports what is missing or deviates. Its second skill creates such documentation: it lays out the books and writes the pages from your code.
 
 [More about gitbook-docs-validator](gitbook-docs-validator.md)
 

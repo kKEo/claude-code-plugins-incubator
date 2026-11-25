@@ -6,6 +6,10 @@ Usage:
                      [--books user,operator,tester] [--folders role=folder,...]
                      [--repo-files] [--template FILE] [--dry-run]
 
+The template requires the user and operator books; the tester and developer books are optional.
+Without --books the script scaffolds the required books plus any optional book that already
+exists; name the optional ones to add them (--books user,operator,tester,developer).
+
 Writes the landing page, and for each book README.md, SUMMARY.md, .gitbook.yaml, book.toml,
 home-button.js and one page per required page of the template. Every page it writes is a
 stub marked "> Draft." that carries, in an HTML comment, what the page has to contain.
@@ -370,7 +374,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--name", help="project name as readers know it (default: the repository folder name)")
     ap.add_argument("--repo-url", help="https URL of the source repository (default: the origin remote)")
     ap.add_argument("--lede", help="one sentence for the landing page that says what the project does for its reader")
-    ap.add_argument("--books", help="roles to scaffold, comma separated (default: every role of the template)")
+    ap.add_argument("--books", help="roles to scaffold, comma separated (default: the required roles user,operator plus optional books that exist; optional: tester,developer)")
     ap.add_argument("--folders", help="folder name per role, e.g. user=getting-started,tester=qa (default: an existing book folder, else the role name)")
     ap.add_argument("--repo-files", action="store_true", help="also add Makefile, docs workflow, scripts/docs-check.sh and docs index when missing")
     ap.add_argument("--template", help="template.json to use instead of the validator's")
@@ -393,7 +397,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     for r in tpl["roles"]:
         if r not in outlines:
             print(f"note: the template defines the role '{r}', which has no outline; write that book by hand", file=sys.stderr)
-    roles = all_roles
+    required = [r for r in all_roles if not tpl["roles"][r].get("optional")]
+    optional = [r for r in all_roles if tpl["roles"][r].get("optional")]
+    roles = None
     if args.books:
         roles = [b.strip() for b in args.books.split(",") if b.strip()]
         unknown = [b for b in roles if b not in all_roles]
@@ -408,8 +414,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             hits = match_role(d.name, tpl["roles"])
             if len(hits) == 1 and hits[0] not in present:
                 present[hits[0]] = d.name
+    if roles is None:  # the required books, plus optional books that already exist
+        roles = [r for r in all_roles if r in required or r in present]
     all_folders = {r: given.get(r) or present.get(r) or r for r in all_roles}
     for r, f in all_folders.items():
+        if r not in roles and r not in present:
+            continue
         if match_role(f, tpl["roles"]) != [r]:
             ap.error(f"the folder '{f}' does not map to the role '{r}' alone; pick another name or add it to the "
                      f"aliases of '{r}' in {docs_root / '.docs-template.json'} first")
@@ -453,9 +463,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             print(f"  - {t}")
     books = ", ".join(f"{r}={f}/" for r, f in folders.items())
     print(f"books: {books}")
-    missing = [r for r in all_roles if r not in folders]
+    missing = [r for r in required if r not in folders]
     if missing:
-        print(f"not scaffolded: {', '.join(missing)} (the template expects all of {', '.join(all_roles)})")
+        print(f"not scaffolded: {', '.join(missing)} (required by the template)")
+    left_out = [r for r in optional if r not in folders]
+    if left_out:
+        print(f"optional books not scaffolded: {', '.join(left_out)} (add with --books {','.join(list(folders) + left_out)})")
     print("next: fill the pages marked '> Draft.', then run the validator:")
     print(f"  python3 {VALIDATOR / 'scripts' / 'validate_docs.py'} {docs_root} --repo-root {repo_root} --format md")
     return 0

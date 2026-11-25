@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pingboard documentation</title>
+<meta name="description" content="pingboard: user guide, operator guide, tester guide and developer guide.">
+<style>
+  :root { --bg: #fbfaf7; --fg: #1d1d1b; --muted: #5f5e58; --card: #ffffff; --line: #e4e1d8; --accent: #2f5d8a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16171a; --fg: #ecebe6; --muted: #a3a29b; --card: #1f2024; --line: #33343a; --accent: #8ab4e0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 56px 16px 40px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); margin: 0 0 36px; max-width: 640px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  a.card { display: block; text-decoration: none; color: inherit; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; transition: border-color .15s; }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+  .tag { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+  .card h2 { margin: 6px 0 8px; font-size: 1.3rem; }
+  .card p { margin: 0 0 12px; color: var(--muted); }
+  .card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .95rem; }
+  footer { margin-top: 44px; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>pingboard</h1>
+  <p class="lede">pingboard checks your list of web addresses on a schedule and shows on one page which ones are up.</p>
+  <div class="cards">
+    <a class="card" href="user/">
+      <div class="tag">For everyone</div>
+      <h2>User guide</h2>
+      <p>Watch your websites from one page, explained in plain words.</p>
+      <ul><li>A ten-minute quick start, from download to dashboard</li><li>Adding, removing and checking addresses</li><li>What it stores and sends, and what a DOWN means</li></ul>
+    </a>
+    <a class="card" href="operator/">
+      <div class="tag">For operators</div>
+      <h2>Operator guide</h2>
+      <p>How the checker and the dashboard run, and how to install, configure and watch them.</p>
+      <ul><li>Installing from a checkout and running as a service</li><li>Every setting, command, flag and HTTP path</li><li>Metrics, logs, a troubleshooting runbook and backup</li></ul>
+    </a>
+    <a class="card" href="tester/">
+      <div class="tag">For testers</div>
+      <h2>Tester guide</h2>
+      <p>How a change is checked: the pytest suite, the linter and what is left to check by hand.</p>
+      <ul><li>Running the suite and the map of what it covers</li><li>The checks that run on every pull request</li><li>A sandbox for exploring by hand, and how to add a test</li></ul>
+    </a>
+    <a class="card" href="developer/">
+      <div class="tag">For developers</div>
+      <h2>Developer guide</h2>
+      <p>How the five modules fit together, and how to set up, change and extend them.</p>
+      <ul><li>The modules, data types and the path of a command</li><li>Setup from a fresh checkout, and the conventions CI enforces</li><li>Adding a command, a setting, an HTTP path or a metric</li></ul>
+    </a>
+  </div>
+  <footer>Source and issues: <a href="https://github.com/example/pingboard">github.com/example/pingboard</a></footer>
+</main>
+</body>
+</html>

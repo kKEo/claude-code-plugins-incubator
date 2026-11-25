@@ -1,0 +1,16 @@
+{
+  "eval_id": 3,
+  "eval_name": "four-books-with-developer",
+  "prompt": "pingboard has nothing but a three-line README and we are about to take outside contributions. Set up documentation for it under docs/guide in our standard layout and write it: a landing page, a user guide, an operator guide, a tester guide and a developer guide. The source repository is https://github.com/example/pingboard.",
+  "assertions": [
+    "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+    "All four books exist and map to user, operator, tester and developer",
+    "Landing page has four book cards/links",
+    "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+    "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+    "The release page is a draft or says no release process exists (the repository shows none)",
+    "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+    "Operator book still names all six PINGBOARD_* environment variables",
+    "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+  ]
+}

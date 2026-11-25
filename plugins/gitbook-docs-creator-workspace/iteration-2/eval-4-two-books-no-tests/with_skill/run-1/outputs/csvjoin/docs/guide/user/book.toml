@@ -1,0 +1,20 @@
+# Read by mdBook (make docs); GitBook ignores this file and reads .gitbook.yaml.
+[book]
+title = "csvjoin user guide"
+description = "What csvjoin is and how to use it day to day."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/user"
+# A typo in SUMMARY.md fails the build instead of creating an empty page.
+create-missing = false
+
+[output.html]
+site-url = "/csvjoin/user/"
+git-repository-url = "https://github.com/example/csvjoin"
+# Adds a Home icon to the menu bar that links back to the landing page.
+additional-js = ["home-button.js"]
+
+[output.html.search]
+enable = true

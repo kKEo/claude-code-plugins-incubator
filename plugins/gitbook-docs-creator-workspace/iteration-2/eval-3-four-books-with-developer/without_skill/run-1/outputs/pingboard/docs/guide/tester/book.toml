@@ -1,0 +1,14 @@
+[book]
+title = "pingboard Tester Guide"
+description = "Run, extend and review the pingboard test suite."
+authors = ["The pingboard contributors"]
+language = "en"
+src = "src"
+
+[build]
+build-dir = "book"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/pingboard"
+edit-url-template = "https://github.com/example/pingboard/edit/main/docs/guide/tester/{path}"

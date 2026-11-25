@@ -1,0 +1,495 @@
+{
+  "metadata": {
+    "skill_name": "gitbook-docs-creator",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "claude-fable-5-2",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-25T21:49:24Z",
+    "evals_run": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 452.2,
+        "tokens": 110303,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+        },
+        {
+          "text": "Operator book names all six PINGBOARD_* environment variables read by the code",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book names the three metrics and the /healthz route",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Tester book names `make test` and all three test files",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "User quick start says how long it takes",
+          "passed": true,
+          "evidence": "checked ['quick-start.md']"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Makefile has docs, docs-check, docs-serve and docs-site targets",
+          "passed": true,
+          "evidence": "all present"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": true,
+          "evidence": "links every book"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 319.8,
+        "tokens": 97981,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+        },
+        {
+          "text": "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+          "passed": true,
+          "evidence": "all moved"
+        },
+        {
+          "text": "The books state the real default port 7070",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page still claims port 9000 (the outdated value from the old docs)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+          "passed": true,
+          "evidence": "not presented as a command"
+        },
+        {
+          "text": "Operator book documents the commands serve, list, show, export and vacuum",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Tester book names ./run-tests.sh",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": true,
+          "evidence": "links every book"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 90.4,
+        "tokens": 66254,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 15 warning(s), 3 note(s)"
+        },
+        {
+          "text": "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+          "passed": true,
+          "evidence": "all present"
+        },
+        {
+          "text": "The QA book is organised in parts (Part I: ...)",
+          "passed": true,
+          "evidence": "4 numbered parts in SUMMARY.md"
+        },
+        {
+          "text": "No existing page of the getting-started and internals books was modified or deleted",
+          "passed": true,
+          "evidence": "all identical"
+        },
+        {
+          "text": "The existing Makefile `docs` target is still there",
+          "passed": true,
+          "evidence": "original recipe kept"
+        },
+        {
+          "text": "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+          "passed": true,
+          "evidence": "drafts or explicit"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 546.1,
+        "tokens": 122308,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 2 warning(s), 3 note(s)"
+        },
+        {
+          "text": "All four books exist and map to user, operator, tester and developer",
+          "passed": true,
+          "evidence": "mapped: developer, operator, tester, user"
+        },
+        {
+          "text": "Landing page has four book cards/links",
+          "passed": true,
+          "evidence": "links to: developer, operator, tester, user"
+        },
+        {
+          "text": "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+          "passed": true,
+          "evidence": "pip install -e: True; lint: True"
+        },
+        {
+          "text": "The release page is a draft or says no release process exists (the repository shows none)",
+          "passed": true,
+          "evidence": "draft or explicit"
+        },
+        {
+          "text": "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Operator book still names all six PINGBOARD_* environment variables",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 245.5,
+        "tokens": 90003,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 0 warning(s), 2 note(s)"
+        },
+        {
+          "text": "A user book and an operator book exist",
+          "passed": true,
+          "evidence": "mapped: operator, user"
+        },
+        {
+          "text": "There is no tester book (the repository has no tests and no CI)",
+          "passed": true,
+          "evidence": "mapped: operator, user"
+        },
+        {
+          "text": "The report says the tester book was left out and why",
+          "passed": true,
+          "evidence": "- **Tester guide: left out"
+        },
+        {
+          "text": "Operator book documents every flag (--on, --how, --delimiter, --encoding, --output) and CSVJOIN_MAX_ROWS with its default 1000000",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page invents a test command (pytest, make test, unittest)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.89,
+        "passed": 8,
+        "failed": 1,
+        "total": 9,
+        "time_seconds": 583.6,
+        "tokens": 105562,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": false,
+          "evidence": "exit 1; summary: 7 error(s), 7 warning(s), 0 note(s); first: ERROR books              no book (directory with SUMMARY.md) under /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-creator-workspace/iterati"
+        },
+        {
+          "text": "All four books exist and map to user, operator, tester and developer",
+          "passed": true,
+          "evidence": "mapped: developer, operator, tester, user"
+        },
+        {
+          "text": "Landing page has four book cards/links",
+          "passed": true,
+          "evidence": "links to: developer, operator, tester, user"
+        },
+        {
+          "text": "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+          "passed": true,
+          "evidence": "pip install -e: True; lint: True"
+        },
+        {
+          "text": "The release page is a draft or says no release process exists (the repository shows none)",
+          "passed": true,
+          "evidence": "no release page written"
+        },
+        {
+          "text": "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Operator book still names all six PINGBOARD_* environment variables",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.86,
+        "passed": 6,
+        "failed": 1,
+        "total": 7,
+        "time_seconds": 190.1,
+        "tokens": 64099,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": false,
+          "evidence": "exit 1; summary: 5 error(s), 3 warning(s), 2 note(s); first: ERROR books              no book (directory with SUMMARY.md) under /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-creator-workspace/iterati"
+        },
+        {
+          "text": "A user book and an operator book exist",
+          "passed": true,
+          "evidence": "mapped: operator, user"
+        },
+        {
+          "text": "There is no tester book (the repository has no tests and no CI)",
+          "passed": true,
+          "evidence": "mapped: operator, user"
+        },
+        {
+          "text": "The report says the tester book was left out and why",
+          "passed": true,
+          "evidence": "- **Tester guide:** the project has no tests, test tooling or CI, so there is nothing to describe"
+        },
+        {
+          "text": "Operator book documents every flag (--on, --how, --delimiter, --encoding, --output) and CSVJOIN_MAX_ROWS with its default 1000000",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page invents a test command (pytest, make test, unittest)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 330.8,
+        "stddev": 177.6804,
+        "min": 90.4,
+        "max": 546.1
+      },
+      "tokens": {
+        "mean": 97369.8,
+        "stddev": 21283.9012,
+        "min": 66254,
+        "max": 122308
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.875,
+        "stddev": 0.0212,
+        "min": 0.86,
+        "max": 0.89
+      },
+      "time_seconds": {
+        "mean": 386.85,
+        "stddev": 278.2465,
+        "min": 190.1,
+        "max": 583.6
+      },
+      "tokens": {
+        "mean": 84830.5,
+        "stddev": 29318.7685,
+        "min": 64099,
+        "max": 105562
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.12",
+      "time_seconds": "-56.1",
+      "tokens": "+12539"
+    }
+  },
+  "notes": [
+    "Iteration 2 tests the template with optional books: user and operator required, tester and developer optional.",
+    "Evals 0-2 were re-run with the skill only, to check that the changed skill and outline did not regress: 10/10, 10/10, 7/7. Their baselines are in iteration 1, so the 'Without Skill' column here covers evals 3 and 4 only and the two columns are not directly comparable.",
+    "Eval 3 (four books): 9/9 with the skill, 8/9 without. Eval 4 (two books, no tests): 7/7 with the skill, 6/7 without. In both, the baseline wrote sound content but a tree the validator rejects (pages under src/, so no book is found).",
+    "Both configurations left the tester and developer books out for csvjoin and said why; once the prompt states that the books are optional, that judgement does not need the skill.",
+    "With the skill, the release page stayed a draft because the repository shows no release process, and no developer chapter was placed in the operator book.",
+    "One run per configuration: the numbers show direction, not variance."
+  ]
+}

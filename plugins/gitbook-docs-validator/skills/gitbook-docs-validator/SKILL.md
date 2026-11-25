@@ -1,18 +1,22 @@
 ---
 name: gitbook-docs-validator
-description: Validate a project's GitBook/mdBook documentation against the three-book template (one static landing page, an entry-level user "getting started" book, a low-level operator/development-and-deployment guide, and a tester/quality-assurance guide), and report what is missing or deviates. Use this whenever someone asks to check, review, audit, lint or verify documentation structure, asks "does our documentation follow the template", mentions SUMMARY.md, .gitbook.yaml, book.toml, mdBook, GitBook, a docs/guide folder, orphan or unpublished pages, broken relative links, or wants to know whether newly scaffolded docs for a service are complete, even if they never say "template" or "validate". Also use it when reviewing a pull request that touches a docs/ tree with several books.
+description: Validate a project's GitBook/mdBook documentation against the book-per-reader template, formerly the three-book template (one static landing page, a required entry-level user "getting started" book, a required operator guide for deployment and operations, and the optional tester/quality-assurance and developer guides), and report what is missing or deviates. Use this whenever someone asks to check, review, audit, lint or verify documentation structure, asks "does our documentation follow the template", mentions SUMMARY.md, .gitbook.yaml, book.toml, mdBook, GitBook, a docs/guide folder, orphan or unpublished pages, broken relative links, or wants to know whether newly scaffolded docs for a service are complete, even if they never say "template" or "validate". Also use it when reviewing a pull request that touches a docs/ tree with several books. Not for writing new books or pages: that is gitbook-docs-creator.
 ---
 
 # GitBook docs validator
 
 You are checking a documentation tree against a template that a team already uses and trusts.
-The template is one landing page plus exactly three books, each for a different reader:
+The template is one landing page plus one book per kind of reader. Two books are required and
+two are optional:
 
-| Role | Reader | Promise |
-|---|---|---|
-| **user** | someone new, non-technical | plain words, a timed quick start, everyday tasks, FAQ, glossary |
-| **operator** | runs or develops the system | how it works inside, install/deploy, complete configuration reference, monitoring, day-two operations |
-| **tester** | checks that changes are safe | how to run the tests, what blocks a merge, how to add tests, how to explore by hand |
+| Role | Book | Reader | Promise |
+|---|---|---|---|
+| **user** | required | someone new, non-technical | plain words, a timed quick start, everyday tasks, FAQ, glossary |
+| **operator** | required | installs and runs the system | how it works at run time, install/deploy, complete configuration reference, monitoring, day-two operations |
+| **tester** | optional | checks that changes are safe | how to run the tests, what blocks a merge, how to add tests, how to explore by hand |
+| **developer** | optional | changes the code | how the code is organised, development setup, conventions, extending, releasing |
+
+An optional book that is absent is not a finding; one that exists is checked like any other.
 
 The full template, with the reason behind each rule, is in `references/template.md`. Do not
 read it end to end: open §5–§7 only when you need the reasoning to judge a deviation, and §9
@@ -40,14 +44,15 @@ reading and writing. Keep the reading set fixed and the report short.
    findings, for example in CI.
 
    The script maps folders to roles through aliases (`user`/`getting-started`/…,
-   `operator`/`internals`/`deploy`/…, `tester`/`qa`/`testing`/…). If a project uses other
+   `operator`/`internals`/`deploy`/…, `tester`/`qa`/`testing`/…, `developer`/`dev`/`contributing`/…). If a project uses other
    names, either rename them or drop a `.docs-template.json` into the docs root with extra
    `aliases` (same shape as `assets/template.json`). Never "fix" a mismatch by editing the
    skill's own template.
 
    What the script covers:
    - landing page cards and links;
-   - the three roles present exactly once;
+   - each required role (user, operator) present once, each optional role (tester, developer)
+     at most once;
    - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book (plus the `additional-js` Home button back to the landing page);
    - SUMMARY rules: it starts with README, every page is listed (orphans are unpublished
      pages), every listed file exists, `Part I..N` numbering, part directories have a README;
@@ -80,12 +85,15 @@ reading and writing. Keep the reading set fixed and the report short.
    as commands: `/gitbook-docs-validator:structure`, `:links`, `:content` and `:repo`.
 
 3. **Do the pass the script cannot, on the worklist only.** Read the worklist files (the
-   landing page, the three book READMEs, the user quick start, one operator reference page,
-   one tester page) **in a single parallel batch**. Open another file only to confirm a
+   landing page, each book's README, the user quick start, one operator reference page,
+   and one page from the tester and developer books when they exist) **in a single parallel batch**. Open another file only to confirm a
    specific finding. Spot-check at most one claim against the code. Judge:
    - Does each book speak to its reader? The user book should have no undefined jargon; the
      operator book should quote defaults and name files; the tester book should name commands
-     and test files.
+     and test files; the developer book should name packages and functions.
+   - Is each optional book's absence or presence right for this project? A project with a
+     test suite and CI but no tester book, or with build and release chapters in the operator
+     book and no developer book, is worth a suggestion, not a failure.
    - Does each page's lead paragraph say what the page is for?
    - Does the reading-map table on each README route the reader (one row per common need),
      or is it a copy of SUMMARY? Does it promise topics the book does not have?
@@ -103,7 +111,7 @@ reading and writing. Keep the reading set fixed and the report short.
    # Documentation template check: <project>
 
    **Verdict:** PASS | PASS with deviations | FAIL — one sentence on why.
-   Books found: user=<dir>/, operator=<dir>/, tester=<dir>/   (or which is missing)
+   Books found: user=<dir>/, operator=<dir>/, tester=<dir>/, developer=<dir>/   (or MISSING / not present)
 
    ## Structural failures (must fix)
    - <file:line> — what is wrong, and the consequence (e.g. "page is never published").
@@ -134,8 +142,10 @@ reading and writing. Keep the reading set fixed and the report short.
 
 ## When the project is not yet using the template
 
-If the tree has one book, or none, the script will report missing roles. Do not pad the report
+If the tree has one book, or none, the script will report the missing required roles (user,
+operator). Do not pad the report
 with every per-page rule; the useful answer is the shape: which roles exist, which are missing,
+whether the optional tester and developer books make sense here,
 what the landing page should link, and which existing pages would move into which book.
 `references/template.md` §1 and §7 give the target shape and the minimum pages per role.
 If the user then wants the missing books created, hand over to the `gitbook-docs-creator`

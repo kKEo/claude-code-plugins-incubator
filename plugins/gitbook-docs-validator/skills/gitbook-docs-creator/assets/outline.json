@@ -34,7 +34,7 @@
       "book": "operator guide",
       "description": "How {name} works inside, and how to install, configure, monitor and operate it.",
       "front": "Introduction",
-      "audience": "This guide is for the people who install, configure, develop and run {name}. It assumes you are comfortable with a terminal.",
+      "audience": "This guide is for the people who install, configure and run {name}. It assumes you are comfortable with a terminal.",
       "blurb": "covers how it works inside, installation, every setting, monitoring and operations",
       "map_header": ["Part", "Read it when you need to…"],
       "card": {
@@ -47,7 +47,7 @@
       "chapters": [
         {"dir": "intro", "title": "How it works", "when": "Understand the parts of the system and how they fit together", "pages": [
           {"id": "how-it-works", "file": "overview.md", "title": "System overview",
-           "brief": "The mental model every later chapter assumes: the processes or components, what each one owns, how a request or a piece of data moves through them, and where state is kept. A diagram helps. Facts: the entry points, the package layout and the design documents."}
+           "brief": "The runtime view every later chapter assumes: the processes or components that run, what each one owns, how a request or a piece of data moves through them, and where state is kept. A diagram helps. Stay at the level an operator can observe; the code layout belongs in the developer book when there is one. Facts: the entry points and the design documents."}
         ]},
         {"dir": "install", "title": "Install and deploy", "when": "Install, upgrade or deploy", "pages": [
           {"id": "install", "file": "install.md", "title": "Install",
@@ -108,6 +108,45 @@
         ]},
         {"id": "glossary", "file": "appendix.md", "title": "Appendix: words and commands", "when": "Look up a testing word or a command",
          "brief": "Testing vocabulary used in this book (for example golden, baseline, gate, fixture), each in one or two sentences, then a table of every test command with what it runs."}
+      ]
+    },
+    "developer": {
+      "book": "developer guide",
+      "description": "How the code of {name} is organised, and how to build, change, extend and release it.",
+      "front": "For developers",
+      "audience": "This guide is for the people who change the code of {name}. It assumes you know the language it is written in and can use git.",
+      "blurb": "explains how the code is organised and how to change it",
+      "map_header": ["Part", "Read it when you need to…"],
+      "card": {
+        "tag": "For developers",
+        "title": "Developer guide",
+        "summary": "How the code is organised, and how to build, change, extend and release it.",
+        "bullets": ["Architecture and code layout", "Development setup and conventions", "Extending and releasing"]
+      },
+      "readme_brief": "After the audience sentence, one paragraph on what kind of code base this is (language, size, main dependencies) and what a typical change looks like. Keep the reading-map table, add a Conventions section (how paths, package and function names are shown) and keep the pointer to the other books.",
+      "chapters": [
+        {"dir": "code", "title": "How the code is organised", "when": "Find the code that does a thing", "pages": [
+          {"id": "architecture", "file": "overview.md", "title": "Architecture and code layout",
+           "brief": "The code view: one row or section per package or module with what it owns and what it may call, the main data types, and the path of one typical request through the code, naming the functions. Say why the code is shaped this way where the reason is not obvious. Facts: the source tree and the imports; the operator book has the runtime view, so link to it instead of repeating it."}
+        ]},
+        {"dir": "setup", "title": "Development setup", "when": "Get from a fresh checkout to a running build", "pages": [
+          {"id": "dev-setup", "file": "environment.md", "title": "Development environment",
+           "brief": "From a fresh checkout to a running build and a passing test run: required tools with versions, the exact commands in order, what each prints when it works, and how to run the product from the working tree. Facts: the build files, the lock files, the Makefile or task runner, CI; run the commands if you can."}
+        ]},
+        {"dir": "contributing", "title": "Contributing", "when": "Make a change that will be merged", "pages": [
+          {"id": "contributing", "file": "conventions.md", "title": "Conventions and pull requests",
+           "brief": "The rules a change follows: code style and the tool that enforces it, naming, commit messages, how a pull request is reviewed and what CI checks. When there is no tester book, also say how to run the tests and which test a change needs. Facts: linter and formatter configuration, CI workflows, CONTRIBUTING, the history of the repository; state only rules that the repository shows."}
+        ]},
+        {"dir": "extending", "title": "Extending", "when": "Add behaviour without patching the core", "pages": [
+          {"id": "extending", "file": "extension-points.md", "title": "Extension points",
+           "brief": "The supported ways to add behaviour (a new command, handler, plugin, backend), each with the interface to implement, where to register it, and a minimal example taken from an existing one. If the code has no extension points, say so and describe how a typical feature is added instead."}
+        ]},
+        {"dir": "releasing", "title": "Releasing", "when": "Cut and publish a version", "pages": [
+          {"id": "release", "file": "release.md", "title": "Release process",
+           "brief": "How a version is cut: where the version number lives, the steps in order, what is automated and what is manual, and how to check the published result. Facts: the release workflow, packaging configuration, tags in the repository. Do not describe a process the repository does not show."}
+        ]},
+        {"id": "glossary", "file": "appendix.md", "title": "Appendix: names in the code", "when": "Look up what a name in the code means",
+         "brief": "Names used in the code (types, packages, abbreviations), in alphabetical order, each with one or two sentences and the name users and operators see when it differs."}
       ]
     }
   }

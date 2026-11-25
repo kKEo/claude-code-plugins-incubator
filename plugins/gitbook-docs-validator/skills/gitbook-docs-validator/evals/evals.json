@@ -97,6 +97,34 @@
         "Report states that the other validators were not run, so it is not a full template check",
         "Report is under 40 lines"
       ]
+    },
+    {
+      "id": 6,
+      "name": "two-books-optional-absent",
+      "prompt": "csvjoin is a small command line tool with no tests. We scaffolded its docs at plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/two-books/docs/guide (repo root plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/two-books) with a user guide and an operator guide only. Does that follow our documentation template, or do we have to add the other books? Write the report to the output directory as report.md.",
+      "expected_output": "PASS or PASS with deviations: the two required books are present, and the absent tester and developer books are optional, so they are not failures. The report flags the draft pages.",
+      "files": [],
+      "assertions": [
+        "Report concludes PASS or PASS with deviations, not FAIL",
+        "Report says the tester and developer books are optional and their absence is not a failure",
+        "Report does not list a missing tester or developer book under structural failures",
+        "Report notes that the pages are still drafts",
+        "Report has the Verdict / failures / deviations / suggestions structure"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "four-books-developer-gap",
+      "prompt": "Check the docs for relay at plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/four-books/docs/guide (repo root plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/four-books). We added a developer guide next to the user, operator and tester guides. Is everything in place? Write the report to the output directory as report.md.",
+      "expected_output": "FAIL: the developer book has no development-setup page. The report maps all four books, and notes that 'Build from source' sits in the operator book although a developer book exists.",
+      "files": [],
+      "assertions": [
+        "Report says FAIL",
+        "Report maps four books including developer",
+        "Report names the missing development setup page in the developer book as a must-fix failure",
+        "Report notes that 'Build from source' is in the operator book although a developer book exists",
+        "Report does not invent other structural errors (missing SUMMARY, broken links, missing landing card)"
+      ]
     }
   ]
 }

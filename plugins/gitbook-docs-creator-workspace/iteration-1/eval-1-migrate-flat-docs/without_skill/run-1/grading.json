@@ -3,7 +3,7 @@
     {
       "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
       "passed": false,
-      "evidence": "exit 1; summary: 9 error(s), 8 warning(s), 1 note(s); first: ERROR books              no operator book: Low-level, detailed development and deployment guide: how the system works inside, how to install, configure, tune, m"
+      "evidence": "exit 1; summary: 9 error(s), 22 warning(s), 3 note(s); first: ERROR landing            landing page has no link href=\"operator-guide/\" to the operator book [index.html]"
     },
     {
       "text": "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",

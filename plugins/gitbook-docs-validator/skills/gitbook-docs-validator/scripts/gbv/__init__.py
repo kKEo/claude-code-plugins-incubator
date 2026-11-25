@@ -1,4 +1,4 @@
-"""gitbook-docs-validator: deterministic checks for the three-book documentation template.
+"""gitbook-docs-validator: deterministic checks for the book-per-reader documentation template.
 
 Each validator lives in gbv/checks/<name>.py and reads shared state from gbv.context.Context.
 """
@@ -11,7 +11,7 @@ from .checks import ALWAYS, CHECKS, NAMES
 from .context import Context
 from .core import Report, find_page, load_template, md_files, required_keywords
 
-WORKLIST_PICKS = {"user": ["quick-start"], "operator": ["configuration"], "tester": ["running"]}
+WORKLIST_PICKS = {"user": ["quick-start"], "operator": ["configuration"], "tester": ["running"], "developer": ["dev-setup"]}
 
 
 def build_worklist(ctx: Context) -> List[str]:

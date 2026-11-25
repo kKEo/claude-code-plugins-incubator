@@ -1,0 +1,12 @@
+{
+  "eval_id": 6,
+  "eval_name": "two-books-optional-absent",
+  "prompt": "csvjoin is a small command line tool with no tests. We scaffolded its docs at plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/two-books/docs/guide (repo root plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/two-books) with a user guide and an operator guide only. Does that follow our documentation template, or do we have to add the other books? Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report concludes PASS or PASS with deviations, not FAIL",
+    "Report says the tester and developer books are optional and their absence is not a failure",
+    "Report does not list a missing tester or developer book under structural failures",
+    "Report notes that the pages are still drafts",
+    "Report has the Verdict / failures / deviations / suggestions structure"
+  ]
+}

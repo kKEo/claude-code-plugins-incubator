@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": true,
+      "evidence": "exit 0; summary: 0 error(s), 2 warning(s), 3 note(s)"
+    },
+    {
+      "text": "All four books exist and map to user, operator, tester and developer",
+      "passed": true,
+      "evidence": "mapped: developer, operator, tester, user"
+    },
+    {
+      "text": "Landing page has four book cards/links",
+      "passed": true,
+      "evidence": "links to: developer, operator, tester, user"
+    },
+    {
+      "text": "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+      "passed": true,
+      "evidence": "pip install -e: True; lint: True"
+    },
+    {
+      "text": "The release page is a draft or says no release process exists (the repository shows none)",
+      "passed": true,
+      "evidence": "draft or explicit"
+    },
+    {
+      "text": "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "Operator book still names all six PINGBOARD_* environment variables",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "total": 9,
+    "pass_rate": 1.0
+  }
+}

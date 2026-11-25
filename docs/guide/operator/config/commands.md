@@ -87,7 +87,7 @@ The script is a set of validators, one module each under `scripts/gbv/checks/`. 
 
 | Validator | Checks | Finding tags |
 |---|---|---|
-| `books` | Maps book folders to the user, operator and tester roles; always runs | `books` |
+| `books` | Maps book folders to roles: user and operator are required, tester and developer are optional; always runs | `books` |
 | `landing` | `index.html`: title, description, one link per book, links resolve | `landing` |
 | `files` | Per book: `README.md`, `SUMMARY.md`, `.gitbook.yaml`, `book.toml` | `book-files` |
 | `summary` | README first, orphan pages, missing or duplicate entries, Part numbering, part READMEs | `summary` |
@@ -122,7 +122,7 @@ The script behind the `gitbook-docs-creator` skill. It writes the landing page a
 | `--name NAME` | the repository folder name | Project name used in titles and on the landing page |
 | `--repo-url URL` | the `origin` remote | Source repository link for the landing page footer and `book.toml` |
 | `--lede TEXT` | a visible TODO | The one-sentence claim on the landing page |
-| `--books ROLES` | every role of the template | Comma-separated roles to scaffold, for example `--books tester` |
+| `--books ROLES` | the required roles `user,operator`, plus optional books that exist | Comma-separated roles to scaffold; name `tester` and `developer` to add the optional books |
 | `--folders ROLE=FOLDER,...` | an existing book folder, else the role name | Folder name per role; it has to match one of the role's aliases |
 | `--repo-files` | off | Also adds `Makefile`, `.github/workflows/docs.yml`, `scripts/docs-check.sh` and the docs index, each only when the repository has none |
 | `--template FILE` | the validator's `assets/template.json` | Role definitions; `<docs-root>/.docs-template.json` is merged over it |

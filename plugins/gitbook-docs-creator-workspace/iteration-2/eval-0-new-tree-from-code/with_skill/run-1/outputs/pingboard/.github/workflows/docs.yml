@@ -1,0 +1,71 @@
+# Documentation site: the books under docs/guide/ are checked, built with mdBook and
+# deployed to GitHub Pages. One-time repository setting: Settings > Pages > Source: GitHub Actions.
+name: docs
+
+on:
+  pull_request:
+    paths:
+      - 'docs/guide/**'
+      - 'scripts/docs-check*'
+      - 'Makefile'
+      - '.github/workflows/docs.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/guide/**'
+      - 'scripts/docs-check*'
+      - 'Makefile'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# To upgrade mdBook, change both values: the checksum is the sha256 of the release archive
+# mdbook-<version>-x86_64-unknown-linux-gnu.tar.gz.
+env:
+  MDBOOK_VERSION: v0.4.40
+  MDBOOK_SHA256: 9ef07fd288ba58ff3b99d1c94e6d414d431c9a61fdb20348e5beb74b823d546b
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install mdBook (pinned, checksum verified)
+        run: |
+          url="https://github.com/rust-lang/mdBook/releases/download/${MDBOOK_VERSION}/mdbook-${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          curl -sSL -o mdbook.tar.gz "$url"
+          echo "${MDBOOK_SHA256}  mdbook.tar.gz" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin"
+          tar -xzf mdbook.tar.gz -C "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check and build the books
+        run: make docs
+
+      - name: Upload site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

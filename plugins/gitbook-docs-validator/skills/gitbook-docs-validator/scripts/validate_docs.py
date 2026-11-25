@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Validate a GitBook/mdBook documentation tree against the three-book template.
+"""Validate a GitBook/mdBook documentation tree against the book-per-reader template
+(user and operator books required, tester and developer books optional).
 
 Usage:
     validate_docs.py <docs-root> [--repo-root DIR] [--template FILE]

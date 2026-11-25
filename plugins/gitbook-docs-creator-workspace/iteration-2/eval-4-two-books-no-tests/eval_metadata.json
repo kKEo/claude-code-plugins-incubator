@@ -1,0 +1,14 @@
+{
+  "eval_id": 4,
+  "eval_name": "two-books-no-tests",
+  "prompt": "csvjoin is a single-file command line tool with a five-line README. Set up documentation for it under docs/guide in our standard layout and write it. Only add the optional books if they make sense for this project. The source repository is https://github.com/example/csvjoin.",
+  "assertions": [
+    "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+    "A user book and an operator book exist",
+    "There is no tester book (the repository has no tests and no CI)",
+    "The report says the tester book was left out and why",
+    "Operator book documents every flag (--on, --how, --delimiter, --encoding, --output) and CSVJOIN_MAX_ROWS with its default 1000000",
+    "No page invents a test command (pytest, make test, unittest)",
+    "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+  ]
+}

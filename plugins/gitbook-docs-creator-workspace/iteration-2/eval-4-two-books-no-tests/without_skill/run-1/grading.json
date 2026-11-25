@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": false,
+      "evidence": "exit 1; summary: 5 error(s), 3 warning(s), 2 note(s); first: ERROR books              no book (directory with SUMMARY.md) under /Users/krma/Work/claude-code-plugins-incubator/plugins/gitbook-docs-creator-workspace/iterati"
+    },
+    {
+      "text": "A user book and an operator book exist",
+      "passed": true,
+      "evidence": "mapped: operator, user"
+    },
+    {
+      "text": "There is no tester book (the repository has no tests and no CI)",
+      "passed": true,
+      "evidence": "mapped: operator, user"
+    },
+    {
+      "text": "The report says the tester book was left out and why",
+      "passed": true,
+      "evidence": "- **Tester guide:** the project has no tests, test tooling or CI, so there is nothing to describe"
+    },
+    {
+      "text": "Operator book documents every flag (--on, --how, --delimiter, --encoding, --output) and CSVJOIN_MAX_ROWS with its default 1000000",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "No page invents a test command (pytest, make test, unittest)",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 1,
+    "total": 7,
+    "pass_rate": 0.86
+  }
+}

@@ -1,8 +1,9 @@
-# The three-book documentation template
+# The book-per-reader documentation template
 
-This is the layout the validator checks against. It was extracted from a working project
-(memors-mcp, `docs/guide/`) and generalised. Every rule below says *why* it exists; when a
-project deviates for a good reason, say so in the report instead of insisting.
+This is the layout the validator checks against: one landing page and one book per kind of
+reader. It was extracted from a working project (memors-mcp, `docs/guide/`) and generalised.
+Every rule below says *why* it exists; when a project deviates for a good reason, say so in
+the report instead of insisting. Earlier versions called it the three-book template.
 
 Contents: 1 Shape · 2 Landing page · 3 Book anatomy · 4 SUMMARY.md · 5 Book README ·
 6 Pages · 7 Role requirements · 8 Repository integration · 9 Known false positives
@@ -14,30 +15,59 @@ The script enforces §1–§4 and §8 mechanically. The qualitative pass needs o
 
 ```
 <docs-root>/                 (usually docs/guide/)
-├── index.html               landing page: one card per book
-├── <user-book>/             entry-level getting started      (role: user)
-├── <operator-book>/         low-level development/deployment (role: operator)
-└── <tester-book>/           quality assurance                (role: tester)
+├── index.html               landing page: one card per book that exists
+├── <user-book>/             entry-level getting started         (role: user, required)
+├── <operator-book>/         deployment and operations           (role: operator, required)
+├── <tester-book>/           quality assurance                   (role: tester, optional)
+└── <developer-book>/        changing the code                   (role: developer, optional)
 ```
 
-One landing page, exactly three books, one book per role. The three audiences read
+One landing page and one book per role, at most one book for each role. The audiences read
 differently: a newcomer wants a story and a ten-minute win, an operator wants a reference
-they can grep, a tester wants to know what blocks a merge. Mixing them into one book makes
-every page too long for two of the three readers. Splitting further (a fourth "developer"
-book) was considered and rejected: the operator book already carries the internals
-("how it works") part, and a separate book would duplicate it.
+they can grep, a tester wants to know what blocks a merge, a developer wants to find the
+code that does a thing and the rules for changing it. Mixing them into one book makes every
+page too long for most of its readers.
+
+**Required and optional.** Every project has someone who uses it and someone who installs
+and runs it, so the user and operator books are required. The tester and developer books
+are optional, because not every project has those readers: a small tool may have no test
+suite worth a book, and an internal service may take no outside contributions. An optional
+book that is absent is not a finding. An optional book that exists is checked exactly like
+a required one. Do not write an optional book to satisfy the template; write it when the
+reader exists.
+
+**Operator and developer.** An earlier version of this template had no developer book: the
+operator book carried the internals, and a separate book was rejected because it would
+repeat the "how it works" part. That left people who change the code without a home, and
+operator books grew chapters such as "Build from source" and "Release engineering". The
+rule that removes the overlap: the operator book keeps the **runtime view** (processes,
+storage, what talks to what, what an operator can observe), and the developer book carries
+the **code view** (packages, extension points, conventions, how to build and release). When
+there is no developer book, a short build-from-source chapter may stay in the operator book.
+
+**Tests without a tester book.** When there is a developer book and no tester book, how to
+run the tests and which tests a change needs belong in the developer book's contributing
+part. When there is neither, nothing about tests is required.
 
 Folder names are free; the validator maps them to roles through the aliases in
 `assets/template.json` (`user`, `getting-started`, … / `operator`, `internals`, `deploy`, … /
-`tester`, `qa`, `testing`, …).
+`tester`, `qa`, `testing`, … / `developer`, `dev`, `contributing`, …). When a name contains
+aliases of two roles, the stronger match wins: the whole name, then the leading word, then
+the trailing word. So `operator-guide` is the operator book, although `guide` on its own is
+a user alias.
+
+A project can change which books are required in `<docs-root>/.docs-template.json`:
+`{"roles": {"tester": {"optional": false}}}` makes the tester book mandatory again, and
+`{"roles": {"operator": {"aliases": ["operator", "developer"]}, "developer": {"aliases": []}}}`
+keeps a book in a folder named `developer/` in the operator role, as older trees had it.
 
 ## 2. Landing page (`index.html`)
 
-A single static HTML file, no framework, served at the site root above the three books.
+A single static HTML file, no framework, served at the site root above the books.
 
 - `<title>` and `<meta name="description">` so the page is indexable and the browser tab is named.
 - A one-line product claim (the "lede"), then **one card per book**, each with:
-  an audience tag ("For everyone", "For operators", "For testers"), the book title,
+  an audience tag ("For everyone", "For operators", "For testers", "For developers"), the book title,
   a two-line summary, and about three bullets of what is inside.
 - Each card links with a relative `href="<book>/"` (trailing slash: the book's own index).
 - A footer with the source repository and the licence.
@@ -71,13 +101,13 @@ Each book is a self-contained GitBook space that mdBook can also build:
 | `images/*.svg` | Diagrams, one folder per book | referenced from pages with long alt text |
 
 Each book's `README.md` stays in the book root. The entry-level (user) book may be **flat**
-(all pages at the root). The operator and tester books are organised in **Parts**: one
+(all pages at the root). The operator, tester and developer books are organised in **Parts**: one
 directory per part, each with its own `README.md` that names the part and lists its chapters
 in one line each. Parts give the reader a table of contents at the right altitude and give the
 author a place to put "read these four chapters first".
 
 Advanced books end with an **Appendix** (glossary plus further reading, or "words and
-commands"). Glossaries are per book because the three audiences use different words.
+commands"). Glossaries are per book because the audiences use different words.
 
 ## 4. `SUMMARY.md`
 
@@ -118,7 +148,7 @@ The book landing page answers "is this for me and where do I go" in one screen:
    `| Part | Read it when you need to… |` (advanced books), every row a link.
 4. **Conventions** (advanced books): how commands are shown, what key words mean here.
 5. **Cross-book callout**: a blockquote `> **Looking for …?**` linking to the sibling
-   books with `../<book>/`. The three books are one site; each must send the wrong reader
+   books with `../<book>/`. The books are one site; each must send the wrong reader
    to the right book without a search.
 6. Links to design documents outside the docs root use **absolute GitHub URLs**, because only
    the books are published and a relative link would 404 on the site.
@@ -144,23 +174,27 @@ The book landing page answers "is this for me and where do I go" in one screen:
   and a test fails when they are stale. Hand edits to such a page are a template violation.
 
 Tone per book: the user book avoids jargon and names things by what they do; the operator book
-is precise and quotes defaults; the tester book names files and commands on every page.
+is precise and quotes defaults; the tester book names files and commands on every page; the
+developer book names packages, files and functions and says why the code is shaped as it is.
 
 ## 7. Role requirements
 
 Minimum pages per role (matched by SUMMARY title keywords, configurable in `template.json`):
 
-| Role | Must have (error) | Should have (warn) |
-|---|---|---|
-| user | quick start, FAQ/troubleshooting, glossary | everyday use, trust/privacy, use cases |
-| operator | how it works, install/deploy, configuration reference, monitoring, operations | commands, glossary |
-| tester | running the tests, gates/CI, adding tests (+ PR checklist) | what is tested where, exploratory, glossary/appendix |
+| Role | Book | Must have (error) | Should have (warn) |
+|---|---|---|---|
+| user | required | quick start, FAQ/troubleshooting, glossary | everyday use, trust/privacy, use cases |
+| operator | required | how it works (runtime view), install/deploy, configuration reference, monitoring, operations | commands, glossary |
+| tester | optional | running the tests, gates/CI, adding tests (+ PR checklist) | what is tested where, exploratory, glossary/appendix |
+| developer | optional | architecture or code layout, development setup, contributing and conventions | extending, release, glossary |
+
+The page requirements of an optional role apply only when its book exists.
 
 ## 8. Repository integration
 
 Outside the docs root, a template-following project has:
 
-- Root `README.md` linking **every** book (not "both guides" once a third exists).
+- Root `README.md` linking **every** book that exists (not "both guides" once a third exists).
 - A docs index (`docs/README.md`) listing each book, the landing page and the design documents.
 - `Makefile` targets `docs` (check + build all books), `docs-check`, `docs-serve BOOK=…`
   (one book, live reload) and `docs-site` (build every book, copy the landing page to the

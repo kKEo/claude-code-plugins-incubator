@@ -8,6 +8,10 @@ from ..core import find_page, read_lines, required_keywords, strip_fences
 
 DESCRIPTION = "required pages per role; the quick start states its duration"
 
+# Chapters that serve people who change the code; in a tree with a developer book they belong there.
+DEVELOPER_TOPICS = ("build from source", "building from source", "local development", "development setup",
+                    "development environment", "contributing", "code layout", "release engineering")
+
 TIME_RE = re.compile(r"\b(\d+|one|two|three|five|ten|fifteen|twenty|thirty)[\s-]*(minutes?|mins?|seconds?|hours?)\b", re.I)
 
 
@@ -20,6 +24,12 @@ def run(ctx: Context, role: str) -> None:
             text = "\n".join(t for _, t in strip_fences(read_lines(book / qs)))
             if not TIME_RE.search(text):
                 rep.warn("role", "quick start does not say how long it takes ('about five minutes')", book / qs)
+    if role == "operator" and "developer" in ctx.books:
+        for page, title in listed.items():
+            hit = next((k for k in DEVELOPER_TOPICS if k in f"{title} {page}".lower().replace("-", " ")), None)
+            if hit:
+                rep.info("role", f"'{title}' ({hit}) is in the operator book although a developer book exists "
+                         f"({ctx.books['developer']}/); the operator book keeps the runtime view", book / page)
     titles = " | ".join(f"{t} {p}".lower() for p, t in listed.items())
     for req in spec.get("required_pages", []):
         if not any(k.lower() in titles for k in req["any_of"]):

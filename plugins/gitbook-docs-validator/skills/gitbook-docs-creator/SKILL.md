@@ -1,18 +1,19 @@
 ---
 name: gitbook-docs-creator
-description: Create GitBook/mdBook documentation that follows the three-book template (one static landing page, an entry-level user guide, an operator guide for people who run or develop the system, and a tester guide), by scaffolding the tree with a script and then writing the pages from the project's code. Use this whenever someone asks to create, write, scaffold, set up, bootstrap or generate documentation or a docs site for a project or service, to "document this project", to add a missing book (user guide, operator guide, tester guide) or a missing page such as a quick start, configuration reference, runbook or glossary, to fill in draft or stub pages, or to migrate an existing README, wiki or docs folder into the three books, even if they never say "template", "GitBook" or "mdBook". Also use it after a docs check reported missing books or pages and the user wants them written. Not for checking, reviewing or linting docs that already exist: that is gitbook-docs-validator.
+description: Create GitBook/mdBook documentation that follows the book-per-reader template, formerly the three-book template (one static landing page, a user guide and an operator guide, plus an optional tester guide and an optional developer guide), by scaffolding the tree with a script and then writing the pages from the project's code. Use this whenever someone asks to create, write, scaffold, set up, bootstrap or generate documentation or a docs site for a project or service, to "document this project", to add a missing book (user guide, operator guide, tester guide, developer or contributor guide) or a missing page such as a quick start, configuration reference, runbook or glossary, to split developer content out of an operator guide, to fill in draft or stub pages, or to migrate an existing README, wiki or docs folder into the books, even if they never say "template", "GitBook" or "mdBook". Also use it after a docs check reported missing books or pages and the user wants them written. Not for checking, reviewing or linting docs that already exist: that is gitbook-docs-validator.
 ---
 
 # GitBook docs creator
 
-You are writing documentation that a team will publish: one landing page and three books, each
-for a different reader.
+You are writing documentation that a team will publish: one landing page and one book per
+kind of reader. Two books are required and two are optional.
 
-| Role | Reader | Promise |
-|---|---|---|
-| **user** | someone new, non-technical | plain words, a timed quick start, everyday tasks, FAQ, glossary |
-| **operator** | runs or develops the system | how it works inside, install/deploy, complete configuration reference, monitoring, day-two operations |
-| **tester** | checks that changes are safe | how to run the tests, what blocks a merge, how to add tests, how to explore by hand |
+| Role | Book | Reader | Promise |
+|---|---|---|---|
+| **user** | required | someone new, non-technical | plain words, a timed quick start, everyday tasks, FAQ, glossary |
+| **operator** | required | installs and runs the system | how it works at run time, install/deploy, complete configuration reference, monitoring, day-two operations |
+| **tester** | optional | checks that changes are safe | how to run the tests, what blocks a merge, how to add tests, how to explore by hand |
+| **developer** | optional | changes the code | how the code is organised, development setup, conventions, extending, releasing |
 
 Two things decide whether the result is good. The structure has to match the template, and
 the script and the validator take care of that. Every statement has to be true of this
@@ -35,8 +36,18 @@ of truth and this skill reads them in place:
      and flags, the settings it reads, what it logs or measures, how the tests run and what
      CI checks. Read them from the code and the build files, not from memory or from old docs.
 
+   Then decide which optional books this project needs. A book exists for a reader, not for
+   the template, so do not write one that would be padding:
+   - **tester**: add it when the project has a test suite or CI checks that someone has to
+     run, read or extend. Leave it out when there are no tests to describe.
+   - **developer**: add it when the project takes contributions, has extension points, or
+     has enough build, convention and release material that the operator book would
+     otherwise carry it. Leave it out for a small code base whose only readers install and
+     run it.
+   - When the user names the books they want, that settles it.
+
    Then pick the mode:
-   - **New tree**: no book exists. Scaffold all three.
+   - **New tree**: no book exists. Scaffold the required books and the optional ones you chose.
    - **Add**: some books or pages exist and others are missing. Scaffold only what is missing.
    - **Migrate**: documentation exists in another shape. Scaffold, then move the existing
      text into the book whose reader it serves (`references/writing.md` §7).
@@ -46,11 +57,15 @@ of truth and this skill reads them in place:
 
    ```bash
    python3 <skill-dir>/scripts/scaffold_docs.py <docs-root> --repo-root <repo-root> \
-       --name "<project name>" --repo-url <https URL> --lede "<one sentence>" --repo-files
+       --name "<project name>" --repo-url <https URL> --lede "<one sentence>" \
+       --books user,operator,tester,developer --repo-files
    ```
 
-   - `--books user,operator` scaffolds a subset; `--folders user=getting-started,tester=qa`
-     picks folder names (they must match a role alias in `template.json`).
+   - `--books` names the books to scaffold. Without it the script writes the two required
+     books plus any optional book that already exists, so list `tester` and `developer`
+     when you decided to add them.
+   - `--folders user=getting-started,tester=qa` picks folder names (they must match a role
+     alias in `template.json`).
    - `--repo-files` also adds a Makefile, a docs workflow, `scripts/docs-check.sh` and a docs
      index, each only when the repository has none. Leave it out when the user asked for one
      book or one page only.
@@ -64,8 +79,11 @@ of truth and this skill reads them in place:
    what the page has to contain and where its facts come from.
 
 3. **Read `references/writing.md`, then fill the pages.** Write the operator book first: it
-   forces you to establish the facts. Then the tester book, then the user book, which says
-   the same things in fewer and plainer words. For each page:
+   forces you to establish the facts. Then the developer and tester books when they exist,
+   then the user book, which says the same things in fewer and plainer words. Keep the
+   operator and developer books apart: the operator book describes what runs (processes,
+   storage, settings, signals), the developer book describes the code (packages, functions,
+   conventions). Link between them instead of repeating. For each page:
    - follow the brief in the stub's comment, then delete the comment;
    - state only what you read in the code or ran yourself. Quote names, defaults and
      commands exactly;
@@ -78,7 +96,7 @@ of truth and this skill reads them in place:
 
    The outline is a minimum. Add pages and parts where the project has more to say, and add
    each new page to `SUMMARY.md` in the same edit: a page that is not listed is never
-   published. For a large project, the three books can be written in parallel by subagents,
+   published. For a large project, the books can be written in parallel by subagents,
    as long as each gets the same list of facts.
 
 4. **Finish the landing page.** `index.html` is the front door: replace the lede with one
@@ -109,7 +127,8 @@ of truth and this skill reads them in place:
    other warning is either fixed or explained in your report. If `mdbook` is installed, run
    `make docs-build` once as well; it catches what a static check cannot.
 
-7. **Report.** Short, in this order: the books and how many pages each has; which pages are
+7. **Report.** Short, in this order: the books and how many pages each has, and for each
+   optional book one sentence on why you wrote it or left it out; which pages are
    still drafts and which fact each one is waiting for; the files you added or changed
    outside the docs root; the validator result; how to preview (`make docs-site`).
 
@@ -131,7 +150,7 @@ keeping them while you write saves a round trip.
   the books are published.
 - Images live in `<book>/images/`, are referenced from a page, and carry alt text that is a
   full sentence describing the picture.
-- Operator and tester books are organised in parts (`Part I: …`, `Part II: …`), one directory
+- Operator, tester and developer books are organised in parts (`Part I: …`, `Part II: …`), one directory
   per part with its own `README.md`. The user book may stay flat.
 - Do not put version numbers in prose; they drift on the next release.
 - A page produced by a tool starts, right under the H1, with
@@ -139,10 +158,12 @@ keeping them while you write saves a round trip.
 
 ## When the template does not fit
 
-The template is a default. If the project has no operator at all (a browser-only tool), or
-its folders need other names, do not force it and do not edit the validator's `template.json`.
+The optional books already cover the common variations. For anything else (the project has
+no operator at all, such as a browser-only tool, the tester book must be mandatory for this
+team, or the folders need other names), do not force it and do not edit the validator's `template.json`.
 Put a `.docs-template.json` in the docs root with the aliases or required pages that differ
-(same shape as `template.json`); both scripts read it. Say in your report what you changed
+(same shape as `template.json`, for example `{"roles": {"tester": {"optional": false}}}`);
+both scripts read it. Say in your report what you changed
 and why.
 
 ## Files

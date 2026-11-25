@@ -1,0 +1,20 @@
+# Read by mdBook (make docs); GitBook ignores this file and reads .gitbook.yaml.
+[book]
+title = "notekeep operator guide"
+description = "How notekeep works inside, and how to install, configure, monitor and operate it."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/operator"
+# A typo in SUMMARY.md fails the build instead of creating an empty page.
+create-missing = false
+
+[output.html]
+site-url = "/notekeep/operator/"
+git-repository-url = "https://github.com/example/notekeep"
+# Adds a Home icon to the menu bar that links back to the landing page.
+additional-js = ["home-button.js"]
+
+[output.html.search]
+enable = true

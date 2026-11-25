@@ -56,7 +56,9 @@ def render_md(rep: Report, project: str, repo_root: Optional[Path], quiet: bool)
     skips = [f for f in rep.findings if f.severity == "INFO" and SKIP_RE.search(f.message)]
     notes = [f for f in rep.findings if f.severity == "INFO" and f not in skips]
     verdict = "FAIL" if errs else ("PASS with deviations" if warns else "PASS")
-    roles = ", ".join(f"{r}={rep.books[r]}/" if r in rep.books else f"{r}=MISSING" for r in ("user", "operator", "tester"))
+    known = rep.roles or {r: False for r in ("user", "operator")}
+    roles = ", ".join(f"{r}={rep.books[r]}/" if r in rep.books else f"{r}={'not present (optional)' if opt else 'MISSING'}"
+                      for r, opt in known.items())
     title = "Documentation template check" if rep.full else f"Documentation check ({scope_label(rep)})"
     lines = [f"# {title}: {project}", "",
              f"**Verdict:** {verdict} — <one sentence on why>.",

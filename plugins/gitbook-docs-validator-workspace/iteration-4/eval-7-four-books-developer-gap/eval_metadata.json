@@ -1,0 +1,12 @@
+{
+  "eval_id": 7,
+  "eval_name": "four-books-developer-gap",
+  "prompt": "Check the docs for relay at plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/four-books/docs/guide (repo root plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/four-books). We added a developer guide next to the user, operator and tester guides. Is everything in place? Write the report to the output directory as report.md.",
+  "assertions": [
+    "Report says FAIL",
+    "Report maps four books including developer",
+    "Report names the missing development setup page in the developer book as a must-fix failure",
+    "Report notes that 'Build from source' is in the operator book although a developer book exists",
+    "Report does not invent other structural errors (missing SUMMARY, broken links, missing landing card)"
+  ]
+}

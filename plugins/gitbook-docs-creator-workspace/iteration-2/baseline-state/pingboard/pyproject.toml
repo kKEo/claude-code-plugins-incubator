@@ -1,0 +1,9 @@
+[project]
+name = "pingboard"
+version = "0.6.0"
+description = "Checks a list of URLs on a schedule and shows which ones are up."
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[project.scripts]
+pingboard = "pingboard.cli:main"

@@ -1,0 +1,14 @@
+{
+  "eval_id": 2,
+  "eval_name": "add-missing-book",
+  "prompt": "The ledgerd handbook has the getting-started and internals books, but the QA book for testers was never written. The landing page and the README already link to handbook/qa. Add that book.",
+  "assertions": [
+    "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+    "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+    "The QA book is organised in parts (Part I: ...)",
+    "No existing page of the getting-started and internals books was modified or deleted",
+    "The existing Makefile `docs` target is still there",
+    "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+    "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+  ]
+}

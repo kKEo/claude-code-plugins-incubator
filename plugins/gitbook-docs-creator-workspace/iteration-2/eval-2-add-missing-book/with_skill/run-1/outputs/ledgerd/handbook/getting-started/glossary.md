@@ -1,0 +1,3 @@
+# Glossary
+
+Words we use.

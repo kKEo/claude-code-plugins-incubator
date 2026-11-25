@@ -1,0 +1,20 @@
+# Read by mdBook (make docs); GitBook ignores this file and reads .gitbook.yaml.
+[book]
+title = "notekeep tester guide"
+description = "How every change to notekeep is checked, and how to run, read, explore and add tests."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/tester"
+# A typo in SUMMARY.md fails the build instead of creating an empty page.
+create-missing = false
+
+[output.html]
+site-url = "/notekeep/tester/"
+git-repository-url = "https://github.com/example/notekeep"
+# Adds a Home icon to the menu bar that links back to the landing page.
+additional-js = ["home-button.js"]
+
+[output.html.search]
+enable = true

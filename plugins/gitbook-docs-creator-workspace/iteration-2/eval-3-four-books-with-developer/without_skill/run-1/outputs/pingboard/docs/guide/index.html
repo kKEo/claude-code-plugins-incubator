@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pingboard documentation</title>
+<style>
+  :root { --bg: #ffffff; --fg: #1c1e21; --muted: #5c6370; --card: #f5f6f8; --border: #d9dce1; --accent: #0b6bcb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15171a; --fg: #e6e8eb; --muted: #9aa1ac; --card: #1e2126; --border: #33373e; --accent: #6cb2ff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 64px; }
+  h1 { font-size: 2.2rem; margin: 0 0 8px; }
+  p.lead { color: var(--muted); font-size: 1.1rem; margin: 0 0 32px; }
+  pre { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .books { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 32px 0; padding: 0; list-style: none; }
+  .books a { display: block; height: 100%; padding: 18px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; color: inherit; text-decoration: none; }
+  .books a:hover, .books a:focus { border-color: var(--accent); }
+  .books h2 { margin: 0 0 6px; font-size: 1.15rem; color: var(--accent); }
+  .books p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 0.9rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>pingboard</h1>
+  <p class="lead">Checks a list of URLs on a schedule and shows which ones are up.</p>
+
+<pre>pip install -e .
+pingboard add https://example.org
+pingboard serve</pre>
+
+  <p>Choose the guide that matches what you want to do.</p>
+
+  <ul class="books">
+    <li><a href="user/index.html">
+      <h2>User guide</h2>
+      <p>Install pingboard, add the URLs you care about, check them once or watch them on the dashboard.</p>
+    </a></li>
+    <li><a href="operator/index.html">
+      <h2>Operator guide</h2>
+      <p>Run pingboard as a service: settings, the data file, health and metrics endpoints, logs and security.</p>
+    </a></li>
+    <li><a href="tester/index.html">
+      <h2>Tester guide</h2>
+      <p>Run the automated tests, see what they cover, add new ones and test by hand what they do not cover.</p>
+    </a></li>
+    <li><a href="developer/index.html">
+      <h2>Developer guide</h2>
+      <p>Set up a working copy, learn how the code fits together and send your first pull request.</p>
+    </a></li>
+  </ul>
+
+  <footer>
+    Source code and issues: <a href="https://github.com/example/pingboard">github.com/example/pingboard</a>. MIT licence.
+  </footer>
+</main>
+</body>
+</html>

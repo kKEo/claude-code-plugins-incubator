@@ -1,0 +1,17 @@
+{
+  "eval_id": 1,
+  "eval_name": "migrate-flat-docs",
+  "prompt": "notekeep's documentation is one long README plus four files under docs/. Please move it into our three-book layout under docs/guide (landing page, user guide, operator guide, tester guide) so each reader gets their own book.",
+  "assertions": [
+    "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+    "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+    "The books state the real default port 7070",
+    "No page still claims port 9000 (the outdated value from the old docs)",
+    "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+    "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+    "Operator book documents the commands serve, list, show, export and vacuum",
+    "Tester book names ./run-tests.sh",
+    "Root README links all three books",
+    "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+  ]
+}

@@ -39,8 +39,10 @@ class Run:
                     self.books.setdefault(hits[0], d)
             # Content checks should not depend on the validator's folder aliases: a baseline run
             # may name a book 'operator-guide', which the aliases read as two roles.
-            for d in sorted(p for p in self.docs.iterdir() if p.is_dir() and (p / "SUMMARY.md").exists()):
-                for role, words in (("operator", ("operator", "internals")), ("tester", ("tester", "qa", "test")), ("user", ("user", "getting-started"))):
+            for d in sorted(p for p in self.docs.iterdir()
+                            if p.is_dir() and ((p / "SUMMARY.md").exists() or (p / "src" / "SUMMARY.md").exists())):
+                for role, words in (("developer", ("developer", "dev", "contrib")), ("operator", ("operator", "internals")),
+                                    ("tester", ("tester", "qa", "test")), ("user", ("user", "getting-started"))):
                     if role not in self.books and d not in self.books.values() and any(w in d.name.lower() for w in words):
                         self.books[role] = d
 
@@ -119,7 +121,12 @@ def checks(run: Run):
             return not left, "all moved" if not left else f"still present: {', '.join(left)}"
 
         def no_9000():
-            hits = [p.relative_to(run.docs).as_posix() for p in run.pages() if re.search(r"\b9000\b", p.read_text(errors="replace"))]
+            # A claim is an example that uses the port (":9000") or a line that gives 9000 as the default.
+            # A symptom heading or a sentence that names 9000 as the old value corrects the claim instead.
+            neg = re.compile(r"\b(old|older|earlier|outdated|used to|previous|wrong|not|no longer|instead)\b", re.I)
+            hits = [p.relative_to(run.docs).as_posix() for p in run.pages()
+                    if any((":9000" in ln or (re.search(r"\b9000\b", ln) and "default" in ln.lower())) and not neg.search(ln)
+                           for ln in p.read_text(errors="replace").splitlines())]
             return (bool(run.pages()) and not hits), "none" if not hits else f"9000 in: {', '.join(hits)}"
 
         def no_delete():
@@ -181,6 +188,76 @@ def checks(run: Run):
             return not bad, "drafts or explicit" if not bad else f"states test/CI facts as finished: {', '.join(bad)}"
 
         return [run.validator, qa_files, parts, untouched, makefile, honest, run.no_gitbook_blocks]
+    if eid == 3:
+        def four_books():
+            have = sorted(run.books)
+            return set(have) >= {"user", "operator", "tester", "developer"}, f"mapped: {', '.join(have)}"
+
+        def cards():
+            f = run.docs / "index.html"
+            html = f.read_text(errors="replace") if f.exists() else ""
+            linked = [b.name for b in run.books.values() if re.search(rf'href="(\./)?{re.escape(b.name)}/?(index\.html)?"', html)]
+            return len(linked) >= 4, f"links to: {', '.join(linked) or 'none'}"
+
+        def install_and_lint():
+            t = run.text("developer")
+            ok = "pip install -e" in t and ("make lint" in t or "ruff" in t)
+            return ok, f"pip install -e: {'pip install -e' in t}; lint: {'make lint' in t or 'ruff' in t}"
+
+        def release_honest():
+            book = run.books.get("developer")
+            pages = [p for p in (book.rglob("*.md") if book else []) if "releas" in p.as_posix().lower() and p.name != "README.md"]
+            if not pages:
+                return True, "no release page written"
+            bad = [p.name for p in pages if not (re.search(r"^> Draft\.$", p.read_text(errors="replace"), re.M) or re.search(
+                r"\b(no|not|never|has no|there is no|does not|doesn't)\b[^.\n]{0,80}\b(release|tag|publish|workflow|process|automat)", p.read_text(errors="replace"), re.I))]
+            return not bad, "draft or explicit" if not bad else f"presents a release process as finished: {', '.join(bad)}"
+
+        def operator_clean():
+            book = run.books.get("operator")
+            summ = next((f for f in ((book / "SUMMARY.md", book / "src" / "SUMMARY.md") if book else ()) if f.exists()), None)
+            s = summ.read_text(errors="replace").lower().replace("-", " ") if summ else ""
+            topics = ("build from source", "building from source", "local development", "development setup",
+                      "development environment", "contributing", "code layout", "release engineering")
+            hits = [k for k in topics if k in s]
+            return bool(s) and not hits, "none" if not hits else f"operator SUMMARY has: {', '.join(hits)}"
+
+        return [
+            run.validator, four_books, cards,
+            lambda: run.has_all("developer", ["cli.py", "config.py", "store.py", "check.py", "server.py"]),
+            install_and_lint, release_honest, operator_clean,
+            lambda: run.has_all("operator", [f"PINGBOARD_{x}" for x in ("PORT", "BIND", "INTERVAL", "TIMEOUT", "DATA", "LOG_LEVEL")]),
+            run.no_gitbook_blocks,
+        ]
+    if eid == 4:
+        def two_required():
+            have = sorted(run.books)
+            return {"user", "operator"} <= set(have), f"mapped: {', '.join(have) or 'none'}"
+
+        def no_tester():
+            return bool(run.books) and "tester" not in run.books, f"mapped: {', '.join(sorted(run.books)) or 'none'}"
+
+        def report_explains():
+            f = run.out / "report.md"
+            t = f.read_text(errors="replace") if f.exists() else ""
+            m = re.search(r"[^.\n]*\btester\b[^.\n]*", t, re.I)
+            ok = bool(m) and bool(re.search(r"\b(no|not|without|left out|omitted|skipped)\b", t[max(0, m.start() - 200):m.end() + 200], re.I)) and bool(re.search(r"\btests?\b|\bCI\b", t))
+            return ok, (m.group(0).strip()[:140] if m else "report does not mention the tester book")
+
+        def no_test_command():
+            bad = []
+            for p in run.pages():
+                for ln in p.read_text(errors="replace").splitlines():
+                    if re.search(r"\bpytest\b|make test\b|\bunittest\b", ln) and not re.search(r"\b(no|not|never|n't|without)\b", ln, re.I):
+                        bad.append(f"{p.relative_to(run.docs).as_posix()}: {ln.strip()[:70]}")
+            return bool(run.pages()) and not bad, "none" if not bad else "; ".join(bad[:3])
+
+        return [
+            run.validator, two_required, no_tester, report_explains,
+            lambda: run.has_all("operator", [r"--on\b", r"--how\b", r"--delimiter\b", r"--encoding\b", r"--output\b", r"CSVJOIN_MAX_ROWS", r"1[,. _]?000[,. _]?000"], regex=True),
+            no_test_command,
+            run.no_gitbook_blocks,
+        ]
     raise SystemExit(f"no checks for eval {eid}")
 
 

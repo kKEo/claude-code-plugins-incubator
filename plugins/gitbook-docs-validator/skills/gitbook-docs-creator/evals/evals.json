@@ -64,6 +64,46 @@
         "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
         "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
       ]
+    },
+    {
+      "id": 3,
+      "name": "four-books-with-developer",
+      "fixture": "evals/fixtures/pingboard",
+      "docs_root": "pingboard/docs/guide",
+      "repo_root": "pingboard",
+      "prompt": "pingboard has nothing but a three-line README and we are about to take outside contributions. Set up documentation for it under docs/guide in our standard layout and write it: a landing page, a user guide, an operator guide, a tester guide and a developer guide. The source repository is https://github.com/example/pingboard.",
+      "expected_output": "Four books that the validator passes without errors. The developer book names the modules and the lint and install commands; build and code-layout material is in the developer book, not the operator book; the release page is a draft or says there is no release process, because the repository shows none.",
+      "files": [],
+      "assertions": [
+        "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+        "All four books exist and map to user, operator, tester and developer",
+        "Landing page has four book cards/links",
+        "Developer book names all five modules (cli.py, config.py, store.py, check.py, server.py)",
+        "Developer book names the editable install (pip install -e) and the lint command (make lint or ruff)",
+        "The release page is a draft or says no release process exists (the repository shows none)",
+        "No developer chapter (build from source, code layout, contributing) sits in the operator book",
+        "Operator book still names all six PINGBOARD_* environment variables",
+        "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "two-books-no-tests",
+      "fixture": "evals/fixtures/csvjoin",
+      "docs_root": "csvjoin/docs/guide",
+      "repo_root": "csvjoin",
+      "prompt": "csvjoin is a single-file command line tool with a five-line README. Set up documentation for it under docs/guide in our standard layout and write it. Only add the optional books if they make sense for this project. The source repository is https://github.com/example/csvjoin.",
+      "expected_output": "A user book and an operator book that the validator passes without errors; no tester book, because the repository has no tests and no CI, and the report says so; the operator book documents every flag and CSVJOIN_MAX_ROWS with its default; no page invents a test command.",
+      "files": [],
+      "assertions": [
+        "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+        "A user book and an operator book exist",
+        "There is no tester book (the repository has no tests and no CI)",
+        "The report says the tester book was left out and why",
+        "Operator book documents every flag (--on, --how, --delimiter, --encoding, --output) and CSVJOIN_MAX_ROWS with its default 1000000",
+        "No page invents a test command (pytest, make test, unittest)",
+        "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+      ]
     }
   ]
 }

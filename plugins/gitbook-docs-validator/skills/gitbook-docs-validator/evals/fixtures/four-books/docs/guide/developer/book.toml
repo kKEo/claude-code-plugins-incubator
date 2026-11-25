@@ -1,0 +1,20 @@
+# Read by mdBook (make docs); GitBook ignores this file and reads .gitbook.yaml.
+[book]
+title = "relay developer guide"
+description = "How the code of relay is organised, and how to build, change, extend and release it."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../../../site/developer"
+# A typo in SUMMARY.md fails the build instead of creating an empty page.
+create-missing = false
+
+[output.html]
+site-url = "/relay/developer/"
+git-repository-url = "https://github.com/example/relay"
+# Adds a Home icon to the menu bar that links back to the landing page.
+additional-js = ["home-button.js"]
+
+[output.html.search]
+enable = true

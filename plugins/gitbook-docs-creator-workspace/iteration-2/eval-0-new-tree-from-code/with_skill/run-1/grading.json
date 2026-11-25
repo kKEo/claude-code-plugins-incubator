@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": true,
+      "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+    },
+    {
+      "text": "Operator book names all six PINGBOARD_* environment variables read by the code",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Operator book names the three metrics and the /healthz route",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Tester book names `make test` and all three test files",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "User quick start says how long it takes",
+      "passed": true,
+      "evidence": "checked ['quick-start.md']"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "Makefile has docs, docs-check, docs-serve and docs-site targets",
+      "passed": true,
+      "evidence": "all present"
+    },
+    {
+      "text": "Root README links all three books",
+      "passed": true,
+      "evidence": "links every book"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  }
+}

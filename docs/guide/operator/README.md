@@ -28,7 +28,7 @@ The marketplace is one git repository. The manifest `.claude-plugin/marketplace.
 ## Deeper references
 
 - [CONTRIBUTING.md](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/CONTRIBUTING.md): submission rules in brief.
-- [The three-book documentation template](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs-validator/skills/gitbook-docs-validator/references/template.md): the rules this documentation follows.
+- [The documentation template](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs-validator/skills/gitbook-docs-validator/references/template.md): the rules this documentation follows.
 - [Plugin slides](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/feature-dev-documentalist/slides.md): a presentation of the documentalist plugin with a critique.
 
 > **Looking for the non-technical introduction?** See the [user guide](../user/).
