@@ -17,7 +17,7 @@ There is no unit-test suite. The plugins are Markdown instructions, one Python s
 ## Conventions
 
 - Commands run from the repository root unless a `cd` is shown.
-- `validate_docs.py` means `plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py`.
+- `validate_docs.py` means `plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py`.
 - "Fixture" means a sample documentation tree with known faults; "eval" means a prompt plus assertions in `evals.json`.
 - Exit codes are quoted where they matter; a check without an exit code is a judgement call and says so.
 

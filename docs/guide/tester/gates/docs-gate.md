@@ -13,7 +13,7 @@ or `make docs-check`. Exit 1 on any failure.
 ## Step 1: the template validator
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet
+python3 plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet
 ```
 
 Fails on any ERROR: missing landing-page link, missing book file, orphan page, SUMMARY entry pointing at a missing file, second H1, broken relative link, link leaving the docs root, image without alt text, missing required page for a role. Warnings are printed and do not fail the gate; the convention is to keep them at zero anyway.

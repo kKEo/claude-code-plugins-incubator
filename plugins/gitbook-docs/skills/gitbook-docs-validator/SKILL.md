@@ -83,7 +83,7 @@ reading and writing. Keep the reading set fixed and the report short.
    **One validator.** The script is a set of validators: `books` (always runs), `landing`,
    `files`, `summary`, `pages`, `links`, `readme`, `roles`, `repo`. Use `--only a,b` or
    `--skip a,b` to run a subset (`--list-checks` describes them). The plugin also ships them
-   as commands: `/gitbook-docs-validator:structure`, `:links`, `:content` and `:repo`.
+   as commands: `/gitbook-docs:structure`, `:links`, `:content` and `:repo`.
 
 3. **Do the pass the script cannot, on the worklist only.** Read the worklist files (the
    landing page, each book's README, the user quick start, one operator reference page,

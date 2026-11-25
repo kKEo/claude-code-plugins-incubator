@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SKILLS = HERE.parent / "gitbook-docs-validator" / "skills"
+SKILLS = HERE.parent / "gitbook-docs" / "skills"
 VALIDATOR = SKILLS / "gitbook-docs-validator" / "scripts" / "validate_docs.py"
 EVALS = json.loads((SKILLS / "gitbook-docs-creator" / "evals" / "evals.json").read_text())["evals"]
 sys.dont_write_bytecode = True

@@ -34,7 +34,7 @@ When paths span several categories the skill asks the user rather than guessing.
 
 The feature folder is `docs/features/YYYY-MM-DD-<branch>/`; an existing folder whose name contains the branch name is reused.
 
-## gitbook-docs-validator
+## gitbook-docs
 
 | Component | File | Role |
 |---|---|---|

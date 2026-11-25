@@ -47,7 +47,7 @@ try:
     from gbv.core import ROMAN, listed_pages, load_template, match_role, md_files  # noqa: E402
 except ImportError:
     sys.exit(f"scaffold_docs.py: cannot find the validator next to this skill ({VALIDATOR}); "
-             "both skills ship in the gitbook-docs-validator plugin")
+             "both skills ship in the gitbook-docs plugin")
 
 DRAFT = "> Draft."
 

@@ -22,11 +22,13 @@ The landing page is `docs/guide/index.html`; `docs/README.md` indexes everything
 
 ```
 /plugin marketplace add kKEo/claude-code-plugins-incubator
-/plugin install gitbook-docs-validator@km-plugin-registry
+/plugin install gitbook-docs@km-plugin-registry
 /reload-plugins
 ```
 
-Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs-validator`, `implementation-spec`, `instances-monitor`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review`, `session-cost` or `session-cost-installer` as needed.
+Replace the plugin name with `frontend-scaffold`, `feature-dev-documentalist`, `gitbook-docs`, `implementation-spec`, `instances-monitor`, `memors-hooks`, `plan-progress`, `prompt-coach`, `rigorous-review`, `session-cost` or `session-cost-installer` as needed.
+
+`gitbook-docs` was named `gitbook-docs-validator` up to version 0.5.1. To move, uninstall the old name and install the new one; see [its README](plugins/gitbook-docs/README.md#moving-from-gitbook-docs-validator).
 
 ## Browse Plugins
 

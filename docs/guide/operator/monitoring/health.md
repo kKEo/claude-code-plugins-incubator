@@ -31,7 +31,7 @@ Open Claude Code there, send any prompt, and wait for the turn to end. The tip l
 ## 5. The validator script runs
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet; echo "exit $?"
+python3 plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet; echo "exit $?"
 ```
 
 Exit 0 on this repository's own documentation.

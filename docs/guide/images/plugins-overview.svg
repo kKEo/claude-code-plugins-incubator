@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 866" width="920" height="866" role="img" aria-labelledby="t d">
 <title id="t">Plugins in the km-plugin-registry marketplace, grouped by type</title>
-<desc id="d">Five skill and agent plugins: frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator, implementation-spec and rigorous-review. Three mods: plan-progress, session-cost and prompt-coach. One hooks plugin: memors-hooks. Each plugin links to its description.</desc>
+<desc id="d">Five skill and agent plugins: frontend-scaffold, feature-dev-documentalist, gitbook-docs, implementation-spec and rigorous-review. Three mods: plan-progress, session-cost and prompt-coach. One hooks plugin: memors-hooks. Each plugin links to its description.</desc>
 <style>:root{--bg:#ffffff;--card:#f6f7f9;--line:#dfe3e8;--fg:#1b2130;--muted:#566074;--faint:#8b94a5;--accent:#2f5bd6;--soft:#eaf0ff}@media (prefers-color-scheme:dark){:root{--bg:#161a22;--card:#1d222c;--line:#2f3644;--fg:#e7eaf0;--muted:#a3acbc;--faint:#737d90;--accent:#86a8ff;--soft:#222c45}}text{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace}.panel{fill:var(--bg);stroke:var(--line)}.card{fill:var(--card);stroke:var(--line)}.tile{fill:var(--bg);stroke:var(--line)}.rule{stroke:var(--line);fill:none}.ic{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.arrow{fill:none;stroke:var(--faint);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.fg{fill:var(--fg)}.muted{fill:var(--muted)}.faint{fill:var(--faint)}.accent{fill:var(--accent)}.onaccent{fill:var(--bg)}.soft{fill:var(--soft)}.dot{fill:var(--accent)}.ring{fill:var(--bg);stroke:var(--faint);stroke-width:1.2}.b{font-weight:700}.sb{font-weight:600}.caps{font-weight:700;letter-spacing:1.3px}a{cursor:pointer}a:hover .card,a:focus .card{stroke:var(--accent)}a:hover .arrow,a:focus .arrow{stroke:var(--accent)}a:hover .name,a:focus .name{fill:var(--accent)}a:focus{outline:none}</style>
 <rect class="panel" x=".5" y=".5" width="919" height="865" rx="14"/>
 <rect class="dot" x="32" y="28" width="44" height="44" rx="11"/>
@@ -47,11 +47,11 @@
 <text x="699" y="232" class="muted sb" font-size="11" text-anchor="middle">1 hook</text>
 <path class="arrow" d="M861 165l5 5-5 5"/>
 </a>
-<a href="../user/plugins/gitbook-docs-validator.html" target="_top"><title>gitbook-docs-validator: open the description</title>
+<a href="../user/plugins/gitbook-docs.html" target="_top"><title>gitbook-docs: open the description</title>
 <rect class="card" x="32" y="268" width="420" height="108" rx="10"/>
 <rect class="tile" x="48" y="284" width="36" height="36" rx="8"/>
 <g transform="translate(54 290)"><path class="ic" d="M12 2.5l2.3 7.2 7.2 2.3-7.2 2.3-2.3 7.2-2.3-7.2-7.2-2.3 7.2-2.3z"/></g>
-<text x="98" y="299" class="fg b mono name" font-size="15">gitbook-docs-validator</text>
+<text x="98" y="299" class="fg b mono name" font-size="15">gitbook-docs</text>
 <text x="98" y="319" class="muted" font-size="12.5">Checks a documentation folder against</text>
 <text x="98" y="336" class="muted" font-size="12.5">the three-book layout.</text>
 <rect class="tile" x="98" y="342" width="60" height="20" rx="10"/>

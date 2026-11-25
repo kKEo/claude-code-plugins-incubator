@@ -34,10 +34,10 @@ mkdir -p /tmp/scaf && cd /tmp/scaf
 
 Watch for: components missing from `src/components/ui/` (the reference lists 25), a router without the auth guard, a store without the loading/error/data pattern.
 
-## gitbook-docs-validator
+## gitbook-docs
 
 ```bash
-cp -r plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/broken-docs /tmp/broken
+cp -r plugins/gitbook-docs/skills/gitbook-docs-validator/evals/fixtures/broken-docs /tmp/broken
 ```
 
 1. Type `review the docs under /tmp/broken/docs/guide before we publish`. **Expect** a FAIL verdict and all nine faults from [Fixtures and seeded faults](../contributing/fixtures.md) with file paths, grouped into structural failures, deviations, suggestions, not checked.

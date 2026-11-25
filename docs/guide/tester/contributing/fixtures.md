@@ -1,6 +1,6 @@
 # Fixtures and seeded faults
 
-This page lists each fixture under `plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures/` and the exact findings the validator must produce for it. Change a fixture and this page together.
+This page lists each fixture under `plugins/gitbook-docs/skills/gitbook-docs-validator/evals/fixtures/` and the exact findings the validator must produce for it. Change a fixture and this page together.
 
 ## broken-docs
 

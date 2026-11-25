@@ -7,7 +7,7 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-VALIDATOR=plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py
+VALIDATOR=plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py
 DOCS=docs/guide
 fail=0
 

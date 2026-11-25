@@ -12,7 +12,7 @@ A plugin is only a folder with a manifest. What it does depends on which of thes
 |---|---|---|---|---|
 | Skill | `skills/<name>/SKILL.md` | Claude, when a prompt matches the description; or you, with `/<name>` | In the conversation, with Claude's tools | `document-phase`, `rigorous-review` |
 | Agent | `agents/<name>.md` | Claude, through the `Agent` tool, usually from a skill | In its own context window, with its own model and tool list | `spec-context-explorer` |
-| Slash command | `commands/<name>.md` | You, by typing its name | In the conversation | `/gitbook-docs-validator:links` |
+| Slash command | `commands/<name>.md` | You, by typing its name | In the conversation | `/gitbook-docs:links` |
 | Command hook | `hooks/hooks.json` with a `hooks` key, plus a script | The engine, at one of a fixed list of events | A new process each time | memors-hooks, feature-dev-documentalist |
 | MCP server | `.mcp.json` | The model, by calling one of its tools | A separate long-lived process | memors-hooks |
 | Mod | `hooks/hooks.json` with a `modules` key, plus a TypeScript module | The engine, at any of its events | Inside the session, in a sandbox | plan-progress, session-cost, prompt-coach, instances-monitor |

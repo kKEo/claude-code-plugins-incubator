@@ -10,7 +10,7 @@ This repository **is** a marketplace: `km-plugin-registry`, eleven plugins.
 
 | Kind | Plugins |
 |---|---|
-| Skills and agents | `rigorous-review`, `implementation-spec`, `gitbook-docs-validator`, `frontend-scaffold`, `feature-dev-documentalist`, `session-cost-installer` |
+| Skills and agents | `rigorous-review`, `implementation-spec`, `gitbook-docs`, `frontend-scaffold`, `feature-dev-documentalist`, `session-cost-installer` |
 | Hooks | `memors-hooks` |
 | Mods | `session-cost`, `plan-progress`, `prompt-coach`, `instances-monitor` |
 

@@ -46,8 +46,8 @@ Expected on `master` with a clean tree: no output, `exit 0`. On a feature branch
 ## 5. The validator script on its fixtures
 
 ```bash
-V=plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py
-F=plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/fixtures
+V=plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py
+F=plugins/gitbook-docs/skills/gitbook-docs-validator/evals/fixtures
 python3 $V $F/broken-docs/docs/guide --quiet; echo "exit $?"
 python3 $V $F/renamed-layout/handbook --repo-root $F/renamed-layout --quiet; echo "exit $?"
 ```
@@ -74,7 +74,7 @@ Expected: `exit 0`. This runs `validate_docs.py docs/guide --repo-root .` and th
 
 ## 7. Evals (optional, needs Claude Code)
 
-The three cases in `plugins/gitbook-docs-validator/skills/gitbook-docs-validator/evals/evals.json` run through the `skill-creator` eval harness, which executes each prompt with and without the skill and grades the assertions. Case 0 points at a repository outside this one and is skipped when it is absent. Results of the last run are in `plugins/gitbook-docs-validator-workspace/iteration-1/benchmark.md`: 100% pass with the skill, 77% without.
+The three cases in `plugins/gitbook-docs/skills/gitbook-docs-validator/evals/evals.json` run through the `skill-creator` eval harness, which executes each prompt with and without the skill and grades the assertions. Case 0 points at a repository outside this one and is skipped when it is absent. Results of the last run are in `plugins/gitbook-docs-validator-workspace/iteration-1/benchmark.md`: 100% pass with the skill, 77% without.
 
 ## All at once
 

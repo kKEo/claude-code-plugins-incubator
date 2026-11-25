@@ -1,6 +1,6 @@
 {
-  "name": "gitbook-docs-validator",
-  "version": "0.5.1",
+  "name": "gitbook-docs",
+  "version": "0.6.0",
   "description": "Validate and create GitBook/mdBook documentation trees that follow the book-per-reader template (landing page, user and operator guides, optional tester and developer guides): report structural failures and deviations, or scaffold and write the books",
   "author": {
     "name": "Krzysztof Maziarz"

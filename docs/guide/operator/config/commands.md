@@ -8,11 +8,11 @@ This page lists every slash command the plugins answer to and every flag of the 
 |---|---|---|---|
 | `/document-phase [phase]` | feature-dev-documentalist | optional `spec`, `design`, `implementation`, `deployment`, `testing` | Detects (or forces) the phase and writes the matching file into the feature folder |
 | `/frontend-scaffold:scaffold-frontend [description]` | frontend-scaffold | optional description of what the app manages | Asks for missing details, generates the project, installs and builds |
-| `/gitbook-docs-validator [path]` | gitbook-docs-validator | optional docs root | Runs the checks and writes the report |
-| `/gitbook-docs-validator:structure [path] [--repo-root DIR]` | gitbook-docs-validator | optional docs root | Runs only the `landing`, `files` and `summary` validators and prints a scoped report |
-| `/gitbook-docs-validator:links [path]` | gitbook-docs-validator | optional docs root | Runs only the `links` validator: broken links, missing anchors, alt text, unused images |
-| `/gitbook-docs-validator:content [path]` | gitbook-docs-validator | optional docs root | Runs `pages`, `readme` and `roles`, then reviews the worklist pages for audience and drift |
-| `/gitbook-docs-validator:repo [path] [--repo-root DIR]` | gitbook-docs-validator | optional docs root and repo root (defaults to the git top level) | Runs only the `repo` validator |
+| `/gitbook-docs-validator [path]` | gitbook-docs | optional docs root | Runs the checks and writes the report |
+| `/gitbook-docs:structure [path] [--repo-root DIR]` | gitbook-docs | optional docs root | Runs only the `landing`, `files` and `summary` validators and prints a scoped report |
+| `/gitbook-docs:links [path]` | gitbook-docs | optional docs root | Runs only the `links` validator: broken links, missing anchors, alt text, unused images |
+| `/gitbook-docs:content [path]` | gitbook-docs | optional docs root | Runs `pages`, `readme` and `roles`, then reviews the worklist pages for audience and drift |
+| `/gitbook-docs:repo [path] [--repo-root DIR]` | gitbook-docs | optional docs root and repo root (defaults to the git top level) | Runs only the `repo` validator |
 | `/implementation-spec:write-implementation-spec [request]` | implementation-spec | the feature request, in a sentence or two | Explores the codebase, asks at most four questions, writes `docs/specs/<date>-<slug>.md` and runs a readiness review |
 | `/rigorous-review [target] [--focus <area>]` | rigorous-review | optional PR number, branch or path, defaulting to the current diff; optional focus areas | Reviews the diff and reports findings; changes no file |
 | `/session-cost-installer:install-session-cost [scope]` | session-cost-installer | optional `user` (the default), `project` or `local` | Adds the marketplace when missing, then installs or updates `session-cost@km-plugin-registry` and reports the version |
@@ -50,7 +50,7 @@ The environment variable `CLAUDE_CODE_PLUGIN_DIRS` names the same folders where 
 ## validate_docs.py
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py <docs-root> [--repo-root DIR] [--template FILE] [--only CHECKS | --skip CHECKS] [--list-checks] [--format text|md|json] [--json] [--worklist] [--quiet]
+python3 plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py <docs-root> [--repo-root DIR] [--template FILE] [--only CHECKS | --skip CHECKS] [--list-checks] [--format text|md|json] [--json] [--worklist] [--quiet]
 ```
 
 | Argument | Default | Meaning |
@@ -110,7 +110,7 @@ python3 …/validate_docs.py docs/guide --json | jq '.findings[] | select(.check
 ## scaffold_docs.py
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-creator/scripts/scaffold_docs.py <docs-root> [--repo-root DIR] [--name NAME] [--repo-url URL] [--lede TEXT] [--books ROLES] [--folders ROLE=FOLDER,...] [--repo-files] [--template FILE] [--dry-run]
+python3 plugins/gitbook-docs/skills/gitbook-docs-creator/scripts/scaffold_docs.py <docs-root> [--repo-root DIR] [--name NAME] [--repo-url URL] [--lede TEXT] [--books ROLES] [--folders ROLE=FOLDER,...] [--repo-files] [--template FILE] [--dry-run]
 ```
 
 The script behind the `gitbook-docs-creator` skill. It writes the landing page and, for each book, the configuration files and one stub page per required page of the template. It never overwrites or edits an existing file, and it prints the edits it left to the author.

@@ -8,7 +8,7 @@ The marketplace is called `km-plugin-registry`. It currently holds eleven plugin
 
 - [**frontend-scaffold**](plugins/frontend-scaffold.md) builds a complete Vue 3 web application from a one-line description.
 - [**feature-dev-documentalist**](plugins/feature-dev-documentalist.md) writes a short document for each phase of a feature you are building, by looking at what changed in git.
-- [**gitbook-docs-validator**](plugins/gitbook-docs-validator.md) checks a documentation folder against a fixed layout of one book per kind of reader and tells you what is missing.
+- [**gitbook-docs**](plugins/gitbook-docs.md) checks a documentation folder against a fixed layout of one book per kind of reader and tells you what is missing.
 - [**implementation-spec**](plugins/implementation-spec.md) writes a specification for a feature that does not exist yet, complete enough for an agent to build it without asking you more.
 - [**rigorous-review**](plugins/rigorous-review.md) does a strict review of a change before it is merged, looking for bugs, security holes and performance traps.
 - [**plan-progress**](plugins/plan-progress.md) shows the current plan and how far Claude has got with it in a pane beside the chat.

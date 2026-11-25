@@ -1,8 +1,8 @@
-# gitbook-docs-validator
+# gitbook-docs
 
-Checks a documentation folder against a fixed layout: one landing page plus one book for each kind of reader. A book for users and a book for the people who install and run the system are required; a book for testers and a book for developers are optional. It reports missing books, missing required pages, pages nobody can reach, broken links and images without descriptions, and then writes a short report with a verdict. This very documentation was written to pass it. A second skill in the same plugin writes documentation in this layout; see [Creating documentation](#creating-documentation).
+Checks and creates documentation in a fixed layout: one landing page plus one book for each kind of reader. A book for users and a book for the people who install and run the system are required; a book for testers and a book for developers are optional. Its first skill, the validator, reports missing books, missing required pages, pages nobody can reach, broken links and images without descriptions, and then writes a short report with a verdict. This very documentation was written to pass it. A second skill in the same plugin writes documentation in this layout; see [Creating documentation](#creating-documentation).
 
-![Workflow of gitbook-docs-validator: you ask for a check, the skill locates the docs, a script runs the mechanical checks and the skill reviews the rest](../images/workflow-gitbook-docs-validator.svg)
+![Workflow of gitbook-docs: you ask for a check, the skill locates the docs, a script runs the mechanical checks and the skill reviews the rest](../images/workflow-gitbook-docs.svg)
 
 ## What to type
 
@@ -18,7 +18,7 @@ Prompts that mention `SUMMARY.md`, `.gitbook.yaml`, `book.toml`, mdBook or GitBo
 
 ## How it works
 
-![How gitbook-docs-validator works: the skill finds the docs root and runs a script of deterministic checks over your documentation and the repository around it, then reads a sample of pages and writes a report with a verdict](../images/how-gitbook-docs-validator.svg)
+![How gitbook-docs works: the skill finds the docs root and runs a script of deterministic checks over your documentation and the repository around it, then reads a sample of pages and writes a report with a verdict](../images/how-gitbook-docs.svg)
 
 The numbers match the picture.
 
@@ -55,7 +55,9 @@ When checking, it reads the documentation folder and, when asked, the repository
 ## Install
 
 ```
-/plugin install gitbook-docs-validator@km-plugin-registry
+/plugin install gitbook-docs@km-plugin-registry
 ```
 
 The marketplace has to be added first; see the [Quick start](../quick-start.md).
+
+The plugin was named `gitbook-docs-validator` up to version 0.5.1. If you installed it under that name, run `/plugin uninstall gitbook-docs-validator` and then the install line above. Its four commands now start with `/gitbook-docs:` instead of `/gitbook-docs-validator:`.

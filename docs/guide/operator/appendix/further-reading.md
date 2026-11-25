@@ -20,8 +20,8 @@ This page points at the documents this guide summarises.
 ## In this repository
 
 - [CONTRIBUTING.md](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/CONTRIBUTING.md): submission rules. Note that its clone-based install flow predates the marketplace manifest.
-- [The documentation template](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs-validator/skills/gitbook-docs-validator/references/template.md): every rule with its reason.
-- [template.json](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs-validator/skills/gitbook-docs-validator/assets/template.json): roles, aliases, required pages.
+- [The documentation template](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs/skills/gitbook-docs-validator/references/template.md): every rule with its reason.
+- [template.json](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/gitbook-docs/skills/gitbook-docs-validator/assets/template.json): roles, aliases, required pages.
 - [Documentalist slides](https://github.com/kKEo/claude-code-plugins-incubator/blob/master/plugins/feature-dev-documentalist/slides.md): a presentation of the plugin and a critique of its design.
 - [Eval iteration 1](https://github.com/kKEo/claude-code-plugins-incubator/tree/master/plugins/gitbook-docs-validator-workspace/iteration-1): benchmark results for the validator skill with and without the skill loaded.
 

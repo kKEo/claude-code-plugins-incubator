@@ -6,7 +6,7 @@
 - [What is in the marketplace](plugins/README.md)
   - [frontend-scaffold](plugins/frontend-scaffold.md)
   - [feature-dev-documentalist](plugins/feature-dev-documentalist.md)
-  - [gitbook-docs-validator](plugins/gitbook-docs-validator.md)
+  - [gitbook-docs](plugins/gitbook-docs.md)
   - [implementation-spec](plugins/implementation-spec.md)
   - [rigorous-review](plugins/rigorous-review.md)
   - [plan-progress](plugins/plan-progress.md)

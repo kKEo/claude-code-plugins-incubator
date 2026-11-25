@@ -47,7 +47,7 @@ prints, among other things, each plugin directory scanned, each skill and agent 
 Text output is one finding per line: severity, check tag, message, `[file:line]`. With `--json` the same findings are a JSON array; with `--quiet` INFO lines are hidden. Exit 1 means at least one ERROR.
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet
+python3 plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root . --quiet
 ```
 
 ## Scaffold builds

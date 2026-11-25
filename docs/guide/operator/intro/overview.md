@@ -10,7 +10,7 @@ claude-code-plugins-incubator/
 ├── plugins/
 │   ├── frontend-scaffold/            # one directory per plugin
 │   ├── feature-dev-documentalist/
-│   ├── gitbook-docs-validator/
+│   ├── gitbook-docs/
 │   ├── implementation-spec/
 │   ├── rigorous-review/
 │   ├── memors-hooks/                 # command hooks and an MCP server

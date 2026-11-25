@@ -66,7 +66,7 @@ claude plugin test plugins/session-cost       # its *.test.ts files against the 
 The validator's Python script runs standalone:
 
 ```bash
-python3 plugins/gitbook-docs-validator/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root .
+python3 plugins/gitbook-docs/skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo-root .
 ```
 
 And the hook scripts parse with `bash -n`:

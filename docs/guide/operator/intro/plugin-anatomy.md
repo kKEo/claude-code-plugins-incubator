@@ -49,7 +49,7 @@ In a mod, `hooks/hooks.json` holds `{ "modules": ["./register.tsx"] }` instead o
 
 ## Commands
 
-A `commands/<name>.md` file is a slash command: a frontmatter and a prompt. gitbook-docs-validator ships four (`structure`, `links`, `content`, `repo`), called as `/gitbook-docs-validator:<name>`. Skills with a `name` are callable as `/<name>` too (or `/<plugin>:<name>` when the name is not unique), so most plugins need no `commands/` folder. The four mods register their slash commands from their module at session start.
+A `commands/<name>.md` file is a slash command: a frontmatter and a prompt. gitbook-docs ships four (`structure`, `links`, `content`, `repo`), called as `/gitbook-docs:<name>`. Skills with a `name` are callable as `/<name>` too (or `/<plugin>:<name>` when the name is not unique), so most plugins need no `commands/` folder. The four mods register their slash commands from their module at session start.
 
 ## MCP servers
 

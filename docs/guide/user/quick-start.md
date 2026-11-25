@@ -17,7 +17,7 @@ Claude Code fetches the registry and lists it under the name `km-plugin-registry
 Pick a plugin and install it:
 
 ```
-/plugin install gitbook-docs-validator@km-plugin-registry
+/plugin install gitbook-docs@km-plugin-registry
 ```
 
 Replace the name with `frontend-scaffold`, `feature-dev-documentalist`, `implementation-spec`, `plan-progress`, `session-cost` or `memors-hooks` to install one of the others. [What is in the marketplace](plugins/README.md) describes each. You can install any combination; they do not interfere with each other. memors-hooks also needs `memors-mcp` and `jq` on your machine. Its bundled `memors` server is off until you turn on *Start the memors MCP server* in `/config`; leave it off if you registered memors yourself.

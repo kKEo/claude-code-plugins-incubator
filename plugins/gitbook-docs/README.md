@@ -1,4 +1,4 @@
-# gitbook-docs-validator
+# gitbook-docs
 
 Two skills for GitBook/mdBook documentation that follows a fixed book-per-reader template (earlier called the three-book template):
 
@@ -27,8 +27,20 @@ The full template with the reasoning behind each rule lives in `skills/gitbook-d
 ## Install
 
 ```
-/plugin install gitbook-docs-validator --marketplace kKEo/claude-code-plugins-incubator
+/plugin install gitbook-docs --marketplace kKEo/claude-code-plugins-incubator
 ```
+
+### Moving from gitbook-docs-validator
+
+Up to version 0.5.1 this plugin was named `gitbook-docs-validator`. It was renamed in 0.6.0 because it also creates documentation. An install under the old name gets no more updates; replace it:
+
+```
+/plugin uninstall gitbook-docs-validator
+/plugin install gitbook-docs --marketplace kKEo/claude-code-plugins-incubator
+/reload-plugins
+```
+
+The four commands moved with the plugin name: `/gitbook-docs-validator:structure`, `:links`, `:content` and `:repo` are now `/gitbook-docs:structure`, `:links`, `:content` and `:repo`. The two skills keep their names, `gitbook-docs-validator` and `gitbook-docs-creator`, and the scripts keep their paths inside the plugin.
 
 ## Checking documentation
 
@@ -56,10 +68,10 @@ The checks are split into validators that also run on their own:
 
 | Command | Validators | Reads pages? |
 |---|---|---|
-| `/gitbook-docs-validator:structure [path]` | `landing`, `files`, `summary` | no |
-| `/gitbook-docs-validator:links [path]` | `links` | no |
-| `/gitbook-docs-validator:content [path]` | `pages`, `readme`, `roles` + qualitative pass | worklist only |
-| `/gitbook-docs-validator:repo [path] [--repo-root DIR]` | `repo` | no |
+| `/gitbook-docs:structure [path]` | `landing`, `files`, `summary` | no |
+| `/gitbook-docs:links [path]` | `links` | no |
+| `/gitbook-docs:content [path]` | `pages`, `readme`, `roles` + qualitative pass | worklist only |
+| `/gitbook-docs:repo [path] [--repo-root DIR]` | `repo` | no |
 
 A partial run is titled `Documentation check (<validators>)` and lists the validators it skipped, so it is never mistaken for a full template check.
 
@@ -113,7 +125,7 @@ Both scripts map folders to roles through aliases (`user`/`getting-started`, `op
 ## Layout
 
 ```
-gitbook-docs-validator/
+gitbook-docs/
 ├── .claude-plugin/plugin.json
 ├── commands/                        # structure, links, content, repo
 └── skills/gitbook-docs-validator/

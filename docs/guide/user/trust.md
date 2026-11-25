@@ -12,7 +12,7 @@ Several plugins act without a prompt. Each is listed here with what it does and,
 - **prompt-coach** saves every prompt you type and sends each one once to a small model (`haiku` by default) to be proofread, through the session's own connection. *Collect prompts* in `/config` switches both off. It opens its pane by itself only when *Open pane at start* is on, which it is not by default.
 - **plan-progress** opens its pane by itself in a wide fullscreen terminal, unless *Open pane at start* is switched off in `/config`. Once you approve a plan, it asks Claude to report progress through its `mark_step` tool.
 
-The other plugins (frontend-scaffold, gitbook-docs-validator and implementation-spec) act only when you ask.
+The other plugins (frontend-scaffold, gitbook-docs and implementation-spec) act only when you ask.
 
 ## What is written to disk
 
@@ -20,7 +20,7 @@ The other plugins (frontend-scaffold, gitbook-docs-validator and implementation-
 |---|---|
 | frontend-scaffold | A new project folder at the location you choose (default: a folder named after the project in the current directory). It also runs `npm install` and `npm run build` there. |
 | feature-dev-documentalist | Markdown files under `docs/features/<date>-<branch>/` in the current repository. It asks before overwriting an existing file. |
-| gitbook-docs-validator | Nothing, unless you ask it to fix findings or to save a report to a file. |
+| gitbook-docs | Nothing, unless you ask it to fix findings or to save a report to a file. |
 | implementation-spec | A spec file, `docs/specs/<date>-<slug>.md`, in the current repository. Asking again for the same feature updates that file. |
 | memors-hooks | A log of web fetches, empty searches and write-backs in the system's temporary folder (`$TMPDIR/memors-hooks/`), read by the end-of-turn reminder. The hooks write nothing to the knowledge base. The `memors` server writes to its own store (`~/.memors-mcp` by default) only when Claude records or ingests something. |
 | session-cost | Per-session totals, split by day, in the plugin's store. Days older than *History days* (30 by default) are removed. Nothing is written into your project. |
@@ -29,7 +29,7 @@ The other plugins (frontend-scaffold, gitbook-docs-validator and implementation-
 
 ## What is read
 
-frontend-scaffold, feature-dev-documentalist, gitbook-docs-validator and implementation-spec read files in the current project through Claude, in the same way Claude reads files when you ask it a question. **gitbook-docs-validator** also runs a Python script that reads the documentation folder and, when asked, the repository's README, Makefile and workflow files. **session-cost** reads the session's `/cost` total and each request's token counts and model name, never file contents. **plan-progress** reads the plan file and the task and todo lists Claude keeps. **memors-hooks** reads the knowledge base's titles, addresses and trust levels. Its `guard-cli` hook reads the text of every Bash command Claude runs, to decide whether to block it, and keeps nothing. With *Prompt recall* on, its `recall` hook reads each prompt of 20 characters or more and runs a local keyword search on it, keeping nothing. Its `track` hook writes the URLs Claude fetches and the search terms it uses to the session log described above. Of your project's files it reads one, `.memors-kb` (looked for in the working directory and its parents), to learn the knowledge base's name.
+frontend-scaffold, feature-dev-documentalist, gitbook-docs and implementation-spec read files in the current project through Claude, in the same way Claude reads files when you ask it a question. **gitbook-docs** also runs a Python script that reads the documentation folder and, when asked, the repository's README, Makefile and workflow files. **session-cost** reads the session's `/cost` total and each request's token counts and model name, never file contents. **plan-progress** reads the plan file and the task and todo lists Claude keeps. **memors-hooks** reads the knowledge base's titles, addresses and trust levels. Its `guard-cli` hook reads the text of every Bash command Claude runs, to decide whether to block it, and keeps nothing. With *Prompt recall* on, its `recall` hook reads each prompt of 20 characters or more and runs a local keyword search on it, keeping nothing. Its `track` hook writes the URLs Claude fetches and the search terms it uses to the session log described above. Of your project's files it reads one, `.memors-kb` (looked for in the working directory and its parents), to learn the knowledge base's name.
 
 ## Where data goes
 
