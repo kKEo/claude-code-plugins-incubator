@@ -1,0 +1,12 @@
+[book]
+title = "notekeep Operator Guide"
+description = "Architecture, configuration, deployment and maintenance of notekeep."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_site/operator-guide"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/notekeep"

@@ -1,0 +1,18 @@
+# Read by mdBook (make docs); GitBook ignores this file and reads .gitbook.yaml.
+[book]
+title = "{{TITLE}}"
+description = "{{DESCRIPTION}}"
+language = "en"
+src = "."
+
+[build]
+build-dir = "{{BUILD_DIR}}"
+# A typo in SUMMARY.md fails the build instead of creating an empty page.
+create-missing = false
+
+[output.html]
+{{REPO_LINES}}# Adds a Home icon to the menu bar that links back to the landing page.
+additional-js = ["home-button.js"]
+
+[output.html.search]
+enable = true

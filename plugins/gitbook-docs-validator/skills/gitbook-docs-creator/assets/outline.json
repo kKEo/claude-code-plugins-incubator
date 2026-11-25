@@ -1,0 +1,114 @@
+{
+  "$comment": "The starting outline of each book: where every required page of the template goes, under which title, and what the page has to contain. scaffold_docs.py reads it together with the validator's template.json; a page with an \"id\" is written only while template.json (or the project's .docs-template.json) still requires that id. {name} is replaced with the project name.",
+  "roles": {
+    "user": {
+      "book": "user guide",
+      "description": "What {name} is and how to use it day to day.",
+      "front": "Welcome",
+      "audience": "This guide is for anyone who uses {name}. It assumes no technical background.",
+      "blurb": "is the plain-language introduction",
+      "map_header": ["If you want to…", "Read"],
+      "card": {
+        "tag": "For everyone",
+        "title": "User guide",
+        "summary": "What {name} is and how to use it day to day, in plain words.",
+        "bullets": ["A short quick start", "Everyday tasks, one at a time", "Questions, troubleshooting and a glossary"]
+      },
+      "readme_brief": "Open with one bold sentence on what {name} does for the reader, then two or three short paragraphs in plain words. Keep the audience sentence, the reading-map table (one row per common need, not a copy of SUMMARY) and the pointer to the other books.",
+      "chapters": [
+        {"id": "quick-start", "file": "quick-start.md", "title": "Quick start", "want": "Get it running",
+         "brief": "A timed walk-through from nothing to the first useful result. Say in the lead paragraph how long it takes, list what the reader needs first, then numbered steps with the exact command or click and what the reader should see after each. End with where to go next. Facts: the install instructions and the shortest working example in the repository; run the steps if you can."},
+        {"id": "everyday-use", "file": "everyday-use.md", "title": "Everyday use", "want": "Do a common task",
+         "brief": "One H2 per common job, named by what the reader wants to do, each with the shortest way to do it and one example. Facts: the commands, screens or prompts the product offers; leave out anything only an operator needs."},
+        {"id": "trust-privacy", "file": "trust.md", "title": "Trust and privacy", "want": "Know what you can rely on",
+         "brief": "What the reader can rely on, what the product reads and writes, what leaves the machine and what never does. Facts: network calls, files written, telemetry and permissions found in the code; state only what the code shows."},
+        {"id": "use-cases", "file": "use-cases.md", "title": "Use cases", "want": "See whether it fits you",
+         "brief": "Three to five concrete stories: who, the problem, how {name} helps, what they do. Facts: examples in the repository, the README, issues; do not invent customers."},
+        {"id": "faq", "file": "faq.md", "title": "Questions and troubleshooting", "want": "Fix a problem",
+         "brief": "The page people land on when something breaks. One H2 per question, phrased as the reader would ask it, or per symptom with the exact error text. Each answer: the cause in one sentence, then the fix. Facts: error messages in the code, known issues, the README."},
+        {"id": "glossary", "file": "glossary.md", "title": "Glossary", "want": "Look up a word",
+         "brief": "Every project word this book uses, in alphabetical order, each defined in one or two plain sentences without using another glossary word. Only words that appear in this book."}
+      ]
+    },
+    "operator": {
+      "book": "operator guide",
+      "description": "How {name} works inside, and how to install, configure, monitor and operate it.",
+      "front": "Introduction",
+      "audience": "This guide is for the people who install, configure, develop and run {name}. It assumes you are comfortable with a terminal.",
+      "blurb": "covers how it works inside, installation, every setting, monitoring and operations",
+      "map_header": ["Part", "Read it when you need to…"],
+      "card": {
+        "tag": "For operators",
+        "title": "Operator guide",
+        "summary": "How {name} works inside, and how to install, configure, monitor and operate it.",
+        "bullets": ["How it works, install and deploy", "A complete configuration reference", "Monitoring and day-two operations"]
+      },
+      "readme_brief": "After the audience sentence, one paragraph that says what {name} is in an operator's terms (processes, storage, dependencies). Keep the reading-map table, add a Conventions section (how commands are shown, what project words mean), link design documents outside the docs root with absolute repository URLs, and keep the pointer to the other books.",
+      "chapters": [
+        {"dir": "intro", "title": "How it works", "when": "Understand the parts of the system and how they fit together", "pages": [
+          {"id": "how-it-works", "file": "overview.md", "title": "System overview",
+           "brief": "The mental model every later chapter assumes: the processes or components, what each one owns, how a request or a piece of data moves through them, and where state is kept. A diagram helps. Facts: the entry points, the package layout and the design documents."}
+        ]},
+        {"dir": "install", "title": "Install and deploy", "when": "Install, upgrade or deploy", "pages": [
+          {"id": "install", "file": "install.md", "title": "Install",
+           "brief": "Every supported way to install, each with prerequisites, the exact commands and how to verify the result. Then upgrading and uninstalling. Facts: the build files, release configuration, Dockerfile, package manifests and CI."}
+        ]},
+        {"dir": "config", "title": "Configuration reference", "when": "Look up a setting, a command or a flag", "pages": [
+          {"id": "configuration", "file": "environment.md", "title": "Environment variables and settings",
+           "brief": "A complete reference: one table row per setting with its name in backticks, type, default and effect. Complete means every setting the code reads; grep the code for them, do not work from memory. Quote the defaults from the code."},
+          {"id": "commands", "file": "commands.md", "title": "Commands and flags",
+           "brief": "Every command and flag the binary accepts, each with a one-line purpose, its arguments and one example. Facts: the argument parser in the code or the --help output, not the README."}
+        ]},
+        {"dir": "monitoring", "title": "Monitoring", "when": "See what the system is doing and be told when it breaks", "pages": [
+          {"id": "monitoring", "file": "signals.md", "title": "Metrics and logs",
+           "brief": "Which signals exist (logs, metrics, health checks, traces), where each one appears, its format, and which ones deserve an alert. Facts: the logging and metrics calls in the code. If the product emits none, say so and say how an operator can tell that it is healthy."}
+        ]},
+        {"dir": "operations", "title": "Operations", "when": "Back up, repair, upgrade or troubleshoot", "pages": [
+          {"id": "operations", "file": "troubleshooting.md", "title": "Troubleshooting runbook",
+           "brief": "Day-two work. One H2 per symptom: how to confirm it, the likely causes in order, the fix, and how to check that it worked. Add backup and restore when the product keeps state. Facts: error paths in the code, data files, migration code."}
+        ]},
+        {"dir": "appendix", "title": "Appendix", "numbered": false, "when": "Look up a term", "pages": [
+          {"id": "glossary", "file": "glossary.md", "title": "Glossary",
+           "brief": "Project-specific terms in alphabetical order, each defined precisely in one or two sentences, with the name it has in the code where that differs."}
+        ]}
+      ]
+    },
+    "tester": {
+      "book": "tester guide",
+      "description": "How every change to {name} is checked, and how to run, read, explore and add tests.",
+      "front": "For testers",
+      "audience": "This guide is for the people who check that changes to {name} are safe. It assumes you can run commands in a terminal and read a test report.",
+      "blurb": "explains how every change is checked",
+      "map_header": ["Part", "Read it when you need to…"],
+      "card": {
+        "tag": "For testers",
+        "title": "Tester guide",
+        "summary": "How every change is checked, and how to run, read, explore and add tests.",
+        "bullets": ["Running the tests and what is tested where", "The gates that block a merge", "Exploring by hand and adding tests"]
+      },
+      "readme_brief": "After the audience sentence, one paragraph on how {name} is tested as a whole (which kinds of tests, what runs on every change). Keep the reading-map table, add a Conventions section (how commands and test names are shown) and keep the pointer to the other books.",
+      "chapters": [
+        {"dir": "start", "title": "Getting started", "when": "Run everything once and find the tests for an area", "pages": [
+          {"id": "running", "file": "running.md", "title": "Running the tests",
+           "brief": "How to run the whole suite once: prerequisites, the one command, how long it takes, what a pass and a failure look like, then how to run one package or one test. Facts: the Makefile or task runner, the test configuration and CI; run the command if you can."},
+          {"id": "map", "file": "map.md", "title": "What is tested where",
+           "brief": "A table from product area to the test files that cover it and the kind of test, so a reviewer can find the tests for a change. Include the areas with no tests. Facts: the test files in the repository."}
+        ]},
+        {"dir": "gates", "title": "Automated gates", "when": "Know what blocks a merge and why", "pages": [
+          {"id": "gates", "file": "ci.md", "title": "Continuous integration",
+           "brief": "Every check that runs on a pull request: what it checks, the command that reproduces it locally, and whether it blocks the merge. Facts: the workflow files and the Makefile. If there is no CI, say so and list what a reviewer has to run by hand."}
+        ]},
+        {"dir": "explore", "title": "Exploratory testing", "when": "Look for what the automated tests miss", "pages": [
+          {"id": "exploratory", "file": "by-hand.md", "title": "Exploring by hand",
+           "brief": "How to set up a safe sandbox, which areas are worth probing, what to try in each and how to report what you find. Facts: the product's risky paths, such as input parsing, concurrency, upgrades and data loss."}
+        ]},
+        {"dir": "contributing", "title": "Adding tests", "when": "Write the right test for a change", "pages": [
+          {"id": "adding-tests", "file": "adding-tests.md", "title": "Adding tests",
+           "brief": "Which kind of test to write for which kind of change, where the file goes, a minimal example copied from an existing test, and the pull-request checklist. Facts: the conventions the existing tests follow."}
+        ]},
+        {"id": "glossary", "file": "appendix.md", "title": "Appendix: words and commands", "when": "Look up a testing word or a command",
+         "brief": "Testing vocabulary used in this book (for example golden, baseline, gate, fixture), each in one or two sentences, then a table of every test command with what it runs."}
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>notekeep documentation</title>
+<style>
+  :root { --bg: #fbfbfa; --fg: #1d1f23; --muted: #5c6370; --card: #ffffff; --line: #dcdfe4; --accent: #1f6feb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15171a; --fg: #e6e8eb; --muted: #9aa2ad; --card: #1d2024; --line: #30353c; --accent: #6ea8fe; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 60rem; margin: 0 auto; padding: 3rem 1rem; }
+  h1 { margin: 0 0 .5rem; font-size: 2rem; }
+  p.lead { margin: 0 0 2rem; color: var(--muted); max-width: 40rem; }
+  .books { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  a.book { display: block; padding: 1.25rem; background: var(--card); border: 1px solid var(--line);
+           border-radius: .5rem; color: inherit; text-decoration: none; }
+  a.book:hover, a.book:focus-visible { border-color: var(--accent); }
+  a.book h2 { margin: 0 0 .25rem; font-size: 1.15rem; color: var(--accent); }
+  a.book .who { margin: 0 0 .5rem; font-size: .85rem; color: var(--muted); }
+  a.book p { margin: 0; }
+  footer { margin-top: 2.5rem; font-size: .9rem; color: var(--muted); }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>notekeep</h1>
+  <p class="lead">A tiny notes server for a team. It keeps notes in one SQLite file and gives
+  you a JSON API and a command line tool. Pick the book written for you.</p>
+  <div class="books">
+    <a class="book" href="user-guide/index.html">
+      <h2>User Guide</h2>
+      <p class="who">For people who keep notes</p>
+      <p>Start the server, save your first note, then list, read and export notes.</p>
+    </a>
+    <a class="book" href="operator-guide/index.html">
+      <h2>Operator Guide</h2>
+      <p class="who">For people who run and develop notekeep</p>
+      <p>Architecture, configuration, the HTTP API, deployment, backup and maintenance.</p>
+    </a>
+    <a class="book" href="tester-guide/index.html">
+      <h2>Tester Guide</h2>
+      <p class="who">For contributors and reviewers</p>
+      <p>Run the test suite, see what it covers, and learn what runs on a pull request.</p>
+    </a>
+  </div>
+  <footer>Source: <a href="https://github.com/example/notekeep">github.com/example/notekeep</a> (Apache-2.0)</footer>
+</main>
+</body>
+</html>

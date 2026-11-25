@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": false,
+      "evidence": "exit 1; summary: 9 error(s), 28 warning(s), 3 note(s); first: ERROR landing            landing page has no link href=\"operator/\" to the operator book [index.html]"
+    },
+    {
+      "text": "Operator book names all six PINGBOARD_* environment variables read by the code",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+      "passed": false,
+      "evidence": "missing: --fail-fast"
+    },
+    {
+      "text": "Operator book names the three metrics and the /healthz route",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Tester book names `make test` and all three test files",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "User quick start says how long it takes",
+      "passed": true,
+      "evidence": "checked ['quick-start.md']"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "Makefile has docs, docs-check, docs-serve and docs-site targets",
+      "passed": false,
+      "evidence": "missing targets: docs, docs-check, docs-serve, docs-site"
+    },
+    {
+      "text": "Root README links all three books",
+      "passed": false,
+      "evidence": "no link to: operator, tester, user"
+    }
+  ],
+  "summary": {
+    "passed": 6,
+    "failed": 4,
+    "total": 10,
+    "pass_rate": 0.6
+  }
+}

@@ -129,7 +129,8 @@ reading and writing. Keep the reading set fixed and the report short.
 
 5. **Offer, do not apply.** Unless the user asked for fixes, stop at the report. If they ask,
    fix structural failures first (they are mechanical), re-run the script, and leave template
-   deviations as a conversation.
+   deviations as a conversation. Writing a missing book or missing pages is not a fix: that
+   is the `gitbook-docs-creator` skill, which scaffolds them and writes them from the code.
 
 ## When the project is not yet using the template
 
@@ -137,6 +138,8 @@ If the tree has one book, or none, the script will report missing roles. Do not 
 with every per-page rule; the useful answer is the shape: which roles exist, which are missing,
 what the landing page should link, and which existing pages would move into which book.
 `references/template.md` §1 and §7 give the target shape and the minimum pages per role.
+If the user then wants the missing books created, hand over to the `gitbook-docs-creator`
+skill instead of writing them from here.
 
 ## Files
 

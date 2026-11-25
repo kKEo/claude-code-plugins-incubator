@@ -1,0 +1,13 @@
+[book]
+title = "pingboard Operator Guide"
+description = "Developing, deploying, configuring and monitoring pingboard."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_build/operator"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/pingboard"
+edit-url-template = "https://github.com/example/pingboard/edit/main/docs/guide/operator/{path}"

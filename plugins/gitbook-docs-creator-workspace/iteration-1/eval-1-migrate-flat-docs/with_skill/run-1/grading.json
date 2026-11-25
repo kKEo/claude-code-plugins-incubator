@@ -1,0 +1,60 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+      "passed": true,
+      "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+    },
+    {
+      "text": "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+      "passed": true,
+      "evidence": "all moved"
+    },
+    {
+      "text": "The books state the real default port 7070",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "No page still claims port 9000 (the outdated value from the old docs)",
+      "passed": true,
+      "evidence": "none"
+    },
+    {
+      "text": "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+      "passed": true,
+      "evidence": "not presented as a command"
+    },
+    {
+      "text": "Operator book documents the commands serve, list, show, export and vacuum",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Tester book names ./run-tests.sh",
+      "passed": true,
+      "evidence": "all found"
+    },
+    {
+      "text": "Root README links all three books",
+      "passed": true,
+      "evidence": "links every book"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 10,
+    "failed": 0,
+    "total": 10,
+    "pass_rate": 1.0
+  }
+}

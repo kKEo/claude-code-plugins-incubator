@@ -1,6 +1,11 @@
 # gitbook-docs-validator
 
-Checks a project's GitBook/mdBook documentation tree against a fixed three-book template and reports what is missing or deviates. It combines a deterministic Python script with a qualitative review pass, and always produces a report in the same shape so results from different projects compare.
+Two skills for GitBook/mdBook documentation that follows a fixed three-book template:
+
+- **`gitbook-docs-validator`** checks a documentation tree against the template and reports what is missing or deviates. It combines a deterministic Python script with a qualitative review pass, and always produces a report in the same shape so results from different projects compare.
+- **`gitbook-docs-creator`** creates such a tree: a script scaffolds the landing page and the three books, the skill writes the pages from the project's code, and the validator is the acceptance check at the end.
+
+The two are separate skills because they need opposite habits. The validator reads a fixed handful of files and stops at a report; the creator reads the code and writes dozens of pages. They share one template, so what the creator writes is what the validator checks.
 
 ## The template
 
@@ -20,7 +25,7 @@ The full template with the reasoning behind each rule lives in `skills/gitbook-d
 /plugin install gitbook-docs-validator --marketplace kKEo/claude-code-plugins-incubator
 ```
 
-## Usage
+## Checking documentation
 
 Ask Claude to check, review, audit or lint the docs. Example prompts:
 
@@ -62,9 +67,38 @@ python3 skills/gitbook-docs-validator/scripts/validate_docs.py docs/guide --repo
 
 `--only links,summary` runs just those validators and `--skip repo` runs the rest (`books`, the role mapping, always runs). `--list-checks` describes them. `--format md` prints the report skeleton, `--worklist` lists the files for the qualitative pass, and `--quiet` hides INFO notes. Exit status 1 means at least one ERROR, 2 means invalid arguments. Python 3.8+, standard library only.
 
-### Custom folder names
+## Creating documentation
 
-The script maps folders to roles through aliases (`user`/`getting-started`, `operator`/`internals`/`deploy`, `tester`/`qa`/`testing`, …). For other names, drop a `.docs-template.json` into the docs root with extra `aliases`, in the same shape as `skills/gitbook-docs-validator/assets/template.json`.
+Ask Claude to create, scaffold, write or migrate the docs. Example prompts:
+
+```
+set up documentation for this service under docs/guide
+our docs are one long README; move them into the three books
+the tester guide was never written; add it
+fill in the draft pages of the operator guide
+```
+
+The skill will:
+
+1. Look at the project: the docs root, the documentation that exists, and the facts in the code (commands, settings, logs and metrics, tests, CI).
+2. Run `scripts/scaffold_docs.py`. It writes the landing page and, per book, `README.md`, `SUMMARY.md`, `.gitbook.yaml`, `book.toml`, `home-button.js` and one page per required page of the template. Each page is a stub marked `> Draft.` with a comment that says what it has to contain. The script never overwrites or edits an existing file; it lists the edits it left to the author.
+3. Write the pages from the code, operator book first, following `references/writing.md`. A page keeps `> Draft.` while a fact is unknown.
+4. Finish the landing page and connect the repository (README links, Makefile targets, docs workflow, `.gitignore`) with additive edits only.
+5. Run `validate_docs.py` until it reports no error, then report what was written and what is still a draft.
+
+### Running the scaffold directly
+
+```bash
+python3 skills/gitbook-docs-creator/scripts/scaffold_docs.py docs/guide --repo-root . \
+    [--name NAME] [--repo-url URL] [--lede TEXT] [--books ROLES] [--folders ROLE=FOLDER,...] \
+    [--repo-files] [--template FILE] [--dry-run]
+```
+
+`--books tester` scaffolds one book, `--folders user=getting-started,tester=qa` picks folder names, `--repo-files` also adds a Makefile, a docs workflow, `scripts/docs-check.sh` and a docs index where the repository has none, and `--dry-run` prints the plan. Python 3.8+, standard library only.
+
+## Custom folder names
+
+Both scripts map folders to roles through aliases (`user`/`getting-started`, `operator`/`internals`/`deploy`, `tester`/`qa`/`testing`, …). For other names, drop a `.docs-template.json` into the docs root with extra `aliases`, in the same shape as `skills/gitbook-docs-validator/assets/template.json`.
 
 ## Layout
 
@@ -78,6 +112,12 @@ gitbook-docs-validator/
     ├── scripts/gbv/                 # core, context, render; checks/<validator>.py
     ├── references/template.md       # the template, with reasoning
     ├── assets/template.json         # roles, aliases, required pages
+    └── evals/                       # eval cases and fixtures
+└── skills/gitbook-docs-creator/
+    ├── SKILL.md
+    ├── scripts/scaffold_docs.py     # writes the tree; never overwrites
+    ├── assets/                      # outline.json and the files the scaffold copies
+    ├── references/writing.md        # how to gather facts and write each kind of page
     └── evals/                       # eval cases and fixtures
 ```
 

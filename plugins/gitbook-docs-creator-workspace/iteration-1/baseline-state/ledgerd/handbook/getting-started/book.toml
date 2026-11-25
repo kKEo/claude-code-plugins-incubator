@@ -1,0 +1,7 @@
+[book]
+title = "ledgerd getting-started"
+src = "."
+
+[build]
+build-dir = "../../site/getting-started"
+create-missing = false

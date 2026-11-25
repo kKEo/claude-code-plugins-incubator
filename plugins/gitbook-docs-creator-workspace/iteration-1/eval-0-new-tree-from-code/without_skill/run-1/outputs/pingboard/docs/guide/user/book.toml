@@ -1,0 +1,13 @@
+[book]
+title = "pingboard User Guide"
+description = "Getting started with pingboard: install it, add targets, read the dashboard."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_build/user"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/pingboard"
+edit-url-template = "https://github.com/example/pingboard/edit/main/docs/guide/user/{path}"

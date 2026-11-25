@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{NAME}} documentation</title>
+<meta name="description" content="{{NAME}}: {{GUIDES}}.">
+<style>
+  :root { --bg: #fbfaf7; --fg: #1d1d1b; --muted: #5f5e58; --card: #ffffff; --line: #e4e1d8; --accent: #2f5d8a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16171a; --fg: #ecebe6; --muted: #a3a29b; --card: #1f2024; --line: #33343a; --accent: #8ab4e0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 56px 16px 40px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); margin: 0 0 36px; max-width: 640px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  a.card { display: block; text-decoration: none; color: inherit; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; transition: border-color .15s; }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+  .tag { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+  .card h2 { margin: 6px 0 8px; font-size: 1.3rem; }
+  .card p { margin: 0 0 12px; color: var(--muted); }
+  .card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .95rem; }
+  footer { margin-top: 44px; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>{{NAME}}</h1>
+  <p class="lede">{{LEDE}}</p>
+  <div class="cards">
+{{CARDS}}
+  </div>
+  <footer>{{FOOTER}}</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+      "passed": true,
+      "evidence": "exit 0; summary: 0 error(s), 15 warning(s), 3 note(s)"
+    },
+    {
+      "text": "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+      "passed": true,
+      "evidence": "all present"
+    },
+    {
+      "text": "The QA book is organised in parts (Part I: ...)",
+      "passed": true,
+      "evidence": "4 numbered parts in SUMMARY.md"
+    },
+    {
+      "text": "No existing page of the getting-started and internals books was modified or deleted",
+      "passed": true,
+      "evidence": "all identical"
+    },
+    {
+      "text": "The existing Makefile `docs` target is still there",
+      "passed": true,
+      "evidence": "original recipe kept"
+    },
+    {
+      "text": "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+      "passed": true,
+      "evidence": "drafts or explicit"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "total": 7,
+    "pass_rate": 1.0
+  }
+}

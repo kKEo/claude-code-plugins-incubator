@@ -33,3 +33,4 @@ make docs-site               # build, then serve the whole site from the landing
 - [The three-book template](../plugins/gitbook-docs-validator/skills/gitbook-docs-validator/references/template.md): the rules this documentation follows.
 - [Documentalist slides](../plugins/feature-dev-documentalist/slides.md): presentation and critique of the feature-dev-documentalist plugin.
 - [Validator benchmark](../plugins/gitbook-docs-validator-workspace/iteration-1/benchmark.md): eval results for the validator skill.
+- [Creator benchmark](../plugins/gitbook-docs-creator-workspace/iteration-1/benchmark.md): eval results for the creator skill.

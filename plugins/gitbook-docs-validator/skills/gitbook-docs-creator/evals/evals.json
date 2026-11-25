@@ -1,0 +1,69 @@
+{
+  "$comment": "Each eval works in place on a copy of its fixture; paths in docs_root/repo_root are relative to the run's outputs directory. Grade with plugins/gitbook-docs-creator-workspace/grade.py <iteration-dir>.",
+  "skill_name": "gitbook-docs-creator",
+  "evals": [
+    {
+      "id": 0,
+      "name": "new-tree-from-code",
+      "fixture": "evals/fixtures/pingboard",
+      "docs_root": "pingboard/docs/guide",
+      "repo_root": "pingboard",
+      "prompt": "Our service pingboard has nothing but a three-line README. Set up proper documentation for it under docs/guide in our standard layout (a landing page plus a user guide, an operator guide and a tester guide) and write it. The source repository is https://github.com/example/pingboard.",
+      "expected_output": "A docs/guide tree with index.html and three books that the validator passes without errors; the operator book lists every PINGBOARD_* variable with its real default, every command and flag, the metrics and /healthz; the tester book names make test and the test files; unknown facts stay marked as drafts.",
+      "files": [],
+      "assertions": [
+        "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+        "Operator book names all six PINGBOARD_* environment variables read by the code",
+        "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+        "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+        "Operator book names the three metrics and the /healthz route",
+        "Tester book names `make test` and all three test files",
+        "User quick start says how long it takes",
+        "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+        "Makefile has docs, docs-check, docs-serve and docs-site targets",
+        "Root README links all three books"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "migrate-flat-docs",
+      "fixture": "evals/fixtures/notekeep",
+      "docs_root": "notekeep/docs/guide",
+      "repo_root": "notekeep",
+      "prompt": "notekeep's documentation is one long README plus four files under docs/. Please move it into our three-book layout under docs/guide (landing page, user guide, operator guide, tester guide) so each reader gets their own book.",
+      "expected_output": "The four flat files are moved into the books, not copied; drifted facts are corrected against the code (the default port is 7070, not 9000; there is no delete command; NOTEKEEP_MAX_NOTE_BYTES is documented); the root README links every book; the validator passes without errors.",
+      "files": [],
+      "assertions": [
+        "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+        "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+        "The books state the real default port 7070",
+        "No page still claims port 9000 (the outdated value from the old docs)",
+        "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+        "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+        "Operator book documents the commands serve, list, show, export and vacuum",
+        "Tester book names ./run-tests.sh",
+        "Root README links all three books",
+        "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "add-missing-book",
+      "fixture": "../../../gitbook-docs-validator-workspace/fixtures/ledgerd (with handbook/qa removed)",
+      "docs_root": "ledgerd/handbook",
+      "repo_root": "ledgerd",
+      "prompt": "The ledgerd handbook has the getting-started and internals books, but the QA book for testers was never written. The landing page and the README already link to handbook/qa. Add that book.",
+      "expected_output": "A handbook/qa book in parts with the required tester pages; the two existing books' pages are untouched; because the repository contains no tests and no CI, the pages about running tests and CI are drafts or say so instead of inventing commands; the validator passes without errors.",
+      "files": [],
+      "assertions": [
+        "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+        "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+        "The QA book is organised in parts (Part I: ...)",
+        "No existing page of the getting-started and internals books was modified or deleted",
+        "The existing Makefile `docs` target is still there",
+        "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+        "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+[book]
+title = "notekeep Tester Guide"
+description = "How notekeep is tested: running the suite, what it covers, and CI."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_site/tester-guide"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/notekeep"

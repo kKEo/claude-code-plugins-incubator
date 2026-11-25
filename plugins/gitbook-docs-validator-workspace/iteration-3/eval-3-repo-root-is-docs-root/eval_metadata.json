@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "eval_name": "repo-root-is-docs-root",
+  "prompt": "The ledgerd handbook at plugins/gitbook-docs-validator-workspace/fixtures/ledgerd/handbook lives in its own repository, so treat the handbook folder itself as the repo root. Does it follow our three-book documentation template? Write the report to the output directory as report.md.",
+  "assertions": [
+    "The validator script completes without a Python traceback (no ValueError from check_repo)",
+    "Report concludes PASS or PASS with deviations, not FAIL",
+    "Report notes the QA book has no exploratory/manual testing page",
+    "Report flags the stub pages that are not marked '> Draft.'",
+    "Report has the Verdict / failures / deviations / suggestions structure"
+  ]
+}

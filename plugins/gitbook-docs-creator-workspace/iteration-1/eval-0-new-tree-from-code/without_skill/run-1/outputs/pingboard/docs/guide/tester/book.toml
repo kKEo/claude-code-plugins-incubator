@@ -1,0 +1,13 @@
+[book]
+title = "pingboard Tester Guide"
+description = "How pingboard is tested: automated tests, manual test cases and CI."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_build/tester"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/pingboard"
+edit-url-template = "https://github.com/example/pingboard/edit/main/docs/guide/tester/{path}"

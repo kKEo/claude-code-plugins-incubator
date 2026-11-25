@@ -1,0 +1,12 @@
+[book]
+title = "notekeep User Guide"
+description = "Getting started with notekeep: save, list, read and export notes."
+language = "en"
+src = "."
+
+[build]
+build-dir = "../_site/user-guide"
+create-missing = false
+
+[output.html]
+git-repository-url = "https://github.com/example/notekeep"

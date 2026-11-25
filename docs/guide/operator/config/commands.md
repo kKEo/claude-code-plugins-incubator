@@ -106,3 +106,27 @@ Findings are tagged with one of `books`, `landing`, `book-files`, `summary`, `pa
 ```bash
 python3 …/validate_docs.py docs/guide --json | jq '.findings[] | select(.check == "summary")'
 ```
+
+## scaffold_docs.py
+
+```bash
+python3 plugins/gitbook-docs-validator/skills/gitbook-docs-creator/scripts/scaffold_docs.py <docs-root> [--repo-root DIR] [--name NAME] [--repo-url URL] [--lede TEXT] [--books ROLES] [--folders ROLE=FOLDER,...] [--repo-files] [--template FILE] [--dry-run]
+```
+
+The script behind the `gitbook-docs-creator` skill. It writes the landing page and, for each book, the configuration files and one stub page per required page of the template. It never overwrites or edits an existing file, and it prints the edits it left to the author.
+
+| Argument | Default | Meaning |
+|---|---|---|
+| `docs_root` | required | Directory for `index.html` and the book folders, usually `docs/guide` |
+| `--repo-root DIR` | the git top level above the docs root, else the current directory | Repository root; `book.toml` build directories and the repository files are placed relative to it |
+| `--name NAME` | the repository folder name | Project name used in titles and on the landing page |
+| `--repo-url URL` | the `origin` remote | Source repository link for the landing page footer and `book.toml` |
+| `--lede TEXT` | a visible TODO | The one-sentence claim on the landing page |
+| `--books ROLES` | every role of the template | Comma-separated roles to scaffold, for example `--books tester` |
+| `--folders ROLE=FOLDER,...` | an existing book folder, else the role name | Folder name per role; it has to match one of the role's aliases |
+| `--repo-files` | off | Also adds `Makefile`, `.github/workflows/docs.yml`, `scripts/docs-check.sh` and the docs index, each only when the repository has none |
+| `--template FILE` | the validator's `assets/template.json` | Role definitions; `<docs-root>/.docs-template.json` is merged over it |
+| `--dry-run` | off | Prints what would be written and writes nothing |
+
+Exit status is 0 on success and 2 on invalid arguments.
+

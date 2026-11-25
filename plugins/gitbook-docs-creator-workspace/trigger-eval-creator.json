@@ -1,0 +1,66 @@
+[
+  {
+    "query": "we just open-sourced our billing service (repo is ~/src/invoicer, Go) and it has zero docs. can you set up a proper docs site for it under docs/guide and write the content from the code?",
+    "should_trigger": true
+  },
+  {
+    "query": "The tester guide for our project was never written, only the user and operator books exist in docs/guide. Please add the missing book.",
+    "should_trigger": true
+  },
+  {
+    "query": "our documentation is a 600-line README and a wiki export in docs/wiki. I want it split into a user guide, an operator guide and a QA guide with a landing page",
+    "should_trigger": true
+  },
+  {
+    "query": "scaffold the three-book docs layout for the new ingest-worker service, mdbook should be able to build it",
+    "should_trigger": true
+  },
+  {
+    "query": "docs/guide/operator/config/environment.md is still a stub marked Draft. Fill it in from the code - every env var the service reads, with defaults",
+    "should_trigger": true
+  },
+  {
+    "query": "document this project. I need something a new customer can follow, something for the people who deploy it, and something for QA",
+    "should_trigger": true
+  },
+  {
+    "query": "the docs check said we have no operator book and no glossary in the user book. go ahead and write those",
+    "should_trigger": true
+  },
+  {
+    "query": "add a quick start page and a troubleshooting runbook to our gitbook docs, they are missing from the user and operator guides",
+    "should_trigger": true
+  },
+  {
+    "query": "does docs/guide follow our three-book template? tell me what is missing before I publish",
+    "should_trigger": false
+  },
+  {
+    "query": "quick lint before I push: any orphan pages or broken links in docs/guide? check SUMMARY.md too",
+    "should_trigger": false
+  },
+  {
+    "query": "review the docs changes in this PR, it touches docs/guide/operator and docs/guide/tester. are the books still complete?",
+    "should_trigger": false
+  },
+  {
+    "query": "We scaffolded a handbook for the ledger service last week under handbook/. Can you audit whether it matches the template and list the deviations?",
+    "should_trigger": false
+  },
+  {
+    "query": "which pages in our mdBook docs are unpublished, i.e. exist on disk but are not in any SUMMARY.md?",
+    "should_trigger": false
+  },
+  {
+    "query": "write a README.md for this small python library: install, one usage example, licence. nothing fancy",
+    "should_trigger": false
+  },
+  {
+    "query": "add docstrings to every public function in src/api/handlers.py and generate the OpenAPI reference page for GitBook from our openapi.yaml",
+    "should_trigger": false
+  },
+  {
+    "query": "create a new GitBook site for our company handbook via the GitBook API with two spaces, HR and Engineering, and set the logo and brand colours",
+    "should_trigger": false
+  }
+]

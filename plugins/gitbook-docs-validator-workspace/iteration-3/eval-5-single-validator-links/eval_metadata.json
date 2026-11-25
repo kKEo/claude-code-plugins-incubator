@@ -1,0 +1,13 @@
+{
+  "eval_id": 5,
+  "eval_name": "single-validator-links",
+  "prompt": "Only check the links in plugins/gitbook-docs-validator-workspace/fixtures/acme-notes/docs/guide: broken relative links, missing anchors, images without alt text. Nothing else. Write the report to the output directory as report.md.",
+  "assertions": [
+    "The validator script is run with --only links (or via the links command), not as a full run",
+    "Report names the broken ../../architecture.md link in operator/README.md",
+    "Report names the missing alt text on the image in user/README.md",
+    "Report does not mention orphan pages, the missing tester .gitbook.yaml, the missing glossary or the second H1 (other validators)",
+    "Report states that the other validators were not run, so it is not a full template check",
+    "Report is under 40 lines"
+  ]
+}

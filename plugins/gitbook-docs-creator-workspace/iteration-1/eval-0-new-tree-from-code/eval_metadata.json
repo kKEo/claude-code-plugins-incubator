@@ -1,0 +1,17 @@
+{
+  "eval_id": 0,
+  "eval_name": "new-tree-from-code",
+  "prompt": "Our service pingboard has nothing but a three-line README. Set up proper documentation for it under docs/guide in our standard layout (a landing page plus a user guide, an operator guide and a tester guide) and write it. The source repository is https://github.com/example/pingboard.",
+  "assertions": [
+    "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+    "Operator book names all six PINGBOARD_* environment variables read by the code",
+    "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+    "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+    "Operator book names the three metrics and the /healthz route",
+    "Tester book names `make test` and all three test files",
+    "User quick start says how long it takes",
+    "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+    "Makefile has docs, docs-check, docs-serve and docs-site targets",
+    "Root README links all three books"
+  ]
+}

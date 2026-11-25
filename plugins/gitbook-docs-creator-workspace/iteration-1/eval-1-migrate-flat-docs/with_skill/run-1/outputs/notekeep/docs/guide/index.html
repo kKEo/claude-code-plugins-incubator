@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>notekeep documentation</title>
+<meta name="description" content="notekeep: user guide, operator guide and tester guide.">
+<style>
+  :root { --bg: #fbfaf7; --fg: #1d1d1b; --muted: #5f5e58; --card: #ffffff; --line: #e4e1d8; --accent: #2f5d8a; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16171a; --fg: #ecebe6; --muted: #a3a29b; --card: #1f2024; --line: #33343a; --accent: #8ab4e0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 56px 16px 40px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lede { color: var(--muted); margin: 0 0 36px; max-width: 640px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+  a.card { display: block; text-decoration: none; color: inherit; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; transition: border-color .15s; }
+  a.card:hover, a.card:focus-visible { border-color: var(--accent); outline: none; }
+  .tag { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+  .card h2 { margin: 6px 0 8px; font-size: 1.3rem; }
+  .card p { margin: 0 0 12px; color: var(--muted); }
+  .card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: .95rem; }
+  footer { margin-top: 44px; color: var(--muted); font-size: .9rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>notekeep</h1>
+  <p class="lede">notekeep keeps short notes for you or your team in one place, under titles you choose.</p>
+  <div class="cards">
+    <a class="card" href="user/">
+      <div class="tag">For everyone</div>
+      <h2>User guide</h2>
+      <p>What notekeep is and how to save, list, read and export notes, in plain words.</p>
+      <ul><li>A two-minute quick start to your first note</li><li>Everyday tasks, and where your notes are kept</li><li>Error messages explained, and a glossary</li></ul>
+    </a>
+    <a class="card" href="operator/">
+      <div class="tag">For operators</div>
+      <h2>Operator guide</h2>
+      <p>How the single-file server works, and how to run it under systemd, configure it and keep its database safe.</p>
+      <ul><li>System overview and install under systemd</li><li>Every environment variable, command and API request</li><li>Health check and logs, troubleshooting, backup and restore</li></ul>
+    </a>
+    <a class="card" href="tester/">
+      <div class="tag">For testers</div>
+      <h2>Tester guide</h2>
+      <p>How changes are checked: one test script, the pull request checks and what to try by hand.</p>
+      <ul><li>Running the suite and what is tested where</li><li>The checks that run on a pull request</li><li>A sandbox for exploring by hand, and how to add a test</li></ul>
+    </a>
+  </div>
+  <footer>Source and issues: <a href="https://github.com/example/notekeep">github.com/example/notekeep</a></footer>
+</main>
+</body>
+</html>

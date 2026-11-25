@@ -20,7 +20,7 @@
     },
     {
       "name": "gitbook-docs-validator",
-      "description": "Validate GitBook/mdBook docs against the three-book template (landing page, user, operator, tester guides) and report missing pages, broken links and deviations",
+      "description": "Validate and create GitBook/mdBook docs that follow the three-book template (landing page, user, operator, tester guides): report missing pages, broken links and deviations, or scaffold and write the books",
       "source": "./plugins/gitbook-docs-validator",
       "category": "Development"
     },

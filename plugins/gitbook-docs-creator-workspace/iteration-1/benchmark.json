@@ -1,0 +1,449 @@
+{
+  "metadata": {
+    "skill_name": "gitbook-docs-creator",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "claude-fable-5-2",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-11-25T20:54:34Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 530.2,
+        "tokens": 121142,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+        },
+        {
+          "text": "Operator book names all six PINGBOARD_* environment variables read by the code",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book names the three metrics and the /healthz route",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Tester book names `make test` and all three test files",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "User quick start says how long it takes",
+          "passed": true,
+          "evidence": "checked ['quick-start.md']"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Makefile has docs, docs-check, docs-serve and docs-site targets",
+          "passed": true,
+          "evidence": "all present"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": true,
+          "evidence": "links every book"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 10,
+        "failed": 0,
+        "total": 10,
+        "time_seconds": 375.5,
+        "tokens": 105285,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 1 warning(s), 2 note(s)"
+        },
+        {
+          "text": "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+          "passed": true,
+          "evidence": "all moved"
+        },
+        {
+          "text": "The books state the real default port 7070",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page still claims port 9000 (the outdated value from the old docs)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+          "passed": true,
+          "evidence": "not presented as a command"
+        },
+        {
+          "text": "Operator book documents the commands serve, list, show, export and vacuum",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Tester book names ./run-tests.sh",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": true,
+          "evidence": "links every book"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 97.8,
+        "tokens": 68040,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+          "passed": true,
+          "evidence": "exit 0; summary: 0 error(s), 15 warning(s), 3 note(s)"
+        },
+        {
+          "text": "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+          "passed": true,
+          "evidence": "all present"
+        },
+        {
+          "text": "The QA book is organised in parts (Part I: ...)",
+          "passed": true,
+          "evidence": "4 numbered parts in SUMMARY.md"
+        },
+        {
+          "text": "No existing page of the getting-started and internals books was modified or deleted",
+          "passed": true,
+          "evidence": "all identical"
+        },
+        {
+          "text": "The existing Makefile `docs` target is still there",
+          "passed": true,
+          "evidence": "original recipe kept"
+        },
+        {
+          "text": "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+          "passed": true,
+          "evidence": "drafts or explicit"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 6,
+        "failed": 4,
+        "total": 10,
+        "time_seconds": 339.8,
+        "tokens": 82489,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": false,
+          "evidence": "exit 1; summary: 9 error(s), 28 warning(s), 3 note(s); first: ERROR landing            landing page has no link href=\"operator/\" to the operator book [index.html]"
+        },
+        {
+          "text": "Operator book names all six PINGBOARD_* environment variables read by the code",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book states the real defaults: port 8080, interval 60, timeout 5, bind 127.0.0.1",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Operator book documents all five commands and the flags --json, --fail-fast and --port",
+          "passed": false,
+          "evidence": "missing: --fail-fast"
+        },
+        {
+          "text": "Operator book names the three metrics and the /healthz route",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Tester book names `make test` and all three test files",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "User quick start says how long it takes",
+          "passed": true,
+          "evidence": "checked ['quick-start.md']"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Makefile has docs, docs-check, docs-serve and docs-site targets",
+          "passed": false,
+          "evidence": "missing targets: docs, docs-check, docs-serve, docs-site"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": false,
+          "evidence": "no link to: operator, tester, user"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 8,
+        "failed": 2,
+        "total": 10,
+        "time_seconds": 111.4,
+        "tokens": 57832,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for docs/guide (with --repo-root)",
+          "passed": false,
+          "evidence": "exit 1; summary: 9 error(s), 8 warning(s), 1 note(s); first: ERROR books              no operator book: Low-level, detailed development and deployment guide: how the system works inside, how to install, configure, tune, m"
+        },
+        {
+          "text": "The four flat files (docs/usage.md, architecture.md, deploy.md, testing.md) are gone: moved, not copied",
+          "passed": true,
+          "evidence": "all moved"
+        },
+        {
+          "text": "The books state the real default port 7070",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page still claims port 9000 (the outdated value from the old docs)",
+          "passed": true,
+          "evidence": "none"
+        },
+        {
+          "text": "Operator book documents NOTEKEEP_MAX_NOTE_BYTES (in the code, missing from the old docs)",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "No page presents `notekeep.py delete` as a working command (it does not exist in the code)",
+          "passed": true,
+          "evidence": "not presented as a command"
+        },
+        {
+          "text": "Operator book documents the commands serve, list, show, export and vacuum",
+          "passed": false,
+          "evidence": "missing: notekeep(\\.py)? list\\b"
+        },
+        {
+          "text": "Tester book names ./run-tests.sh",
+          "passed": true,
+          "evidence": "all found"
+        },
+        {
+          "text": "Root README links all three books",
+          "passed": true,
+          "evidence": "links every book"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.71,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 84.1,
+        "tokens": 51055,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+          "passed": false,
+          "evidence": "exit 1; summary: 2 error(s), 12 warning(s), 3 note(s); first: ERROR role               tester book has no page for 'running' (looked for: running the tests, run the tests, running tests\u2026). The first thing a tester does is "
+        },
+        {
+          "text": "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+          "passed": true,
+          "evidence": "all present"
+        },
+        {
+          "text": "The QA book is organised in parts (Part I: ...)",
+          "passed": true,
+          "evidence": "3 numbered parts in SUMMARY.md"
+        },
+        {
+          "text": "No existing page of the getting-started and internals books was modified or deleted",
+          "passed": true,
+          "evidence": "all identical"
+        },
+        {
+          "text": "The existing Makefile `docs` target is still there",
+          "passed": true,
+          "evidence": "original recipe kept"
+        },
+        {
+          "text": "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+          "passed": false,
+          "evidence": "no running/CI page found"
+        },
+        {
+          "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+          "passed": true,
+          "evidence": "none"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 334.5,
+        "stddev": 219.0963,
+        "min": 97.8,
+        "max": 530.2
+      },
+      "tokens": {
+        "mean": 98155.6667,
+        "stddev": 27259.4231,
+        "min": 68040,
+        "max": 121142
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7033,
+        "stddev": 0.1002,
+        "min": 0.6,
+        "max": 0.8
+      },
+      "time_seconds": {
+        "mean": 178.4333,
+        "stddev": 140.4127,
+        "min": 84.1,
+        "max": 339.8
+      },
+      "tokens": {
+        "mean": 63792.0,
+        "stddev": 16542.832,
+        "min": 51055,
+        "max": 82489
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.30",
+      "time_seconds": "+156.1",
+      "tokens": "+34364"
+    }
+  },
+  "notes": [
+    "One run per configuration, so the \u00b1 values show spread across the three evals, not run-to-run variance.",
+    "With the skill every run ends with 0 validator errors; without it no run does (missing required pages, folder names such as operator-guide that map to two roles, no landing-page links in the expected form).",
+    "Both configurations corrected the seeded drift in the migration eval (port 9000 -> 7070, the non-existent delete command, the undocumented NOTEKEEP_MAX_NOTE_BYTES), so those three assertions do not discriminate.",
+    "Honesty about unknown facts discriminates: in add-missing-book the baseline wrote test cases from general accounting rules for a repository with no tests; the skill run left seven pages as drafts and named the missing fact for each.",
+    "The skill costs more: about 2x the time and 1.5x the tokens on average, because it writes the full outline (34 pages vs 26 in new-tree) plus repository integration and runs the validator and mdBook."
+  ]
+}

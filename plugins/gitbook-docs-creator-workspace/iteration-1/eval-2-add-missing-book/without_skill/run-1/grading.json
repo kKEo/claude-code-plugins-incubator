@@ -1,0 +1,45 @@
+{
+  "expectations": [
+    {
+      "text": "validate_docs.py reports 0 errors for handbook (with --repo-root)",
+      "passed": false,
+      "evidence": "exit 1; summary: 2 error(s), 12 warning(s), 3 note(s); first: ERROR role               tester book has no page for 'running' (looked for: running the tests, run the tests, running tests\u2026). The first thing a tester does is "
+    },
+    {
+      "text": "handbook/qa has README.md, SUMMARY.md, .gitbook.yaml and book.toml",
+      "passed": true,
+      "evidence": "all present"
+    },
+    {
+      "text": "The QA book is organised in parts (Part I: ...)",
+      "passed": true,
+      "evidence": "3 numbered parts in SUMMARY.md"
+    },
+    {
+      "text": "No existing page of the getting-started and internals books was modified or deleted",
+      "passed": true,
+      "evidence": "all identical"
+    },
+    {
+      "text": "The existing Makefile `docs` target is still there",
+      "passed": true,
+      "evidence": "original recipe kept"
+    },
+    {
+      "text": "The running-the-tests and CI pages are marked as drafts or say that no tests/CI exist (the repository has none), instead of inventing commands",
+      "passed": false,
+      "evidence": "no running/CI page found"
+    },
+    {
+      "text": "No page uses GitBook-only blocks ({% hint %}, {% tabs %}, ...)",
+      "passed": true,
+      "evidence": "none"
+    }
+  ],
+  "summary": {
+    "passed": 5,
+    "failed": 2,
+    "total": 7,
+    "pass_rate": 0.71
+  }
+}
