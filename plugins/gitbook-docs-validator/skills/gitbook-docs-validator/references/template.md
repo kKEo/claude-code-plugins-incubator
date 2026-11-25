@@ -97,7 +97,7 @@ Each book is a self-contained GitBook space that mdBook can also build:
 | `SUMMARY.md` | Navigation; only listed chapters are published | required; see §4 |
 | `.gitbook.yaml` | `root: ./` and `structure: {readme: README.md, summary: SUMMARY.md}` | required so GitBook finds the files |
 | `book.toml` | mdBook twin: `title`, `description`, `src = "."`, `build-dir = "../../../site/<book>"`, `site-url = "/<repo>/<book>/"`, `create-missing = false` | recommended; `create-missing = false` makes a typo in SUMMARY a build failure instead of a silent empty page |
-| `home-button.js` | Menu-bar **Home** icon linking back to the landing page (`path_to_root + "../"`), loaded from `book.toml` with `additional-js = ["home-button.js"]`; the same file in every book | recommended; without it a reader deep in a book has no way back to the three-card front door (GitBook has its own site header, so this is mdBook-only) |
+| `home-button.js` | Menu-bar **Home** icon linking back to the landing page, loaded from `book.toml` with `additional-js = ["home-button.js"]`; the same file in every book | expected in every book that has a `book.toml` whenever the site has a landing page; see "The Home button" below |
 | `images/*.svg` | Diagrams, one folder per book | referenced from pages with long alt text |
 
 Each book's `README.md` stays in the book root. The entry-level (user) book may be **flat**
@@ -108,6 +108,55 @@ author a place to put "read these four chapters first".
 
 Advanced books end with an **Appendix** (glossary plus further reading, or "words and
 commands"). Glossaries are per book because the audiences use different words.
+
+### The Home button
+
+Whenever the site has a landing page, every mdBook book shows a **Home** icon at the top of
+each page, in the menu bar next to the sidebar toggle. It links to the landing page. Without
+it a reader who arrives deep inside one book, from a search result or a shared link, has no
+way to reach the front door or the other books. GitBook has its own site header, so this is
+for the mdBook build only.
+
+To add it to a book:
+
+1. Put `home-button.js` in the book folder, next to `book.toml`. The file is the same in
+   every book (`gitbook-docs-creator` ships it as `assets/home-button.js`):
+
+   ```js
+   // Adds a "Home" icon to the menu bar that links to the landing page.
+   (function () {
+     // The menu bar is #menu-bar up to mdBook 0.4 and #mdbook-menu-bar from 0.5.
+     var bar = document.querySelector('#menu-bar .left-buttons, #mdbook-menu-bar .left-buttons');
+     if (!bar) return;
+     var a = document.createElement('a');
+     a.className = 'icon-button';
+     a.href = (typeof path_to_root === 'string' ? path_to_root : '') + '../';
+     a.title = 'Home';
+     a.setAttribute('aria-label', 'Home');
+     a.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>';
+     bar.appendChild(a);
+   })();
+   ```
+
+2. Load it from the book's `book.toml`, under `[output.html]`:
+
+   ```toml
+   [output.html]
+   additional-js = ["home-button.js"]
+   ```
+
+   If the book already lists other scripts, add `"home-button.js"` to the same array.
+
+3. Build the site and open any page of the book: the icon is in the top bar and leads to the
+   landing page from every depth.
+
+How it finds the landing page: mdBook defines `path_to_root` on every page (`""` at the book
+root, `"../"` one level down, and so on). The landing page sits one level above the book, so
+the link is `path_to_root + "../"`. The script looks for the menu bar under both of its ids,
+`#menu-bar` (mdBook up to 0.4) and `#mdbook-menu-bar` (0.5 and later); a script that knows only
+the first one adds no button on a current mdBook and reports no error. This holds when the built site keeps the layout
+`site/index.html` plus `site/<book>/`, which is what `make docs-site` produces. Preview with
+`make docs-site`, not `mdbook serve`: a single served book has no landing page above it.
 
 ## 4. `SUMMARY.md`
 

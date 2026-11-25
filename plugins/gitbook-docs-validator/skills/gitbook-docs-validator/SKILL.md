@@ -53,7 +53,8 @@ reading and writing. Keep the reading set fixed and the report short.
    - landing page cards and links;
    - each required role (user, operator) present once, each optional role (tester, developer)
      at most once;
-   - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book (plus the `additional-js` Home button back to the landing page);
+   - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book, and, whenever the site has a
+     landing page, the `additional-js` Home button in every book that links back to it;
    - SUMMARY rules: it starts with README, every page is listed (orphans are unpublished
      pages), every listed file exists, `Part I..N` numbering, part directories have a README;
    - headings: one H1 per page on line one (code-fence comments are ignored), no skipped
@@ -137,7 +138,9 @@ reading and writing. Keep the reading set fixed and the report short.
 
 5. **Offer, do not apply.** Unless the user asked for fixes, stop at the report. If they ask,
    fix structural failures first (they are mechanical), re-run the script, and leave template
-   deviations as a conversation. Writing a missing book or missing pages is not a fix: that
+   deviations as a conversation. A missing Home button is mechanical too: follow "The Home
+   button" in `references/template.md` §3 (copy `home-button.js` into the book, add the
+   `additional-js` line to `book.toml`). Writing a missing book or missing pages is not a fix: that
    is the `gitbook-docs-creator` skill, which scaffolds them and writes them from the code.
 
 ## When the project is not yet using the template

@@ -36,15 +36,18 @@ def run(ctx: Context, role: str) -> None:
 
 
 def _home_button(ctx: Context, role: str, book, bt, txt: str) -> None:
-    """mdBook twin: a Home icon in the menu bar (additional-js) links back to the landing page."""
+    """mdBook twin: whenever there is a landing page, a Home icon in the menu bar (additional-js) links back to it."""
     rep = ctx.rep
+    if not (ctx.root / ctx.tpl.get("landing_page", "index.html")).exists():
+        return  # no landing page to go home to; the landing validator reports that
+    fix = 'put home-button.js next to book.toml and add additional-js = ["home-button.js"] under [output.html] (template.md §3, "The Home button")'
     m = re.search(r"^additional-js\s*=\s*\[(.*?)\]", txt, re.M | re.S)
     scripts = re.findall(r"[\"']([^\"']+\.js)[\"']", m.group(1)) if m else []
     if not scripts:
-        rep.warn("book-files", f"{role} book.toml has no additional-js home button (a Home icon linking to the landing page)", bt)
+        rep.warn("book-files", f"{role} book has no Home button back to the landing page: {fix}", bt)
         return
     for name in scripts:
         f = book / name
         if f.exists() and re.search(r"\bHome\b", f.read_text(encoding="utf-8", errors="replace")):
             return
-    rep.warn("book-files", f"{role} book.toml additional-js lists no existing script that adds a 'Home' link to the landing page", bt)
+    rep.warn("book-files", f"{role} book.toml additional-js lists no existing script that adds a 'Home' link to the landing page: {fix}", bt)

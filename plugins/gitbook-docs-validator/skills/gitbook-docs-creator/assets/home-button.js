@@ -1,6 +1,7 @@
 // Adds a "Home" icon to the menu bar that links to the landing page.
 (function () {
-  var bar = document.querySelector('#menu-bar .left-buttons');
+  // The menu bar is #menu-bar up to mdBook 0.4 and #mdbook-menu-bar from 0.5.
+  var bar = document.querySelector('#menu-bar .left-buttons, #mdbook-menu-bar .left-buttons');
   if (!bar) return;
   var a = document.createElement('a');
   a.className = 'icon-button';

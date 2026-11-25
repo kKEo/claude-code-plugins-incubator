@@ -92,6 +92,10 @@ The skill will:
 4. Finish the landing page and connect the repository (README links, Makefile targets, docs workflow, `.gitignore`) with additive edits only.
 5. Run `validate_docs.py` until it reports no error, then report what was written and what is still a draft.
 
+### The Home button
+
+Whenever the site has a landing page, every mdBook book shows a Home icon at the top of each page that links back to it. The scaffold adds it to each book it creates: a `home-button.js` file next to `book.toml`, loaded with `additional-js = ["home-button.js"]` under `[output.html]`. For a book that already exists, add that line yourself; the validator warns about any book without the button. `references/template.md` §3 of the validator skill has the script and explains how it finds the landing page.
+
 ### Running the scaffold directly
 
 ```bash

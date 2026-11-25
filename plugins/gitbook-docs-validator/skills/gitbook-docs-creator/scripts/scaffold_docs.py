@@ -235,8 +235,8 @@ def scaffold_book(out: Out, role: str, folder: str, docs_root: Path, repo_root: 
     out.write(book / "home-button.js", asset("home-button.js"))
     toml = book / "book.toml"
     if toml.exists() and "home-button.js" not in toml.read_text(encoding="utf-8", errors="replace"):
-        out.todo.append(f'{folder}/book.toml does not load the Home button; add additional-js = ["home-button.js"] '
-                        "under [output.html]")
+        out.todo.append(f'{folder}/book.toml does not load the Home button that links each page back to the landing page; '
+                        'add additional-js = ["home-button.js"] under [output.html] (or add "home-button.js" to the existing array)')
 
     if had_summary:
         # An existing book: its SUMMARY.md is the author's; say what is missing, write no page.

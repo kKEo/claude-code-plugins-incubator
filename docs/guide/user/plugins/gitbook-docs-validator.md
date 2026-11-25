@@ -44,8 +44,9 @@ It works in this order.
 1. **Look at the project:** what documentation exists, and the facts in the code, such as commands, settings and how the tests run. It also decides which optional books make sense: no tester book for a project without tests, a developer book when people change the code.
 2. **Lay out the books.** A script writes the landing page, the files each book needs and one page for every required topic. Each page starts as a draft with a note that says what belongs on it. The script never overwrites a file that exists.
 3. **Write the pages** from the code, the operator guide first. A page stays marked as a draft when a fact could not be found, so that nothing is invented.
-4. **Connect the repository:** links in the README and commands to build and preview the site, added only where they are missing.
-5. **Check the result** with the validator described above, and report what was written and what is still a draft.
+4. **Add the way home.** Every book gets a Home icon at the top of each page that leads back to the landing page, so a reader who arrives in the middle of one book can reach the others.
+5. **Connect the repository:** links in the README and commands to build and preview the site, added only where they are missing.
+6. **Check the result** with the validator described above, and report what was written and what is still a draft.
 
 ## What it reads and writes
 
