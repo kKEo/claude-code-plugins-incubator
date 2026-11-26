@@ -16,7 +16,7 @@ Writes a short document for each phase of a feature you are building, by looking
 
 ## gitbook-docs
 
-Checks a documentation folder against a fixed layout of one book per kind of reader and reports what is missing or deviates. Its second skill creates such documentation: it lays out the books and writes the pages from your code.
+Checks a documentation folder against a fixed layout of one book per kind of reader and reports what is missing or deviates. Its second skill creates such documentation: it lays out the books and writes the pages from your code. Its third skill adds dated articles and lists them on the landing page.
 
 [More about gitbook-docs](gitbook-docs.md)
 
@@ -70,4 +70,4 @@ Connects Claude to a local memors-mcp knowledge base, and reminds it to search b
 
 ## Not a plugin
 
-The repository also contains two folders named `gitbook-docs-validator-workspace` and `gitbook-docs-creator-workspace`. They hold test runs and sample documentation used while developing the two skills of gitbook-docs. They cannot be installed and you can ignore them.
+The repository also contains two folders named `gitbook-docs-validator-workspace` and `gitbook-docs-creator-workspace`. They hold test runs and sample documentation used while developing the skills of gitbook-docs. They cannot be installed and you can ignore them.

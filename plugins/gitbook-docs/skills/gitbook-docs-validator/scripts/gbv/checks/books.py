@@ -6,14 +6,16 @@ from __future__ import annotations
 from typing import Dict
 
 from ..context import Context
-from ..core import match_role
+from ..core import articles_folder, match_role
 
 DESCRIPTION = "map book folders to the roles: user and operator required, tester and developer optional (always runs)"
 
 
 def run(ctx: Context) -> None:
     rep, root, roles = ctx.rep, ctx.root, ctx.roles
-    candidates = sorted(p.parent for p in root.glob("*/SUMMARY.md"))
+    # The articles book holds dated articles, not a reader role; the articles validator checks it.
+    articles = articles_folder(ctx.tpl)
+    candidates = sorted(p.parent for p in root.glob("*/SUMMARY.md") if p.parent.name != articles)
     if not candidates:
         rep.error("books", f"no book (directory with SUMMARY.md) under {root}")
     books: Dict[str, str] = {}

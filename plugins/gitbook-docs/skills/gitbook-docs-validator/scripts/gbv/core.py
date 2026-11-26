@@ -14,6 +14,7 @@ HEADING_RE = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 HTML_HREF_RE = re.compile(r"href=\"([^\"]+)\"")
 ID_RE = re.compile(r"""(?:id|name)=["']([^"']+)["']|\{#([^}\s]+)\}""")
 WORD_RE = re.compile(r"[A-Za-z0-9]+")
+ARTICLE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$")
 
 
 @dataclass
@@ -84,6 +85,11 @@ def load_template(path: Path, docs_root: Path) -> dict:
             else:
                 tpl[key] = val
     return tpl
+
+
+def articles_folder(tpl: dict) -> str:
+    """Name of the articles book folder under the docs root (default: articles)."""
+    return (tpl.get("articles") or {}).get("folder") or "articles"
 
 
 def strip_fences(lines: List[str]) -> List[Tuple[int, str]]:

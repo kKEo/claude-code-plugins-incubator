@@ -1,0 +1,65 @@
+{
+  "$comment": "Each eval works in place on a copy of its fixture; the fixtures are the validator's (paths are relative to the plugin's skills/ directory), and docs_root/repo_root are relative to the run's outputs directory. The facts an article states are given in the prompt, because these fixtures hold documentation and no code.",
+  "skill_name": "gitbook-docs-article",
+  "evals": [
+    {
+      "id": 0,
+      "name": "first-article",
+      "fixture": "gitbook-docs-validator/evals/fixtures/two-books",
+      "docs_root": "two-books/docs/guide",
+      "repo_root": "two-books",
+      "prompt": "Write a short article for our docs site announcing that the import command now reads gzip files directly, so nobody has to unpack exports first. It shipped today. Put it on the landing page.",
+      "expected_output": "docs/guide/articles/ exists as a book with one article named <today>-<slug>.md that is published (no Draft line), starts with an H1, a Published line and a lead paragraph; the landing page has an Articles section between the two markers that lists the article with its date and links articles/<name>.html and articles/; the Makefile's BOOKS includes articles; the validator reports no articles or landing error.",
+      "files": [],
+      "assertions": [
+        "docs/guide/articles/ holds exactly one article and its file name starts with today's date (YYYY-MM-DD-)",
+        "The article has no '> Draft.' line and no 'To write' comment",
+        "The article's first paragraph under the Published line stands on its own as a summary",
+        "index.html has the article's title, a <time> element with its date and a link to articles/<name>.html between <!-- articles:start --> and <!-- articles:end -->",
+        "index.html links articles/",
+        "The cards and the footer of index.html are unchanged",
+        "articles/SUMMARY.md and articles/README.md list the article",
+        "The Makefile's BOOKS line includes articles",
+        "validate_docs.py reports no ERROR from the articles or landing validators",
+        "The article states nothing about the gzip change beyond what the prompt gave (no invented flags or version numbers)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "backdated-draft",
+      "fixture": "gitbook-docs-validator/evals/fixtures/four-books",
+      "docs_root": "four-books/docs/guide",
+      "repo_root": "four-books",
+      "prompt": "Start an article about the outage on 3 March 2026: the nightly job filled the disk because log rotation was switched off. I still have to check the timeline with the on-call engineer, so don't publish it yet. Date it with the day of the outage.",
+      "expected_output": "An article file 2026-03-03-<slug>.md that keeps its Draft line and says which fact it is waiting for; it is listed in articles/SUMMARY.md and marked as a draft in articles/README.md, and the landing page does not list it; the report says it is a draft and why.",
+      "files": [],
+      "assertions": [
+        "The article file name starts with 2026-03-03-",
+        "The article keeps the line '> Draft.' exactly",
+        "The article names the missing fact (the timeline to confirm with the on-call engineer) and invents no times",
+        "articles/SUMMARY.md lists the article",
+        "index.html does not link the article",
+        "The report says the article is a draft and what it is waiting for"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "second-article-newest-first",
+      "fixture": "gitbook-docs-validator/evals/fixtures/two-books",
+      "docs_root": "two-books/docs/guide",
+      "repo_root": "two-books",
+      "setup": "python3 gitbook-docs-article/scripts/add_article.py two-books/docs/guide --title \"Hello from the docs team\" --date 2026-02-10 --summary \"Why we rewrote the guides.\"; remove the Draft line and the comment from the new file; run the script again with --sync",
+      "prompt": "Add a news item dated 2026-06-01: the settings file moved from ~/.tool.json to ~/.config/tool/settings.json, and the old path is still read until the end of the year. Point readers at the operator guide for the details. Then change the title of the February article to \"Why we rewrote the guides\".",
+      "expected_output": "Two published articles; the June one is first in articles/SUMMARY.md, articles/README.md and on the landing page; the February article shows its new title in all three indexes; the June article links into the operator book with a relative link; no index was edited by hand in a way a --sync would undo (a second --sync changes nothing).",
+      "files": [],
+      "assertions": [
+        "articles/ holds 2026-06-01-<slug>.md and 2026-02-10-hello-from-the-docs-team.md",
+        "The June article comes before the February article in articles/SUMMARY.md, in articles/README.md and in index.html",
+        "All three indexes show the title 'Why we rewrote the guides' for the February article",
+        "The June article has a relative link into ../operator/",
+        "Running add_article.py --sync again reports that the indexes are up to date",
+        "validate_docs.py reports no ERROR from the articles or landing validators"
+      ]
+    }
+  ]
+}

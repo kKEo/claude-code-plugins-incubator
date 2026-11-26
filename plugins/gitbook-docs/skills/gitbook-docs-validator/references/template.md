@@ -6,9 +6,10 @@ Every rule below says *why* it exists; when a project deviates for a good reason
 the report instead of insisting. Earlier versions called it the three-book template.
 
 Contents: 1 Shape · 2 Landing page · 3 Book anatomy · 4 SUMMARY.md · 5 Book README ·
-6 Pages · 7 Role requirements · 8 Repository integration · 9 Known false positives
+6 Pages · 7 Role requirements · 8 Repository integration · 9 Known false positives ·
+10 Articles
 
-The script enforces §1–§4 and §8 mechanically. The qualitative pass needs only §5 (README),
+The script enforces §1–§4, §8 and §10 mechanically. The qualitative pass needs only §5 (README),
 §6 (pages and tone) and §7 (role requirements); §9 is for findings that look wrong.
 
 ## 1. Shape
@@ -19,7 +20,8 @@ The script enforces §1–§4 and §8 mechanically. The qualitative pass needs o
 ├── <user-book>/             entry-level getting started         (role: user, required)
 ├── <operator-book>/         deployment and operations           (role: operator, required)
 ├── <tester-book>/           quality assurance                   (role: tester, optional)
-└── <developer-book>/        changing the code                   (role: developer, optional)
+├── <developer-book>/        changing the code                   (role: developer, optional)
+└── articles/                dated articles, newest first        (no role, optional; see §10)
 ```
 
 One landing page and one book per role, at most one book for each role. The audiences read
@@ -70,6 +72,8 @@ A single static HTML file, no framework, served at the site root above the books
   an audience tag ("For everyone", "For operators", "For testers", "For developers"), the book title,
   a two-line summary, and about three bullets of what is inside.
 - Each card links with a relative `href="<book>/"` (trailing slash: the book's own index).
+- When the site has articles: an **Articles** section below the cards with the newest
+  articles, each with its date, and a link to all of them (§10).
 - A footer with the source repository and the licence.
 - Light and dark colours via `prefers-color-scheme`; no JavaScript needed.
 
@@ -262,3 +266,50 @@ Outside the docs root, a template-following project has:
 - Generated pages may legitimately contain several `##` sections with the same name.
 - Anchors like `#gap-15` may point at generated HTML ids; verify against the heading slug
   (lowercase, spaces → `-`, punctuation dropped) before reporting.
+
+## 10. Articles
+
+A site may carry dated articles next to the books: announcements, release write-ups,
+explanations of a decision, post-mortems. They are optional; a tree without them is complete.
+
+```
+<docs-root>/
+├── index.html                       has an Articles section, newest first
+└── articles/
+    ├── README.md                    the full list, newest first
+    ├── SUMMARY.md                   every article, newest first
+    ├── .gitbook.yaml, book.toml, home-button.js
+    ├── 2026-11-26-imports-are-faster.md
+    └── 2026-09-02-why-we-moved-to-sqlite.md
+```
+
+- **One extra book, no role.** The articles book is built like any other book, but it is not
+  a reader's book: it is not counted as a role, has no required pages and stays flat. The
+  folder is `articles/`; a project can rename it with `{"articles": {"folder": "news"}}` in
+  `.docs-template.json`.
+- **The file name carries the date:** `YYYY-MM-DD-<slug>.md`, the slug in lowercase letters,
+  digits and hyphens. Why: the date is stored once, where nobody can forget to update an
+  index; sorting the file names sorts the articles; and the published address
+  (`articles/2026-11-26-imports-are-faster.html`) tells the reader how old the page is before
+  they open it.
+- **Indexed by date, newest first,** in three places that are all generated from the article
+  files: the book's `SUMMARY.md`, the list in its `README.md`, and the landing page.
+- **Attached to the landing page.** `index.html` has an Articles section, between
+  `<!-- articles:start -->` and `<!-- articles:end -->`, that lists the newest published
+  articles with date, title and summary, links each as `articles/<name>.html`, and links
+  `articles/` for the full list. Why: an article is found by its date, not through a table
+  of contents, so the front door has to show what is new. This is the one place where the
+  landing page links a page inside a book.
+- **Page shape:** one H1 on the first line (the title in every index), then a line with the
+  date (`*Published 26 November 2026*`), then a lead paragraph that stands on its own; the
+  indexes use it as the summary.
+- **Drafts.** An article with a `> Draft.` line is listed in `SUMMARY.md`, so it can be
+  previewed, and is left off the landing page until the line is removed.
+- **An article is pinned to its date.** It may name versions and say "now", which book pages
+  avoid, and it is not rewritten when the product moves on. What has to stay true belongs in
+  a book, and the article links there.
+
+The `gitbook-docs-article` skill creates articles and rebuilds the three indexes
+(`add_article.py`, `--sync`). The `articles` validator reports a file name without a valid
+date, an article that is missing from `SUMMARY.md`, a `SUMMARY.md` that is not newest first,
+and a landing page that does not link the article index or the newest published article.

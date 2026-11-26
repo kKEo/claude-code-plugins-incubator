@@ -13,10 +13,10 @@ allowed-tools: ["Bash", "Read", "Agent"]
 
 | Field | Required | Meaning | Shipped values |
 |---|---|---|---|
-| `name` | yes | Skill id; callable as `/<name>` | `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `gitbook-docs-creator`, `write-implementation-spec`, `rigorous-review`, `memors-mcp`, `memors-learn-repo`, `install-session-cost` |
+| `name` | yes | Skill id; callable as `/<name>` | `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `gitbook-docs-creator`, `gitbook-docs-article`, `write-implementation-spec`, `rigorous-review`, `memors-mcp`, `memors-learn-repo`, `install-session-cost` |
 | `description` | yes | The trigger. Claude sees only this before deciding; list what the skill does and the phrases that should invoke it | The first four list ten or more trigger phrases; `memors-mcp` is a reference skill and describes its use instead |
 | `argument-hint` | no | Placeholder shown after the slash command | `document-phase`: phase name; `scaffold-frontend`: app description; `write-implementation-spec`: the feature request; `rigorous-review`: target and optional `--focus <area>`; `install-session-cost`: the scope; `memors-learn-repo`: an effort level and what to concentrate on |
-| `allowed-tools` | no | Tools the skill may use while running; omit for no restriction | `document-phase`: Bash, Read, Agent; `scaffold-frontend`: Read, Write, Edit, Bash, Agent; `gitbook-docs-validator` and `gitbook-docs-creator`: unrestricted; `write-implementation-spec`: Read, Write, Edit, Bash, Glob, Agent, AskUserQuestion; `rigorous-review`: Read, Bash, Glob, Grep; `memors-mcp`: omitted; `memors-learn-repo`: omitted; `install-session-cost`: omitted |
+| `allowed-tools` | no | Tools the skill may use while running; omit for no restriction | `document-phase`: Bash, Read, Agent; `scaffold-frontend`: Read, Write, Edit, Bash, Agent; `gitbook-docs-validator`, `gitbook-docs-creator` and `gitbook-docs-article`: unrestricted; `write-implementation-spec`: Read, Write, Edit, Bash, Glob, Agent, AskUserQuestion; `rigorous-review`: Read, Bash, Glob, Grep; `memors-mcp`: omitted; `memors-learn-repo`: omitted; `install-session-cost`: omitted |
 
 ## Body conventions used here
 

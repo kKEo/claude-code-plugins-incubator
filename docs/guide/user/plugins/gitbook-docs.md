@@ -48,6 +48,25 @@ It works in this order.
 5. **Connect the repository:** links in the README and commands to build and preview the site, added only where they are missing.
 6. **Check the result** with the validator described above, and report what was written and what is still a draft.
 
+## Writing an article
+
+The third skill, `gitbook-docs-article`, adds a dated article to the site: an announcement, a release write-up, the story of a decision. Ask for it in your own words:
+
+```
+write an article announcing that imports read gzip files now
+start a post-mortem for the outage on 3 March, don't publish it yet
+```
+
+It works in this order.
+
+1. **Settle the title and the date.** The date is today unless you name another. It becomes the start of the file name, and that is the only place it is kept.
+2. **Create the article.** A script writes the file into the `articles` folder as a draft. For the first article it also sets up that folder as a small book of its own and adds an Articles section to the landing page.
+3. **Write it** from the code and the history. The first paragraph is written to stand on its own, because the lists show it as the summary.
+4. **Refresh the lists.** The script rebuilds every list of articles, newest first: on the landing page, on the front page of the articles book and in its table of contents. An article that is still a draft stays off the landing page.
+5. **Check the result** with the validator described above.
+
+An article is tied to its date. It is not updated when the product changes; what has to stay true belongs in one of the books.
+
 ## What it reads and writes
 
 When checking, it reads the documentation folder and, when asked, the repository's README, Makefile and workflow files. It changes no file unless you ask it to fix the findings. When creating, it reads the code and writes the documentation folder; outside that folder it only adds what is missing, such as a Documentation section in the README. Both scripts need only Python 3. [Trust and privacy](../trust.md) has the full account.

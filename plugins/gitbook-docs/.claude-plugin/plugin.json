@@ -1,9 +1,9 @@
 {
   "name": "gitbook-docs",
-  "version": "0.6.0",
-  "description": "Validate and create GitBook/mdBook documentation trees that follow the book-per-reader template (landing page, user and operator guides, optional tester and developer guides): report structural failures and deviations, or scaffold and write the books",
+  "version": "0.7.0",
+  "description": "Validate and create GitBook/mdBook documentation trees that follow the book-per-reader template (landing page, user and operator guides, optional tester and developer guides): report structural failures and deviations, scaffold and write the books, or add dated articles indexed on the landing page",
   "author": {
     "name": "Krzysztof Maziarz"
   },
-  "keywords": ["documentation", "gitbook", "mdbook", "validation", "lint", "scaffold", "docs"]
+  "keywords": ["documentation", "gitbook", "mdbook", "validation", "lint", "scaffold", "articles", "docs"]
 }

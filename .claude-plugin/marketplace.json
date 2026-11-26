@@ -20,7 +20,7 @@
     },
     {
       "name": "gitbook-docs",
-      "description": "Validate and create GitBook/mdBook docs that follow the book-per-reader template (landing page, user and operator guides, optional tester and developer guides): report missing pages, broken links and deviations, or scaffold and write the books",
+      "description": "Validate and create GitBook/mdBook docs that follow the book-per-reader template (landing page, user and operator guides, optional tester and developer guides): report missing pages, broken links and deviations, scaffold and write the books, or add dated articles indexed on the landing page",
       "source": "./plugins/gitbook-docs",
       "category": "Development"
     },

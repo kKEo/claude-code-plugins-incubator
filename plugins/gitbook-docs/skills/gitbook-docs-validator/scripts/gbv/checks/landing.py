@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 
 from ..context import Context
-from ..core import HTML_HREF_RE
+from ..core import HTML_HREF_RE, articles_folder
 
 DESCRIPTION = "landing page: title, description, one link per book, links resolve"
 
@@ -21,14 +21,18 @@ def run(ctx: Context) -> None:
     if not re.search(r"<meta\s+name=\"description\"", html, re.I):
         rep.warn("landing", "landing page has no <meta name=\"description\">", landing)
     hrefs = HTML_HREF_RE.findall(html)
+    articles = articles_folder(ctx.tpl)
     for role, folder in ctx.books.items():
         if not any(h.rstrip("/") == folder for h in hrefs):
             rep.error("landing", f"landing page has no link href=\"{folder}/\" to the {role} book", landing)
     for h in hrefs:
         if h.startswith(("http://", "https://", "mailto:", "#")):
             continue
-        target = (root / h.rstrip("/")).resolve()
-        if not target.exists():
+        path = h.split("#")[0].rstrip("/")
+        target = (root / path).resolve()
+        # An article is linked by the page mdBook builds from it: articles/<name>.html.
+        built_from = root / (path[:-5] + ".md") if path.startswith(articles + "/") and path.endswith(".html") else None
+        if not target.exists() and not (built_from and built_from.is_file()):
             rep.error("landing", f"landing page link {h} does not resolve", landing)
     if "prefers-color-scheme" not in html:
         rep.info("landing", "landing page has no dark-mode colours (prefers-color-scheme)", landing)

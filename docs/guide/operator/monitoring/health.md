@@ -12,7 +12,7 @@ This page is a five-minute checklist for confirming that a plugin is installed a
 
 ## 2. Skills registered
 
-Type the first letters of a skill as a slash command (`/docu`) and check the completion offers it, or ask Claude "which skills do you have?" and look for the skill's name. The nine shipped skills are `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `gitbook-docs-creator`, `write-implementation-spec`, `rigorous-review`, `memors-mcp`, `memors-learn-repo` and `install-session-cost`.
+Type the first letters of a skill as a slash command (`/docu`) and check the completion offers it, or ask Claude "which skills do you have?" and look for the skill's name. The ten shipped skills are `document-phase`, `scaffold-frontend`, `gitbook-docs-validator`, `gitbook-docs-creator`, `gitbook-docs-article`, `write-implementation-spec`, `rigorous-review`, `memors-mcp`, `memors-learn-repo` and `install-session-cost`.
 
 ## 3. Agents registered
 

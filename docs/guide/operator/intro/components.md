@@ -43,8 +43,10 @@ The feature folder is `docs/features/YYYY-MM-DD-<branch>/`; an existing folder w
 | Template | `skills/gitbook-docs-validator/references/template.md`, `assets/template.json` | The rules with their reasons, and the role/alias/required-page data the script reads |
 | Evals | `skills/gitbook-docs-validator/evals/evals.json`, `evals/fixtures/` | Cases with assertions; two fixture trees |
 | Commands | `commands/{structure,links,content,repo}.md` | Four slash commands, each running a subset of the validators |
+| Skill `gitbook-docs-article` | `skills/gitbook-docs-article/SKILL.md` | Create a dated article, write it, rebuild the indexes, run the validator |
+| Script | `skills/gitbook-docs-article/scripts/add_article.py` | Writes `articles/<date>-<slug>.md` and regenerates the article lists, including the Articles section of the landing page; Python 3.8+, standard library only |
 
-The script's checks are grouped by name (`landing`, `book-files`, `summary`, `page`, `link`, `image`, `readme`, `role`, `repo`); each finding carries a severity, a message and a `file:line`. The skill asks Claude to run the script first, then to read a sample of pages for what the script cannot measure, and to write a report in a fixed shape: verdict, structural failures, deviations, suggestions, not checked. See [Commands and flags](../config/commands.md) for the CLI.
+The script's checks are grouped by name (`landing`, `articles`, `book-files`, `summary`, `page`, `link`, `image`, `readme`, `role`, `repo`); each finding carries a severity, a message and a `file:line`. The skill asks Claude to run the script first, then to read a sample of pages for what the script cannot measure, and to write a report in a fixed shape: verdict, structural failures, deviations, suggestions, not checked. See [Commands and flags](../config/commands.md) for the CLI.
 
 ## implementation-spec
 

@@ -9,7 +9,7 @@ This directory contains all plugins available in the Claude Plugins Marketplace.
 
 ### Development
 - **[feature-dev-documentalist](feature-dev-documentalist/)** - Auto-document feature development phases from git diff
-- **[gitbook-docs](gitbook-docs/)** - Validate and create GitBook/mdBook docs that follow the book-per-reader template (user and operator guides, optional tester and developer guides)
+- **[gitbook-docs](gitbook-docs/)** - Validate and create GitBook/mdBook docs that follow the book-per-reader template (user and operator guides, optional tester and developer guides), and add dated articles to the landing page
 - **[feature-dev-documentalist](feature-dev-documentalist/)** - Auto-document feature development phases from git diff — spec, architecture, implementation, deployment, and testing
 - **[implementation-spec](implementation-spec/)** - Write implementation-ready feature specs — explored from the codebase, interviewed once, and audited so an orchestrator agent can build the whole thing with no further input
 - **[memors-hooks](memors-hooks/)** - Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only

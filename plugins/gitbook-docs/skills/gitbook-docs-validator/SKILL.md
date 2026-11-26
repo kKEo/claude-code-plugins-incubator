@@ -51,6 +51,9 @@ reading and writing. Keep the reading set fixed and the report short.
 
    What the script covers:
    - landing page cards and links;
+   - the optional articles book (`articles/`, dated articles; template §10): file names
+     that start with a valid date, every article in its `SUMMARY.md` newest first, and a
+     landing page that links the article index and the newest published article;
    - each required role (user, operator) present once, each optional role (tester, developer)
      at most once;
    - `README.md`/`SUMMARY.md`/`.gitbook.yaml`/`book.toml` per book, and, whenever the site has a
@@ -76,12 +79,12 @@ reading and writing. Keep the reading set fixed and the report short.
 
    **Structure-only requests.** If the user asked only for a lint, a CI check, orphan pages,
    broken links or "is the structure right", run the script with
-   `--only landing,files,summary,links --format md` instead (no `--worklist`), fill in the
+   `--only landing,articles,files,summary,links --format md` instead (no `--worklist`), fill in the
    verdict sentence and report the skeleton. Skip step 3. The skeleton's "Validators not
    run" line tells the reader that this was not a full check; keep it.
 
    **One validator.** The script is a set of validators: `books` (always runs), `landing`,
-   `files`, `summary`, `pages`, `links`, `readme`, `roles`, `repo`. Use `--only a,b` or
+   `articles`, `files`, `summary`, `pages`, `links`, `readme`, `roles`, `repo`. Use `--only a,b` or
    `--skip a,b` to run a subset (`--list-checks` describes them). The plugin also ships them
    as commands: `/gitbook-docs:structure`, `:links`, `:content` and `:repo`.
 
@@ -142,6 +145,9 @@ reading and writing. Keep the reading set fixed and the report short.
    button" in `references/template.md` §3 (copy `home-button.js` into the book, add the
    `additional-js` line to `book.toml`). Writing a missing book or missing pages is not a fix: that
    is the `gitbook-docs-creator` skill, which scaffolds them and writes them from the code.
+   An `articles` finding about an index (SUMMARY order, the landing page list) is fixed by
+   running `../gitbook-docs-article/scripts/add_article.py <docs-root> --sync`, never by
+   editing the index; writing a new article is the `gitbook-docs-article` skill.
 
 ## When the project is not yet using the template
 

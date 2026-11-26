@@ -90,6 +90,7 @@ The script is a set of validators, one module each under `scripts/gbv/checks/`. 
 |---|---|---|
 | `books` | Maps book folders to roles: user and operator are required, tester and developer are optional; always runs | `books` |
 | `landing` | `index.html`: title, description, one link per book, links resolve | `landing` |
+| `articles` | The optional `articles/` book: file names `YYYY-MM-DD-<slug>.md`, every article in `SUMMARY.md` newest first, the landing page links the article index and the newest published article | `articles` |
 | `files` | Per book: `README.md`, `SUMMARY.md`, `.gitbook.yaml`, `book.toml` | `book-files` |
 | `summary` | README first, orphan pages, missing or duplicate entries, Part numbering, part READMEs | `summary` |
 | `pages` | One H1 on line one, no skipped heading levels, drafts, stub pages | `page`, `stub` |
@@ -102,7 +103,7 @@ When only some validators ran, the Markdown title reads `Documentation check (<v
 
 ### Check names
 
-Findings are tagged with one of `books`, `landing`, `book-files`, `summary`, `page`, `stub`, `link`, `image`, `readme`, `role`, `repo`. Use the tag to filter JSON output:
+Findings are tagged with one of `books`, `landing`, `articles`, `book-files`, `summary`, `page`, `stub`, `link`, `image`, `readme`, `role`, `repo`. Use the tag to filter JSON output:
 
 ```bash
 python3 …/validate_docs.py docs/guide --json | jq '.findings[] | select(.check == "summary")'
@@ -127,6 +128,32 @@ The script behind the `gitbook-docs-creator` skill. It writes the landing page a
 | `--folders ROLE=FOLDER,...` | an existing book folder, else the role name | Folder name per role; it has to match one of the role's aliases |
 | `--repo-files` | off | Also adds `Makefile`, `.github/workflows/docs.yml`, `scripts/docs-check.sh` and the docs index, each only when the repository has none |
 | `--template FILE` | the validator's `assets/template.json` | Role definitions; `<docs-root>/.docs-template.json` is merged over it |
+| `--dry-run` | off | Prints what would be written and writes nothing |
+
+Exit status is 0 on success and 2 on invalid arguments.
+
+## add_article.py
+
+```bash
+python3 plugins/gitbook-docs/skills/gitbook-docs-article/scripts/add_article.py <docs-root> --title TITLE [--date YYYY-MM-DD] [--slug SLUG] [--summary TEXT] [--name NAME] [--repo-root DIR] [--repo-url URL] [--latest N] [--template FILE] [--dry-run]
+python3 plugins/gitbook-docs/skills/gitbook-docs-article/scripts/add_article.py <docs-root> --sync [--latest N] [--dry-run]
+```
+
+The script behind the `gitbook-docs-article` skill. With `--title` it writes `<docs-root>/articles/<date>-<slug>.md` as a stub marked `> Draft.`, and creates the articles book around it when it is missing. Then, and on every `--sync`, it rebuilds the article indexes from the article files, newest first: `articles/SUMMARY.md` (rewritten in full), the list between `<!-- articles:start -->` and `<!-- articles:end -->` in `articles/README.md`, and the Articles section between the same markers in `index.html`. It never overwrites an article, and it changes nothing else on the landing page, except that the first run inserts the section above the footer and adds its style rules.
+
+| Argument | Default | Meaning |
+|---|---|---|
+| `docs_root` | required | Directory holding `index.html` and the book folders, usually `docs/guide` |
+| `--title TITLE` | none | Title of the new article; it becomes the H1. Either this or `--sync` is required |
+| `--date YYYY-MM-DD` | today | Date of the article; it starts the file name and orders the indexes |
+| `--slug SLUG` | made from the title | File name after the date: lowercase letters, digits and hyphens |
+| `--summary TEXT` | none | Lead paragraph to start the article with; the indexes show it as the summary |
+| `--sync` | off | Only rebuild the indexes; run it after editing a title or a lead paragraph, removing a Draft line, or renaming or deleting an article |
+| `--latest N` | `5` | How many published articles the landing page shows |
+| `--name NAME` | the landing page's `<h1>`, else the repository folder name | Project name used when the articles book is created |
+| `--repo-root DIR` | the git top level above the docs root, else the current directory | Repository root; the `book.toml` build directory is placed relative to it |
+| `--repo-url URL` | the `origin` remote | Source repository link for `book.toml` |
+| `--template FILE` | the validator's `assets/template.json` | Template to read the articles folder name from; `<docs-root>/.docs-template.json` is merged in |
 | `--dry-run` | off | Prints what would be written and writes nothing |
 
 Exit status is 0 on success and 2 on invalid arguments.

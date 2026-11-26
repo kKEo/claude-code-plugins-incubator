@@ -1,6 +1,10 @@
 {
   "$comment": "Role definitions for the book-per-reader GitBook documentation template: the user and operator books are required, the tester and developer books are optional (\"optional\": true; an optional book that exists is checked like any other). A project may override any part by placing a file with the same shape at <docs-root>/.docs-template.json; keys given there replace the defaults role by role.",
   "landing_page": "index.html",
+  "articles": {
+    "$comment": "The optional articles book: dated pages named YYYY-MM-DD-<slug>.md, listed newest first and indexed on the landing page. It is not a role book.",
+    "folder": "articles"
+  },
   "roles": {
     "user": {
       "purpose": "Entry-level getting-started book. Plain language, no jargon, for people who use the product day to day.",
