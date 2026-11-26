@@ -64,7 +64,7 @@ Lists every Claude Code instance running on your machine in a pane beside the ch
 
 ## memors-hooks
 
-Connects Claude to a local memors-mcp knowledge base, and reminds it to search before re-fetching and to record what it learns.
+Connects Claude to a local memors-mcp knowledge base, and reminds it to search before re-fetching and to record what it learns. On request it analyses the current repository and fills the knowledge base from it.
 
 [More about memors-hooks](memors-hooks.md)
 

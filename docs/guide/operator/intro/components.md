@@ -82,8 +82,10 @@ The plugin is one skill and nothing else. It stops when `km-plugin-registry` poi
 | Hook scripts | `hooks/orient`, `recall`, `guard-cli`, `check-known-source`, `track`, `nudge-remember` | One script per job; `guard-cli` is the only one that can block |
 | Shared code | `hooks/common.sh`, `hooks/lib.sh`, `hooks/run-hook.cmd` | Locating `memors-mcp` and the project's knowledge base (marker, `MEMORS_KB`, `default`); the per-session log; the Windows/Unix wrapper |
 | Skill `memors-mcp` | `skills/memors-mcp/SKILL.md` | The upstream usage guide, plus a section on what the hooks already do |
+| Skill `memors-learn-repo` | `skills/memors-learn-repo/SKILL.md` | Reads the effort level and the user's instructions, checks the memors tools and the knowledge base, dispatches `repo-learner` and relays its report |
+| Agent `repo-learner` | `agents/repo-learner.md` | Analyses the repository and writes documents, notes and facts to the knowledge base through the memors tools; may not edit files |
 
-Each hook exits at once when its option is off. Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base.
+Each hook exits at once when its option is off. Every hook fails open: if `memors-mcp` or `jq` is missing, or the knowledge base is absent or on an old schema, it exits 0. No hook writes to the knowledge base; the `repo-learner` agent does, through the memors tools, at trust `agent`.
 
 ## plan-progress
 

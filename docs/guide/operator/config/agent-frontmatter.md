@@ -26,11 +26,12 @@ tools:
 
 | Field | Required | Meaning | Shipped values |
 |---|---|---|---|
-| `name` | yes | Agent id used by the `Agent` tool | `spec-documenter`, `architect-documenter`, `impl-documenter`, `deploy-documenter`, `testing-documenter`, `frontend-validator`, `spec-context-explorer`, `spec-readiness-reviewer` |
+| `name` | yes | Agent id used by the `Agent` tool | `spec-documenter`, `architect-documenter`, `impl-documenter`, `deploy-documenter`, `testing-documenter`, `frontend-validator`, `spec-context-explorer`, `spec-readiness-reviewer`, `repo-learner` |
 | `description` | yes | When to dispatch; `<example>` blocks with `Context`, `user`, `assistant` lines teach the match | two examples each |
-| `model` | no | `haiku`, `sonnet`, `opus` or inherit | documentalist agents: `haiku`; `frontend-validator` and the spec agents: `sonnet` |
+| `model` | no | `haiku`, `sonnet`, `opus` or inherit | documentalist agents: `haiku`; `frontend-validator` and the spec agents: `sonnet`; `repo-learner`: omitted, so it inherits |
 | `color` | no | Colour of the agent's label in the terminal | blue, magenta, green, yellow, cyan, red |
-| `tools` | no | Tools the agent may call; omit for all | documentalists: Read, Bash, Write, Grep, Glob; `frontend-validator`: Read, Bash, Grep, Glob (no Write: it reports, it does not fix); spec agents: Read, Bash, Grep, Glob (no Write: they report and never edit the spec) |
+| `tools` | no | Tools the agent may call; omit for all | documentalists: Read, Bash, Write, Grep, Glob; `frontend-validator`: Read, Bash, Grep, Glob (no Write: it reports, it does not fix); spec agents: Read, Bash, Grep, Glob (no Write: they report and never edit the spec); `repo-learner`: omitted, because it needs the memors tools, whose names depend on how the server is registered |
+| `disallowedTools` | no | Tools taken away from the agent, for an agent that otherwise has them all | `repo-learner`: Write, Edit, NotebookEdit (it writes to the knowledge base, never to the repository) |
 
 ## Inputs
 
@@ -38,6 +39,8 @@ The documentalist agents expect three values in the dispatch prompt: `FEATURE_FO
 
 The spec agents expect a context block from the `write-implementation-spec` skill. `spec-context-explorer` gets `FEATURE_REQUEST`, `REPO_ROOT`, `SPEC_PATH` and `EXISTING_SPEC`. `spec-readiness-reviewer` gets `SPEC_PATH`, `REPO_ROOT`, `FEATURE_REQUEST` and `DECIDED_WITHOUT_USER`.
 
+`repo-learner` gets `REPO_ROOT`, `NAMESPACE`, `EFFORT`, `IS_GIT_REPO` and `INSTRUCTIONS` from the `memors-learn-repo` skill. The skill also sets the `Agent` tool's `effort` parameter to the same level, which is how one agent definition runs at the effort the user picked.
+
 ## Model choice
 
-The documentalists were moved to `haiku` to keep a per-phase document cheap; they read a diff and fill a fixed outline. The validator agent stays on `sonnet` because it judges code quality across a whole project and runs a build. The spec agents also use `sonnet`: a made-up file path in a spec would end up in the implementation, and checking a spec against the live code is judgment work, not extraction.
+The documentalists were moved to `haiku` to keep a per-phase document cheap; they read a diff and fill a fixed outline. The validator agent stays on `sonnet` because it judges code quality across a whole project and runs a build. The spec agents also use `sonnet`: a made-up file path in a spec would end up in the implementation, and checking a spec against the live code is judgment work, not extraction. `repo-learner` names no model and no effort: it runs on the session's model, at the effort the user gave the skill.

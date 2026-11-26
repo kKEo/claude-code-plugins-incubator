@@ -32,7 +32,7 @@
     },
     {
       "name": "memors-hooks",
-      "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only",
+      "description": "Hooks that run the memors-mcp knowledge-base loop for the agent — orient at session start, flag already-stored sources, nudge to record findings, and keep trust changes human-only — plus a skill that analyses the current repository into the knowledge base",
       "source": "./plugins/memors-hooks",
       "category": "Development"
     },

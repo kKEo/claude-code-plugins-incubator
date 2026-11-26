@@ -14,6 +14,20 @@ search the knowledge base for our retry policy
 
 To give a project its own knowledge base, put the name in a `.memors-kb` file at the project root.
 
+## Filling the knowledge base from a repository
+
+A new knowledge base is empty. To fill it from the project you are in, ask in your own words or use the command:
+
+```
+learn this repo into the knowledge base
+/memors-learn-repo high
+/memors-learn-repo low only the public API and how to run the tests
+```
+
+The first word after the command is how thorough the run is: `low`, `medium`, `high`, `xhigh` or `max`. Leave it out for `medium`. A low run reads the README and the layout and takes little time; a high run reads each part of the project in depth and costs more. Anything you write after that tells the run what to concentrate on or what to leave out.
+
+The work is done by a separate agent, so the files it reads do not fill your conversation and you can keep working. When it finishes, Claude tells you what was stored: the project's own documents, notes on how the project is built and used, and single facts such as a command or a default value. Everything is marked as written by an agent, not as verified. Passwords and keys are never stored; a file that seems to hold one is named in the report. Run the command again later and it updates what changed instead of starting over.
+
 ## How it works
 
 ![How memors-hooks works: four Claude Code events run the orient, guard-cli, check-known-source and nudge-remember hooks, which read the knowledge base and a session log on disk; the optional memors server reads and writes the knowledge base](../images/how-memors-hooks.svg)
@@ -27,7 +41,7 @@ The numbers match the picture.
 
 ## What it reads and writes
 
-The hooks read the knowledge base and never write to it. They keep a log of fetches, empty searches and write-backs in the system's temporary folder. The `memors` server, when on, writes to the knowledge base only when Claude records or ingests something. [Trust and privacy](../trust.md) has the full account.
+The hooks read the knowledge base and never write to it. They keep a log of fetches, empty searches and write-backs in the system's temporary folder. The `memors` server, when on, writes to the knowledge base only when Claude records or ingests something. When you ask it to learn a repository, an agent reads the tracked files of the project and writes documents, notes and facts to the knowledge base; it changes no file in the project. [Trust and privacy](../trust.md) has the full account.
 
 ## Install
 

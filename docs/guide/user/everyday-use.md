@@ -100,3 +100,5 @@ With memors-hooks installed, and a memors server running (the plugin's own, turn
 ```
 search the knowledge base for our retry policy
 ```
+
+To fill an empty knowledge base from the project you are in, type `/memors-learn-repo`, or `/memors-learn-repo high focus on the billing module` for a deeper run with a focus. [memors-hooks](plugins/memors-hooks.md) explains the levels.

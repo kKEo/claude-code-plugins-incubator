@@ -15,7 +15,28 @@ Hooks that run the [memors-mcp](https://github.com/kKEo/memors) knowledge-base l
 
 The plugin also bundles:
 - the `memors` MCP server (`.mcp.json`, started through `hooks/serve`, which picks the project's knowledge base). It is **off by default**: turn on *Start the memors MCP server* in `/config` to run it;
-- the upstream `memors-mcp` skill, plus a section describing what these hooks already do.
+- the upstream `memors-mcp` skill, plus a section describing what these hooks already do;
+- the `memors-learn-repo` skill and its `repo-learner` agent, which analyse the current repository and fill the knowledge base from it (see below).
+
+## Learning a repository
+
+`/memors-learn-repo [low|medium|high|xhigh|max] [what to concentrate on]` analyses the repository in the working directory and records what it finds in the project's knowledge base. Asking in your own words works too ("learn this repo into the knowledge base").
+
+```
+/memors-learn-repo
+/memors-learn-repo high
+/memors-learn-repo low only the public API and how to run the tests
+/memors-learn-repo xhigh focus on the billing module, skip legacy/
+```
+
+- **A separate agent does the work.** The skill only checks that the memors tools are there and which knowledge base the project uses, then dispatches the `repo-learner` agent and relays its report. The files the agent reads stay out of your conversation, and you can keep working while it runs.
+- **Effort is the first argument**, `medium` when left out. It sets both how hard the agent reasons and how much it covers: `low` reads the README, manifests and layout; `medium` adds the documentation, entry points, main module files and the build, test and CI setup; `high` adds each module in depth, tests, configuration and recent git history; `xhigh` and `max` skim every tracked source file.
+- **The rest of the line is your instructions.** They decide what the agent concentrates on and what it leaves out, and they are stored with the run.
+- **What gets stored.** The project's own documents as they are (`doc`), notes the agent writes on the overview, architecture, modules, commands and conventions (`note`, origin `agent-derived`), and atomic facts with the passage that supports them. All of it goes to a namespace named after the repository, tagged `repo-learn`, at trust `agent`.
+- **What does not.** Source files are not copied in. Ignored files, `.env*`, keys, vendored and generated code, lock files and binaries are skipped, and a secret found in a tracked file is reported by file name, never stored.
+- **Running it again updates.** The agent keeps a record of the commit it analysed, reads what changed since, revises its notes in place and supersedes facts that no longer hold. Say `start from scratch` in the instructions for a full pass.
+
+The agent writes only through the memors tools and may not edit files (`disallowedTools`). When the project has no `.memors-kb` marker, the skill asks before writing to the shared knowledge base.
 
 ## Design Rules
 
