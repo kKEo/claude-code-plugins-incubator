@@ -15,10 +15,12 @@ export type Price = {
 type Seed = { input: number; output: number; cacheRead?: number; cacheWrite?: number }
 
 /**
- * Anthropic first-party list prices (claude-api skill table, cached 2026-10-06).
+ * Anthropic first-party list prices (claude-api skill table, cached 2026-11-03).
  * Longest prefix wins, so `claude-opus-5-5` is matched before `claude-opus-5`.
  */
 const SEEDS: Record<string, Seed> = {
+  'claude-fable-5-2': { input: 8, output: 40, cacheRead: 0.2 },
+  'claude-mythos-5-2': { input: 8, output: 40, cacheRead: 0.2 },
   'claude-fable-5-1': { input: 10, output: 50, cacheRead: 0.25 },
   'claude-mythos-5-1': { input: 10, output: 50, cacheRead: 0.25 },
   'claude-fable-5': { input: 10, output: 50 },
@@ -29,7 +31,7 @@ const SEEDS: Record<string, Seed> = {
   'claude-opus-4-7': { input: 5, output: 25 },
   'claude-opus-4-6': { input: 5, output: 25 },
   'claude-opus-4-5': { input: 5, output: 25 },
-  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.2 },
+  'claude-sonnet-5-5': { input: 2, output: 10, cacheRead: 0.1 },
   'claude-sonnet-5': { input: 2, output: 10 },
   'claude-sonnet-4-6': { input: 3, output: 15 },
   'claude-sonnet-4-5': { input: 3, output: 15 },

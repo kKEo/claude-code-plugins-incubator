@@ -20,6 +20,10 @@ test('the longest prefix wins and cache prices fall back to the usual ratios', a
   expect(priceOf('claude-opus-5')?.input).toBe(5)
   expect(near(priceOf('claude-opus-5')?.cacheRead, 0.5)).toBe(true)
   expect(near(priceOf('claude-opus-5')?.cacheWrite, 6.25)).toBe(true)
+  expect(priceOf('claude-fable-5-2')?.input).toBe(8)
+  expect(priceOf('claude-fable-5-2')?.cacheRead).toBe(0.2)
+  expect(priceOf('claude-fable-5-1')?.input).toBe(10)
+  expect(priceOf('claude-sonnet-5-5')?.cacheRead).toBe(0.1)
   expect(priceOf('gpt-something')).toBe(null)
 })
 
